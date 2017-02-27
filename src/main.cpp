@@ -22,6 +22,8 @@ bool readWholeFile(const std::string& filename, std::string& buf) {
 }
 
 int main(int argc, char** argv) {
+	parser::Token::initTables();
+
 
 	if(argc < 2) {
 		std::cerr << "Il faut specifier le fichier a charger." << std::endl;
@@ -43,15 +45,6 @@ int main(int argc, char** argv) {
 		if(tok.type == parser::TokenType::EndOfStream)
 			break;
 	} while(!tok.isError());
-
-
-	/*if(!readWholeFile(filename, contents)) {
-		std::cerr << "Impossible de lire le fichier " << filename << std::endl;
-		return EXIT_FAILURE;
-	}
-
-	std::cout << contents << std::endl;
-	*/
 
 	return EXIT_SUCCESS;
 }

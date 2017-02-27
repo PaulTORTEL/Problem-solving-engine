@@ -1,11 +1,11 @@
 
 #include <iostream>
+#include <assert.h>
 
 #include "./tokens.hpp"
 
 namespace parser {
-
-
+	
 	bool isCharNumeric(char c) {
 		return c >= '0' && c <= '9';
 	}
@@ -20,8 +20,99 @@ namespace parser {
 		return isCharNumeric(c) || isCharAlphabetic(c);
 	}
 
-	std::ostream& operator<<(std::ostream& o, Token t) {
-	    o << "T" << static_cast<int>(t.type);
+	std::string Token::TABLE_TYPE_NAMES[static_cast<int>(TokenType::_Count)];
+	TokenType Token::TABLE_TYPE_FROM_CHAR[256];
+	std::unordered_map<std::string, TokenType> Token::TABLE_KEYWORDS;
+
+	void Token::initTables() {
+		static bool isInit = false;
+		if(isInit)
+			return;
+
+		isInit = true;
+
+		for(int i = 0; i < 256; i++)
+			TABLE_TYPE_FROM_CHAR[i] = TokenType::ErrorUnexpected;
+
+		registerTokenNumber(TokenType::Number, "number");
+		registerTokenId(TokenType::Identifier, "identifier");
+
+		registerTokenKeyword(TokenType::KeywordVar, "var");
+		registerTokenKeyword(TokenType::KeywordIn, "in");
+		registerTokenKeyword(TokenType::KeywordFor, "for");
+		registerTokenKeyword(TokenType::KeywordDistinct, "distinct");
+
+		registerToken(TokenType::Comma, ",");
+		registerToken(TokenType::Semicolon, ";");
+		registerToken(TokenType::Ellipsis, "...");
+		registerToken(TokenType::Equals, "==");
+		registerToken(TokenType::NotEquals, "!=");
+
+		registerToken(TokenType::LBracket, "[");
+		registerToken(TokenType::RBracket, "]");
+		registerToken(TokenType::LBrace, "{");
+		registerToken(TokenType::RBrace, "}");
+
+		registerTokenSpecial(TokenType::EndOfStream, "EOS");
+		registerTokenSpecial(TokenType::ErrorStream, "Error");
+		registerTokenSpecial(TokenType::ErrorUnexpected, "Unexpected");
+	}
+
+	void Token::assignTokenFirstChar(TokenType type, const std::string& name, char c) {
+		unsigned char uc = c;
+		if(TABLE_TYPE_FROM_CHAR[uc] != TokenType::ErrorUnexpected) {
+			std::cerr << "ERROR: multiple tokens for one char : " << name << std::endl;
+			exit(1); 
+		}
+
+		TABLE_TYPE_FROM_CHAR[uc] = type;
+	}
+
+	void Token::registerToken(TokenType type, const std::string& name) {
+		assert(name.size() > 0);
+
+		TABLE_TYPE_NAMES[static_cast<int>(type)] = name;
+
+		assignTokenFirstChar(type, name, name[0]);
+
+	}
+
+	void Token::registerTokenNumber(TokenType type, const std::string& name) {
+		TABLE_TYPE_NAMES[static_cast<int>(type)] = name;
+
+		for(int c = 0; c < 256; c++) {
+			if(isCharNumeric(c) || c == '-')
+				assignTokenFirstChar(type, name, c);
+		}
+	}
+
+
+	void Token::registerTokenId(TokenType type, const std::string& name) {
+		TABLE_TYPE_NAMES[static_cast<int>(type)] = name;
+
+		for(int c = 0; c < 256; c++) {
+			if(isCharAlphabetic(c))
+				assignTokenFirstChar(type, name, c);
+		}
+	}
+
+	void Token::registerTokenKeyword(TokenType type, const std::string& name) {
+		TABLE_TYPE_NAMES[static_cast<int>(type)] = name;
+		TABLE_KEYWORDS[name] = type;
+	}
+
+	void Token::registerTokenSpecial(TokenType type, const std::string& name) {
+		TABLE_TYPE_NAMES[static_cast<int>(type)] = name;
+	}
+
+
+	std::ostream& operator<<(std::ostream& o, const Token& t) {
+		const std::string& name = Token::TABLE_TYPE_NAMES[static_cast<int>(t.type)];
+
+	    if(name.size() > 0)
+	    	o << name;
+	    else o << "unnamed[" << t.getName() << "]";
+
 	    if(t.type == TokenType::Number)
 	    	o << "(" << t.number << ")";
 
@@ -75,29 +166,30 @@ namespace parser {
 	Token Tokenizer::readToken() {
 		int c = skipWhitespace();
 
-		createToken(Token::fromSymbol(c));
+		if(c == EOF)
+			return createErrorToken(c);
 
-		if(_nextTok.type != TokenType::ErrorUnexpected) {
-			readChar();
-			return _nextTok;
-		}
+		TokenType type = Token::TABLE_TYPE_FROM_CHAR[c];
 
-		if(c == '.')
-			return readStringToken("...", TokenType::Ellipsis);
-
-		if(c == '!')
-			return readStringToken("!=", TokenType::NotEquals);
-
-		if(c == '=')
-			return readStringToken("==", TokenType::Equals);
-
-		if(c == '-' || isCharNumeric(c))
-			return readNumberToken();
-
-		if(isCharAlphabetic(c))
+		switch(type) {
+		case TokenType::Identifier:
 			return readIdOrKeywordToken();
 
-		return createErrorToken(c);
+		case TokenType::Number:
+			return readNumberToken();
+
+		case TokenType::ErrorUnexpected:
+			return createErrorToken(c);
+
+		default:
+			const std::string& name = Token::getNameOf(type);
+			if(name.size() == 1) {
+				createToken(type);
+				readChar();
+				return _nextTok;	
+			
+			} else return readStringToken(name, type);
+		}
 	}
 
 	int Tokenizer::readChar() {
@@ -131,26 +223,27 @@ namespace parser {
 	}
 
 	Token Tokenizer::readIdOrKeywordToken() {
-
 		std::string str = "";
 	
 		while(isCharAlphanumeric(_stream->peek())) {
 			str.append(1, readChar());	
 		}
 
-		_nextTok.type = Token::fromKeyword(str);
-		if(_nextTok.type != TokenType::ErrorUnexpected)
+		auto it = Token::TABLE_KEYWORDS.find(str);
+		if(it != Token::TABLE_KEYWORDS.end()) {
+			_nextTok.type = it->second;
 			return _nextTok;
+		}
 
 		_nextTok.type = TokenType::Identifier;
 
-		auto it = _symbolsMap.find(str);
+		auto it2 = _symbolsMap.find(str);
 		
-		if(it == _symbolsMap.end()) {
+		if(it2 == _symbolsMap.end()) {
 			int newId = _symbolsMap.size();
 			_nextTok.identifier = newId;
 			_symbolsMap[str] = newId;
-		} else _nextTok.identifier = it->second;
+		} else _nextTok.identifier = it2->second;
 
 		return _nextTok;
 

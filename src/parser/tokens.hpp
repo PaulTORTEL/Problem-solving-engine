@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdlib.h>
 #include <istream>
 #include <unordered_map>
@@ -11,11 +13,13 @@ namespace parser {
 		Number,
 		Identifier,
 
+		KeywordVar,
 		KeywordIn,
 		KeywordFor,
 		KeywordDistinct,
 
 		Comma,
+		Semicolon,
 		Ellipsis,
 		Equals,
 		NotEquals,
@@ -25,12 +29,12 @@ namespace parser {
 		LBrace,
 		RBrace,
 
-		Semicolon,
-
 		EndOfStream,
 
+		//Erreurs
 		ErrorUnexpected,
 		ErrorStream,
+		_Count
 	};
 
 	struct Token {
@@ -44,40 +48,38 @@ namespace parser {
 			char unexpected;
 		};
 
-		inline bool isError() const {
+
+		static void initTables();
+
+		static const std::string& getNameOf(TokenType type) {
+			return TABLE_TYPE_NAMES[static_cast<int>(type)];
+		}
+
+		const std::string& getName() const {
+			return getNameOf(this->type);
+		}
+		bool isError() const {
 			return this->type >= TokenType::ErrorUnexpected;
 		}
 
-		inline static TokenType fromSymbol(char c) {
-			if(c == '[')
-				return TokenType::LBracket;
-			if(c == ']')
-				return TokenType::RBracket;
-			if(c == '{')
-				return TokenType::LBrace;
-			if(c == '}')
-				return TokenType::RBrace;
-			if(c == ';')
-				return TokenType::Semicolon;
-			if(c == ',')
-				return TokenType::Comma;
+		friend class Tokenizer;
+		friend std::ostream& operator<<(std::ostream& o, const Token& t);
 
-			return TokenType::ErrorUnexpected;
-		} 
+	private:
+		static std::string TABLE_TYPE_NAMES[static_cast<int>(TokenType::_Count)];
+		static TokenType TABLE_TYPE_FROM_CHAR[256];
+		static std::unordered_map<std::string, TokenType> TABLE_KEYWORDS;
 
-		inline static TokenType fromKeyword(std::string str) {
-			if(str == "in")
-				return TokenType::KeywordIn;
-			if(str == "for")
-				return TokenType::KeywordFor;
-			if(str == "distinct")
-				return TokenType::KeywordDistinct;
+		static void assignTokenFirstChar(TokenType type, const std::string& name, char c);
 
-			return TokenType::ErrorUnexpected;
-		}
+		static void registerToken(TokenType type, const std::string& name);
+		static void registerTokenNumber(TokenType type, const std::string& name);
+		static void registerTokenKeyword(TokenType type, const std::string& name);
+		static void registerTokenId(TokenType type, const std::string& name);
+		static void registerTokenSpecial(TokenType type, const std::string& name);
 	};
 
-	std::ostream& operator<<(std::ostream& o, Token t);
+	std::ostream& operator<<(std::ostream& o, const Token& t);
 	
 	class Tokenizer {
 	private:
