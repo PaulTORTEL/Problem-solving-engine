@@ -1,0 +1,64 @@
+
+var board[9][9] in 1...9;
+
+
+#lignes et colonnes
+for k in 0...8 {
+	for distinct i, j in 0...8 {
+		board[i][k] != board[j][k];
+		board[k][i] != board[k][j];
+	}
+}
+
+#blocs: ce qu'on voudrait, mais c'est trop compliqué,
+#donc on remplace par ce qu'il y a après
+#for i, j in 0...2 {
+#	for distinct m, mm in 0...2 {
+#		for distinct n, nn in 0...2 {
+#			board[3*i + m][3*j + n] != board[3*i + mm][3*j + nn];
+#		}
+#	}
+#}
+
+#blocs
+for distinct i, ii in 0...2 {
+	for distinct j, jj in 0...2 {
+		board[i][j] != board[ii][jj];
+	}
+
+	for distinct j, jj in 3...5 {
+		board[i][j] != board[ii][jj];
+	}
+
+	for distinct j, jj in 6...8 {
+		board[i][j] != board[ii][jj];
+	}	
+}
+
+for distinct i, ii in 3...5 {
+	for distinct j, jj in 0...2 {
+		board[i][j] != board[ii][jj];
+	}
+
+	for distinct j, jj in 3...5 {
+		board[i][j] != board[ii][jj];
+	}
+
+	for distinct j, jj in 6...8 {
+		board[i][j] != board[ii][jj];
+	}	
+}
+
+for distinct i, ii in 6...8 {
+	for distinct j, jj in 0...2 {
+		board[i][j] != board[ii][jj];
+	}
+
+	for distinct j, jj in 3...5 {
+		board[i][j] != board[ii][jj];
+	}
+
+	for distinct j, jj in 6...8 {
+		board[i][j] != board[ii][jj];
+	}	
+}
