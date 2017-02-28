@@ -6,6 +6,40 @@
 
 namespace parser {
 	
+	void Token::initTables() {
+		static bool isInit = false;
+		if(isInit)
+			return;
+
+		isInit = true;
+
+		#define REGISTER(type, value, ...) registerToken##__VA_ARGS__(TokenType::type, value)
+
+		REGISTER(Number, "number", Special);
+		REGISTER(Identifier, "identifier", Special);
+
+		REGISTER(KeywordVar, "var");
+		REGISTER(KeywordIn, "in");
+		REGISTER(KeywordFor, "for");
+		REGISTER(KeywordDistinct, "distinct");
+
+		REGISTER(Comma, ",");		REGISTER(Semicolon, ";");
+		REGISTER(Ellipsis, "...");
+
+		REGISTER(Equals, "==");		REGISTER(NotEquals, "!=");
+		REGISTER(LessThan, "<");	REGISTER(LessThanOrEqualsTo, "<=");
+		REGISTER(GreaterThan, ">");	REGISTER(GreaterThanOrEqualsTo, ">=");
+
+		REGISTER(LBracket, "[");	REGISTER(RBracket, "]");
+		REGISTER(LBrace, "{");		REGISTER(RBrace, "}");
+
+		REGISTER(EndOfStream, "EOS", Special);
+		REGISTER(ErrorStream, "Error", Special);
+		REGISTER(ErrorUnexpected, "Unexpected", Special);
+
+		#undef REGISTER
+	}
+
 	bool isCharNumeric(char c) {
 		return c >= '0' && c <= '9';
 	}
@@ -21,84 +55,66 @@ namespace parser {
 	}
 
 	std::string Token::TABLE_TYPE_NAMES[static_cast<int>(TokenType::_Count)];
-	TokenType Token::TABLE_TYPE_FROM_CHAR[256];
+	std::vector<Token::Action> Token::TABLE_TYPES;
 	std::unordered_map<std::string, TokenType> Token::TABLE_KEYWORDS;
 
-	void Token::initTables() {
-		static bool isInit = false;
-		if(isInit)
-			return;
-
-		isInit = true;
-
-		for(int i = 0; i < 256; i++)
-			TABLE_TYPE_FROM_CHAR[i] = TokenType::ErrorUnexpected;
-
-		registerTokenNumber(TokenType::Number, "number");
-		registerTokenId(TokenType::Identifier, "identifier");
-
-		registerTokenKeyword(TokenType::KeywordVar, "var");
-		registerTokenKeyword(TokenType::KeywordIn, "in");
-		registerTokenKeyword(TokenType::KeywordFor, "for");
-		registerTokenKeyword(TokenType::KeywordDistinct, "distinct");
-
-		registerToken(TokenType::Comma, ",");
-		registerToken(TokenType::Semicolon, ";");
-		registerToken(TokenType::Ellipsis, "...");
-		registerToken(TokenType::Equals, "==");
-		registerToken(TokenType::NotEquals, "!=");
-
-		registerToken(TokenType::LBracket, "[");
-		registerToken(TokenType::RBracket, "]");
-		registerToken(TokenType::LBrace, "{");
-		registerToken(TokenType::RBrace, "}");
-
-		registerTokenSpecial(TokenType::EndOfStream, "EOS");
-		registerTokenSpecial(TokenType::ErrorStream, "Error");
-		registerTokenSpecial(TokenType::ErrorUnexpected, "Unexpected");
-	}
-
-	void Token::assignTokenFirstChar(TokenType type, const std::string& name, char c) {
-		unsigned char uc = c;
-		if(TABLE_TYPE_FROM_CHAR[uc] != TokenType::ErrorUnexpected) {
-			std::cerr << "ERROR: multiple tokens for one char : " << name << std::endl;
-			exit(1); 
-		}
-
-		TABLE_TYPE_FROM_CHAR[uc] = type;
-	}
 
 	void Token::registerToken(TokenType type, const std::string& name) {
 		assert(name.size() > 0);
 
 		TABLE_TYPE_NAMES[static_cast<int>(type)] = name;
 
-		assignTokenFirstChar(type, name, name[0]);
-
-	}
-
-	void Token::registerTokenNumber(TokenType type, const std::string& name) {
-		TABLE_TYPE_NAMES[static_cast<int>(type)] = name;
-
-		for(int c = 0; c < 256; c++) {
-			if(isCharNumeric(c) || c == '-')
-				assignTokenFirstChar(type, name, c);
+		//C'est un mot-clé
+		if(isCharAlphabetic(name[0])) {
+			TABLE_KEYWORDS[name] = type;
+			return;
 		}
-	}
 
+		//On ajoute le délimiteur s'il n'est pas présent
+		if(TABLE_TYPES.empty())
+			TABLE_TYPES.push_back(Token::Action {
+				'\0',
+				-1,
+				TokenType::ErrorUnexpected
+			});
 
-	void Token::registerTokenId(TokenType type, const std::string& name) {
-		TABLE_TYPE_NAMES[static_cast<int>(type)] = name;
+		unsigned int i = 0;
+		int pos = 0;
+		bool middle = false;
+		//On se positionne dans le tableau
+		for(; i < TABLE_TYPES.size(); i++) {
+			Token::Action& cur = TABLE_TYPES[i];
 
-		for(int c = 0; c < 256; c++) {
-			if(isCharAlphabetic(c))
-				assignTokenFirstChar(type, name, c);
+			if(cur.level < pos)
+				break;
+
+			if(cur.level == pos && cur.c == name[pos])
+				pos++;
+
+			if(pos == (int) name.size()) {
+				middle = true;
+				break;
+			}
 		}
-	}
 
-	void Token::registerTokenKeyword(TokenType type, const std::string& name) {
-		TABLE_TYPE_NAMES[static_cast<int>(type)] = name;
-		TABLE_KEYWORDS[name] = type;
+		//On ajoute les éléments restants
+		for(; pos < (int) name.size(); pos++) {
+			TABLE_TYPES.insert(TABLE_TYPES.begin()+i, Token::Action {
+				name[pos],
+				pos,
+				TokenType::ErrorUnexpected
+			});
+			i++;
+		}
+
+		Token::Action& action = TABLE_TYPES[i - (middle ? 0 : 1)];
+		if(action.token != TokenType::ErrorUnexpected) {
+			std::cerr << "Erreur: '" << name << "' existe deja!" << std::endl;
+			exit(1);
+		}
+		
+		action.token = type;
+
 	}
 
 	void Token::registerTokenSpecial(TokenType type, const std::string& name) {
@@ -169,27 +185,14 @@ namespace parser {
 		if(c == EOF)
 			return createErrorToken(c);
 
-		TokenType type = Token::TABLE_TYPE_FROM_CHAR[c];
-
-		switch(type) {
-		case TokenType::Identifier:
+		if(isCharAlphabetic(c))
 			return readIdOrKeywordToken();
 
-		case TokenType::Number:
+		if(isCharNumeric(c) || c == '-')
 			return readNumberToken();
 
-		case TokenType::ErrorUnexpected:
-			return createErrorToken(c);
+		return readStringToken();
 
-		default:
-			const std::string& name = Token::getNameOf(type);
-			if(name.size() == 1) {
-				createToken(type);
-				readChar();
-				return _nextTok;	
-			
-			} else return readStringToken(name, type);
-		}
 	}
 
 	int Tokenizer::readChar() {
@@ -273,25 +276,38 @@ namespace parser {
 	}
 
 
-	Token Tokenizer::readStringToken(const std::string& str, TokenType type) {
-		static char buf[20];
-		_stream->read(buf, str.size());
+	Token Tokenizer::readStringToken() {
+		Token::Action* last = &Token::TABLE_TYPES.back();
+		Token::Action* lastMatch = last;
+		for(Token::Action& a: Token::TABLE_TYPES) {
+			int pos = last->level+1;
+			int c = _stream->peek();
 
-		if(_stream->fail() || _stream->eof()) {
-			_curCol += _stream->gcount();
-			return createErrorToken(EOF);
-		}
-
-		for(unsigned int i = 0; i < str.size(); i++) {
-			if(buf[i] != str[i]) {
-				_curCol += i;
-				return createErrorToken(buf[i]);
+			if(a.level == pos) {
+				if(a.c == c) {
+					last = &a;
+					if(a.token != TokenType::ErrorUnexpected)
+						lastMatch = &a;
+					
+					_stream->get();
+				}
+			} else if (a.level < pos) {
+				break;
 			}
 		}
 
-		_nextTok.type = type;
-		_curCol += str.size();
-		return _nextTok;
+		int diff = last->level - lastMatch->level;
+		for(int i = 1; i < diff; i++)
+			_stream->unget();
+
+		_curCol += lastMatch->level;
+
+		int c = _stream->peek();
+		if(c == EOF || lastMatch->token == TokenType::ErrorUnexpected)
+			return createErrorToken(c);
+
+		readChar();
+		return createToken(lastMatch->token);
 	}
 
 	Token Tokenizer::createToken(TokenType type) {
@@ -306,9 +322,9 @@ namespace parser {
 
 
 	Token Tokenizer::createErrorToken(int c) {
-		if(c == EOF)
-			createToken(_stream->fail() ? TokenType::ErrorStream : TokenType::EndOfStream);
-		else { 
+		if(c == EOF) {
+			createToken(_stream->eof() ? TokenType::EndOfStream : TokenType::ErrorStream);
+		} else { 
 			createToken(TokenType::ErrorUnexpected);
 			_nextTok.unexpected = c;
 		}

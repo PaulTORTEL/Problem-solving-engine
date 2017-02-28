@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 
-project(Graphes)
+project(PropagationContraintes)
 
 set (CMAKE_CXX_FLAGS "-Wall -std=c++11")
 

@@ -5,25 +5,8 @@
 
 #include "parser/tokens.hpp"
 
-bool readWholeFile(const std::string& filename, std::string& buf) {
-	std::ifstream file;
-	file.open(filename, std::ios::in);
-
-	if(!file.is_open())
-		return false;
-
-	std::ostringstream ss;
-	ss << file.rdbuf();
-	buf = ss.str();
-
-	bool ok = !file.fail();
-	file.close();
-	return ok;
-}
-
 int main(int argc, char** argv) {
 	parser::Token::initTables();
-
 
 	if(argc < 2) {
 		std::cerr << "Il faut specifier le fichier a charger." << std::endl;
@@ -45,6 +28,7 @@ int main(int argc, char** argv) {
 		if(tok.type == parser::TokenType::EndOfStream)
 			break;
 	} while(!tok.isError());
+
 
 	return EXIT_SUCCESS;
 }

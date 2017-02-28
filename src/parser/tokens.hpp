@@ -18,16 +18,15 @@ namespace parser {
 		KeywordFor,
 		KeywordDistinct,
 
-		Comma,
-		Semicolon,
+		Comma,		Semicolon,
 		Ellipsis,
-		Equals,
-		NotEquals,
 
-		LBracket,
-		RBracket,
-		LBrace,
-		RBrace,
+		Equals,			NotEquals,
+		LessThan,		LessThanOrEqualsTo,
+		GreaterThan,	GreaterThanOrEqualsTo,
+
+		LBracket, 	RBracket,
+		LBrace, 	RBrace,
 
 		EndOfStream,
 
@@ -66,16 +65,17 @@ namespace parser {
 		friend std::ostream& operator<<(std::ostream& o, const Token& t);
 
 	private:
+		struct Action {
+			char c;
+			int level;
+			TokenType token;
+		};
+
 		static std::string TABLE_TYPE_NAMES[static_cast<int>(TokenType::_Count)];
-		static TokenType TABLE_TYPE_FROM_CHAR[256];
+		static std::vector<Action> TABLE_TYPES;
 		static std::unordered_map<std::string, TokenType> TABLE_KEYWORDS;
 
-		static void assignTokenFirstChar(TokenType type, const std::string& name, char c);
-
 		static void registerToken(TokenType type, const std::string& name);
-		static void registerTokenNumber(TokenType type, const std::string& name);
-		static void registerTokenKeyword(TokenType type, const std::string& name);
-		static void registerTokenId(TokenType type, const std::string& name);
 		static void registerTokenSpecial(TokenType type, const std::string& name);
 	};
 
@@ -109,7 +109,7 @@ namespace parser {
 		int readChar();
 		int skipWhitespace();
 		Token readToken();
-		Token readStringToken(const std::string& str, TokenType type);
+		Token readStringToken();
 		Token readIdOrKeywordToken();
 		Token readNumberToken();
 		Token createToken(TokenType type);
