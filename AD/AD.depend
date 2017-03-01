@@ -1,0 +1,139 @@
+# depslib dependency file v1.0
+1446667744 source:d:\dev\c++\ad\psc_ad\ad\main.cpp
+	<iostream>
+
+1305393898 source:d:\dev\c++\ad\psc_ad\ad\src\tinyxml\tinystr.cpp
+	"tinystr.h"
+
+1305393898 d:\dev\c++\ad\psc_ad\ad\src\tinyxml\tinystr.h
+	<assert.h>
+	<string.h>
+
+1305393898 source:d:\dev\c++\ad\psc_ad\ad\src\tinyxml\tinyxml.cpp
+	<ctype.h>
+	<sstream>
+	<iostream>
+	"tinyxml.h"
+
+1305393898 d:\dev\c++\ad\psc_ad\ad\src\tinyxml\tinyxml.h
+	<ctype.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<assert.h>
+	<string>
+	<iostream>
+	<sstream>
+	"tinystr.h"
+
+1305393898 source:d:\dev\c++\ad\psc_ad\ad\src\tinyxml\tinyxmlerror.cpp
+	"tinyxml.h"
+
+1305393898 source:d:\dev\c++\ad\psc_ad\ad\src\tinyxml\tinyxmlparser.cpp
+	<ctype.h>
+	<stddef.h>
+	"tinyxml.h"
+	<windows.h>
+
+1488390969 source:d:\dev\c++\ad\psc_ad\ad\src\main.cpp
+	"Engine.h"
+
+1305393898 d:\dev\c++\ad\psc_ad\ad\src\tinyxml.h
+	<ctype.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<assert.h>
+	<string>
+	<iostream>
+	<sstream>
+	"tinystr.h"
+
+1488381360 d:\dev\c++\ad\psc_ad\ad\src\tinystr.h
+	<assert.h>
+	<string.h>
+
+1488381365 source:d:\dev\c++\ad\psc_ad\ad\src\tinystr.cpp
+	"tinystr.h"
+
+1305393898 source:d:\dev\c++\ad\psc_ad\ad\src\tinyxml.cpp
+	<ctype.h>
+	<sstream>
+	<iostream>
+	"tinyxml.h"
+
+1305393898 source:d:\dev\c++\ad\psc_ad\ad\src\tinyxmlerror.cpp
+	"tinyxml.h"
+
+1305393898 source:d:\dev\c++\ad\psc_ad\ad\src\tinyxmlparser.cpp
+	<ctype.h>
+	<stddef.h>
+	"tinyxml.h"
+	<windows.h>
+
+1488391309 source:d:\dev\c++\ad\psc_ad\ad\src\xmlutil.cpp
+	"XMLUtil.h"
+
+1488391301 d:\dev\c++\ad\psc_ad\ad\src\xmlutil.h
+	"tinyxml.h"
+	<iostream>
+	<vector>
+
+1488387667 source:d:\dev\c++\ad\psc_ad\ad\src\domain.cpp
+	"Domain.h"
+
+1488386928 d:\dev\c++\ad\psc_ad\ad\src\domain.h
+
+1488390714 source:d:\dev\c++\ad\psc_ad\ad\src\variable.cpp
+	"Variable.h"
+
+1488395545 d:\dev\c++\ad\psc_ad\ad\src\variable.h
+	<iostream>
+	<vector>
+	"VariableDomain.h"
+	<string>
+	<map>
+
+1488387507 d:\dev\c++\ad\psc_ad\ad\src\variabledomain.h
+	"Domain.h"
+	<iostream>
+	<vector>
+
+1488390655 source:d:\dev\c++\ad\psc_ad\ad\src\engine.cpp
+	"Engine.h"
+
+1488390659 d:\dev\c++\ad\psc_ad\ad\src\engine.h
+	<iostream>
+	<vector>
+	<map>
+	<string>
+	"Variable.h"
+
+1488389520 source:d:\dev\c++\ad\psc_ad\ad\src\node.cpp
+	"Node.h"
+
+1488390264 d:\dev\c++\ad\psc_ad\ad\src\node.h
+	"Variable.h"
+	<iostream>
+	<vector>
+
+1488392149 source:d:\dev\c++\ad\psc_ad\ad\src\variabledomain.cpp
+	"VariableDomain.h"
+
+1488395247 source:d:\dev\c++\ad\psc_ad\ad\src\parser.cpp
+	"Engine.h"
+	"tinyxml.h"
+	"XMLUtil.h"
+	"Utils.h"
+
+1488393369 d:\dev\c++\ad\psc_ad\ad\src\utils.h
+	<iostream>
+	<stdexcept>
+	<sstream>
+	<cstdlib>
+	<sstream>
+	<vector>
+
+1488393346 source:d:\dev\c++\ad\psc_ad\ad\src\utils.cpp
+	"Utils.h"
+

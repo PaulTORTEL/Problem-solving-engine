@@ -13,6 +13,8 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="include" />
+					<Add directory="src" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -22,6 +24,8 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add directory="include" />
+					<Add directory="src" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -32,7 +36,28 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="main.cpp" />
+		<Unit filename="src/Domain.cpp" />
+		<Unit filename="src/Domain.h" />
+		<Unit filename="src/Engine.cpp" />
+		<Unit filename="src/Engine.h" />
+		<Unit filename="src/Node.cpp" />
+		<Unit filename="src/Node.h" />
+		<Unit filename="src/Parser.cpp" />
+		<Unit filename="src/Utils.cpp" />
+		<Unit filename="src/Utils.h" />
+		<Unit filename="src/Variable.cpp" />
+		<Unit filename="src/Variable.h" />
+		<Unit filename="src/VariableDomain.cpp" />
+		<Unit filename="src/VariableDomain.h" />
+		<Unit filename="src/XMLUtil.cpp" />
+		<Unit filename="src/XMLUtil.h" />
+		<Unit filename="src/main.cpp" />
+		<Unit filename="src/tinystr.cpp" />
+		<Unit filename="src/tinystr.h" />
+		<Unit filename="src/tinyxml.cpp" />
+		<Unit filename="src/tinyxml.h" />
+		<Unit filename="src/tinyxmlerror.cpp" />
+		<Unit filename="src/tinyxmlparser.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
