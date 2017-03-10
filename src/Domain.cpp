@@ -9,7 +9,7 @@ bool Range::contains(int n) const {
 bool Range::isEmpty() const {
 	return min > max;
 }
-	
+
 bool Range::isSingleton() const {
 	return min == max;
 }
@@ -272,5 +272,5 @@ std::ostream& operator<<(std::ostream& o, const Domain& d) {
 		o << r;
 	}
 
-	return o << "}";
+	return o << " }";
 }

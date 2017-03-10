@@ -137,3 +137,110 @@
 1488393346 source:d:\dev\c++\ad\psc_ad\ad\src\utils.cpp
 	"Utils.h"
 
+1489160533 source:d:\dev\c++\ad\psc_ad\src\domain.cpp
+	"Domain.h"
+	<climits>
+
+1489157829 d:\dev\c++\ad\psc_ad\src\domain.h
+	<iostream>
+	<vector>
+
+1489157829 source:d:\dev\c++\ad\psc_ad\src\engine.cpp
+	"Engine.h"
+
+1489157829 d:\dev\c++\ad\psc_ad\src\engine.h
+	<iostream>
+	<vector>
+	<map>
+	"Variable.h"
+
+1489160316 d:\dev\c++\ad\psc_ad\src\variable.h
+	<iostream>
+	<vector>
+	"Domain.h"
+	<string>
+	<map>
+
+1489157829 source:d:\dev\c++\ad\psc_ad\src\main.cpp
+	"Engine.h"
+
+1489157829 source:d:\dev\c++\ad\psc_ad\src\node.cpp
+	"Node.h"
+
+1489157829 d:\dev\c++\ad\psc_ad\src\node.h
+	"Variable.h"
+	<iostream>
+	<vector>
+
+1489157829 source:d:\dev\c++\ad\psc_ad\src\tinystr.cpp
+	"tinystr.h"
+
+1489157829 d:\dev\c++\ad\psc_ad\src\tinystr.h
+	<assert.h>
+	<string.h>
+
+1489157829 source:d:\dev\c++\ad\psc_ad\src\tinyxml.cpp
+	<ctype.h>
+	<sstream>
+	<iostream>
+	"tinyxml.h"
+
+1489157829 d:\dev\c++\ad\psc_ad\src\tinyxml.h
+	<ctype.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<assert.h>
+	<string>
+	<iostream>
+	<sstream>
+	"tinystr.h"
+
+1489157829 source:d:\dev\c++\ad\psc_ad\src\tinyxmlerror.cpp
+	"tinyxml.h"
+
+1489157829 source:d:\dev\c++\ad\psc_ad\src\tinyxmlparser.cpp
+	<ctype.h>
+	<stddef.h>
+	"tinyxml.h"
+	<windows.h>
+
+1489164065 source:d:\dev\c++\ad\psc_ad\src\utils.cpp
+	"Utils.h"
+	<sstream>
+
+1489164108 d:\dev\c++\ad\psc_ad\src\utils.h
+	<iostream>
+	<stdexcept>
+	<sstream>
+	<cstdlib>
+	<sstream>
+	<vector>
+
+1489160467 source:d:\dev\c++\ad\psc_ad\src\variable.cpp
+	"Variable.h"
+
+1489157829 source:d:\dev\c++\ad\psc_ad\src\xmlutil.cpp
+	"XMLUtil.h"
+
+1489157829 d:\dev\c++\ad\psc_ad\src\xmlutil.h
+	"tinyxml.h"
+	<iostream>
+	<vector>
+
+1489163607 source:d:\dev\c++\ad\psc_ad\src\parser.cpp
+	"Engine.h"
+	"tinyxml.h"
+	"XMLUtil.h"
+	"Utils.h"
+	"Domain.h"
+	"Indexer.h"
+
+1489163585 source:d:\dev\c++\ad\psc_ad\src\indexer.cpp
+	"Indexer.h"
+	<sstream>
+
+1489163410 d:\dev\c++\ad\psc_ad\src\indexer.h
+	<iostream>
+	<vector>
+
