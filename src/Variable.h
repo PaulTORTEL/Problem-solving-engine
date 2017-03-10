@@ -6,13 +6,14 @@
 #include <string>
 #include <map>
 
+typedef int VarID;
+
 class Variable
 {
     private:
 
 
     std::string _name;
-
     Domain _domain;
 
 
