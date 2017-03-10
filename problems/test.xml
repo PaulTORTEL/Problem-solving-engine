@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PSC>
 	<Vars>
-		<Var name = "X" type = "index">
-			<Index order = "1" domain = "1;8" />
-			<Domain>
-				<Subdomain order = "1" domain = "1;8" />
-				<Subdomain order = "2" domain = "1;8" />
-			</Domain>
+		<Var name = "X" >
+			<Index max = "9" />
+			<Index max = "9" />
+			<Domain value = "1;9" />
 		</Var>
 	</Vars>
 	

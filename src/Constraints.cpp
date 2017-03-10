@@ -18,14 +18,14 @@ void Constraints::addBinConstraint(int v1, int v2, char constraint) {
 	if(constraint & BIN_CON_LESS)
 		inv |= BIN_CON_GREATER;
 	if(constraint & BIN_CON_EQUALS)
-		inv |= BIN_CON_EQUALS:
+		inv |= BIN_CON_EQUALS;
 	if(constraint & BIN_CON_GREATER)
 		inv |= BIN_CON_LESS;
 
 	_binConstraints[getIndexOf(v2, v1)] &= inv;
 }
 
-static bool Constraints::checkBinary(int v1, int v2, char constraint) {
+bool Constraints::checkBinary(int v1, int v2, char constraint) {
 	if(!(constraint & BIN_CON_LESS) && v1 < v2)
 		return false;
 
@@ -44,7 +44,7 @@ bool Constraints::isValuePossible(std::vector<Domain>& vars, VarID var, int valu
 	if(!d1.contains(value))
 		return false;
 
-	for(int i = 0; i < _varNums; i++) {
+	for(int i = 0; i < _varsNum; i++) {
 		char c = _binConstraints[getIndexOf(var, i)];
 		Domain& d2 = vars[i];
 
@@ -61,6 +61,6 @@ bool Constraints::isValuePossible(std::vector<Domain>& vars, VarID var, int valu
 	return true;
 }
 
-int Constraints::getIndexOf(int n, int m) {
+int Constraints::getIndexOf(int n, int m) const {
 	return n*_varsNum + m;
 }

@@ -19,7 +19,10 @@ class Variable
 
     public:
 
-        Variable();
+
+        friend std::ostream& operator<<(std::ostream& o, const Variable& v);
+
+        Variable(Domain d, std::string& name);
 
         virtual ~Variable();
 

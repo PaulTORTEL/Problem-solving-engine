@@ -5,10 +5,11 @@
 
 class Constraints {
 
-	int _varsNum;
+	const int _varsNum;
 	char* _binConstraints;
 
 public:
+	static const char BIN_CON_NONE = 0;
 	static const char BIN_CON_LESS = 1; 
 	static const char BIN_CON_EQUALS = 2;
 	static const char BIN_CON_GREATER = 4;
@@ -27,6 +28,6 @@ public:
 	~Constraints();
 
 private:
-	int getIndexOf(int n, int m);
+	int getIndexOf(int n, int m) const;
 
 };
