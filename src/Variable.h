@@ -2,7 +2,7 @@
 #define VARIABLE_H
 #include <iostream>
 #include <vector>
-#include "VariableDomain.h"
+#include "Domain.h"
 #include <string>
 #include <map>
 
@@ -13,18 +13,12 @@ class Variable
 
     std::string _name;
 
-    std::map<int, VariableDomain*> _domain;
+    Domain _domain;
 
 
     public:
 
         Variable();
-
-        bool CheckValue(int n, int dim = 0);
-
-        unsigned int getDomainDimension();
-
-        void setDomain(std::map<int, VariableDomain*> domain);
 
         virtual ~Variable();
 

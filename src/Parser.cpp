@@ -6,8 +6,8 @@
 
 bool Engine::readVariables()
 {
-
-
+    return false;
+    /*
     TiXmlDocument doc(_fileName.c_str());
 
     if(!doc.LoadFile())
@@ -88,7 +88,7 @@ bool Engine::readVariables()
                 return false;
             }
 
-            VariableDomain *vDomain = new VariableDomain(order);
+            domain* domain = new VariableDomain(order);
 
             vDomains[order] = vDomain;
 
@@ -166,4 +166,5 @@ bool Engine::readVariables()
 
 
     return false;
+    */
 }

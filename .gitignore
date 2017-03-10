@@ -1,4 +1,4 @@
-AD/bin/*
-AD/obj/*
+bin/*
+obj/*
 build/*
-AD/*.layout
+*.layout

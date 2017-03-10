@@ -4,7 +4,6 @@
 #include <iostream>
 #include <vector>
 #include <map>
-#include <string>
 #include "Variable.h"
 
 class Engine
@@ -13,7 +12,7 @@ class Engine
 
     std::string _fileName;
 
-    std::map<std::string,Variable*> _variables;
+    std::vector<Variable> _variables;
 
     public:
         Engine(std::string fileName);
