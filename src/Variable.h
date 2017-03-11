@@ -19,7 +19,7 @@ class Variable
     public:
 
         Variable();
-
+        Domain& getDomain();
         virtual ~Variable();
 
 

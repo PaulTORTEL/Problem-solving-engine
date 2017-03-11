@@ -9,7 +9,7 @@ bool Range::contains(int n) const {
 bool Range::isEmpty() const {
 	return min > max;
 }
-	
+
 bool Range::isSingleton() const {
 	return min == max;
 }
@@ -273,4 +273,26 @@ std::ostream& operator<<(std::ostream& o, const Domain& d) {
 	}
 
 	return o << "}";
+}
+
+unsigned int Domain::getNumberOfPossibleValues() {
+
+    unsigned int counter = 0;
+
+    for (unsigned int i = 0; i < _ranges.size(); i++) {
+        counter += _ranges[i].max - _ranges[i].min;
+    }
+    return counter;
+}
+
+std::vector<int> Domain::getPossibleValues() {
+
+    std::vector<int> values;
+
+    for (unsigned int i = 0; i < _ranges.size(); i++) {
+        for (int j = _ranges[i].min; j <= _ranges[i].max; j++)
+            values.push_back(j);
+    }
+
+    return values;
 }

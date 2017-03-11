@@ -17,7 +17,7 @@ struct Range {
 
 	//Construit un intervalle singleton {n}
 	static Range from(int n);
-	
+
 	//Construit [min, max[
 	static Range fromExclusive(int min, int max);
 	//Construit [min, max]
@@ -78,7 +78,7 @@ public:
 	//Supprime tout les nombres inférieurs à n du domaine;
 	//renvoie true si le domaine a été modifié
 	bool removeLessThan(int n, bool inclusive = false);
-	
+
 	//Supprime tout les nombres supérieurs à n du domaine;
 	//renvoie true si le domaine a été modifié
 	bool removeGreaterThan(int n, bool inclusive = false);
@@ -88,6 +88,9 @@ public:
 	bool restrictTo(Range r);
 
 	friend std::ostream& operator<<(std::ostream& o, const Domain& r);
+
+	unsigned int getNumberOfPossibleValues();
+	std::vector<int> getPossibleValues();
 
 private:
 	//Une position dans la liste d'intervalle

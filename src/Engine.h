@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include "Variable.h"
+#include "Node.h"
 
 class Engine
 {
@@ -14,10 +15,15 @@ class Engine
 
     std::vector<Variable> _variables;
 
+    Node *_root;
+
+
+
     public:
         Engine(std::string fileName);
 
         bool readVariables();
+        void createDumbTree(int index);
 
         virtual ~Engine();
 

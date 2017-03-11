@@ -9,3 +9,7 @@ Variable::~Variable()
 {
 
 }
+
+Domain& Variable::getDomain() {
+    return _domain;
+}
