@@ -1,5 +1,5 @@
-#ifndef VARIABLE_H
-#define VARIABLE_H
+#pragma once
+
 #include <iostream>
 #include <vector>
 #include "Domain.h"
@@ -24,9 +24,5 @@ class Variable
 
         Variable(Domain d, std::string& name);
 
-        virtual ~Variable();
-
-
 };
 
-#endif // VARIABLE_H

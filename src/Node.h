@@ -1,5 +1,5 @@
-#ifndef NODE_H
-#define NODE_H
+#pragma once
+
 #include "Variable.h"
 #include <iostream>
 #include <vector>
@@ -20,5 +20,3 @@ class Node
         virtual ~Node();
 
 };
-
-#endif // NODE_H

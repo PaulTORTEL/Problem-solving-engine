@@ -1,5 +1,4 @@
-#ifndef ENGINE_H
-#define ENGINE_H
+#pragma once
 
 #include <iostream>
 #include <vector>
@@ -15,13 +14,9 @@ class Engine
     std::vector<Variable> _variables;
 
     public:
-        Engine(std::string fileName);
+        Engine(const std::string& fileName);
 
         bool readVariables();
 
-        virtual ~Engine();
-
 
 };
-
-#endif // ENGINE_H

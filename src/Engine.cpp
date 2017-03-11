@@ -1,11 +1,5 @@
 #include "Engine.h"
 
-Engine::Engine(std::string fileName)
+Engine::Engine(const std::string& fileName): _fileName(fileName)
 {
-    _fileName = fileName;
-}
-
-Engine::~Engine()
-{
-    //dtor
 }

@@ -1,5 +1,5 @@
-#ifndef INDEXER_H
-#define INDEXER_H
+#pragma once
+
 #include <iostream>
 #include <vector>
 class Indexer
@@ -7,7 +7,6 @@ class Indexer
 
     public:
         Indexer();
-        virtual ~Indexer();
 
         void addIndex(int max);
 
@@ -20,5 +19,3 @@ class Indexer
         std::vector<int> _maxes;
         std::vector<int> _values;
 };
-
-#endif // INDEXER_H

@@ -1,11 +1,6 @@
 #include "Variable.h"
 
-Variable::Variable(Domain d, std::string& name) : _domain(d), _name(name)
-{
-
-}
-
-Variable::~Variable()
+Variable::Variable(Domain d, std::string& name) : _name(name), _domain(d)
 {
 
 }

@@ -6,11 +6,6 @@ Indexer::Indexer()
 
 }
 
-Indexer::~Indexer()
-{
-
-}
-
 void Indexer::addIndex(int max)
 {
     _maxes.push_back(max);
