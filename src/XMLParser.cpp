@@ -5,61 +5,62 @@
 #include "Domain.h"
 #include "Indexer.h"
 
-bool Engine::readVariables()
-{
 
-    TiXmlDocument doc(_fileName.c_str());
+Engine Engine::fromXMLFile(const std::string& file) {
+    Engine engine;
 
-    if(!doc.LoadFile())
-    {
-        std::cerr << "erreur lors du chargement" << std::endl;
-        std::cerr << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc() << std::endl;
-        return false;
+    TiXmlDocument doc(file.c_str());
+
+    if(!doc.LoadFile()) {
+        std::stringstream err;
+        err << "Impossible de lire le fichier " << file << " : " << std::endl;
+        err << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc();
+        throw EngineCreationException(err.str());
     }
 
-
     TiXmlHandle hdl(&doc);
+    engine.readVariablesFromXML(hdl);
 
+    return engine;
+}
+
+void Engine::readVariablesFromXML(const TiXmlHandle& hdl) {
+    std::stringstream err;
 
     TiXmlElement *root = hdl.FirstChildElement().Element();
 
     std::vector<TiXmlElement*> all_var = findNodes(root,"Vars");
 
-    if (all_var.size() != 1)
-    {
-        std::cerr << "Erreur, vous avez mal saisi les variables !" << std::endl;
-        return false;
+    if (all_var.size() != 1) {
+        throw EngineCreationException("Il doit y avoir exactement un noeud Vars");
     }
 
     std::vector<TiXmlElement*> vars = findNodes(all_var[0],"Var");
 
-    for (unsigned int k = 0; k < vars.size(); k++)
-    {
-        TiXmlElement* varElem = vars[k];
+    for (TiXmlElement* varElem: vars) {
 
         TiXmlAttribute* nameAttr = findAttribute(varElem,"name");
-        if (!nameAttr)
-        {
-            std::cerr << "Erreur, une variable doit avoir un nom ! Utilisez l'attribut name" << std::endl;
-            return false;
+        if (!nameAttr) {
+            throw EngineCreationException("Une variable doit avoir un nom ! Utilisez l'attribut name.");
         }
+
+        err.str("");
+        err << "[Variable " << nameAttr->Value() << "] ";
 
         std::vector<TiXmlElement*> domains = findNodes(varElem,"Domain");
 
-        if (domains.size() != 1)
-        {
-            std::cerr << "Erreur,il doit y avoir un domaine, utilisez <Domain> pour la variable  " << nameAttr->Value() << std::endl;
-            return false;
+        if (domains.size() != 1) {
+            err << "La variable doit posseder un domaine ! Utilisez <Domain>.";
+            throw EngineCreationException(err.str());
         }
 
         TiXmlElement* domain = domains[0];
 
         TiXmlAttribute* domainValue = findAttribute(domain,"value");
 
-        if (!domainValue)
-        {
-            std::cerr << "Erreur, un domain doit avoir un nom ! Utilisez l'attribut value (variable = " << nameAttr->Value() << ")" << std::endl;
-            return false;
+        if (!domainValue) {
+            err << "Un domaine doit avoir une valeur ! Utilisez l'attribut value.";
+            throw EngineCreationException(err.str());
         }
 
 
@@ -67,19 +68,17 @@ bool Engine::readVariables()
 
         std::vector<std::string> splitted = split(sDomain,' ');
 
-        if (splitted.size() == 0)
-        {
-            std::cerr << "Erreur, le domaine doit au moins avoir un sous domaine. Variable = " << nameAttr->Value() << std::endl;
-            return false;
+        if (splitted.size() == 0) {
+            err << "Le domaine ne peut etre vide !";
+            throw EngineCreationException(err.str());
         }
 
 
         Domain dom;
 
-
-        for (unsigned int j = 0; j < splitted.size(); j++)
+        for (const std::string& s: splitted)
         {
-            std::vector<std::string> interv = split(splitted[j],';');
+            std::vector<std::string> interv = split(s,';');
             std::string sMin = "";
             std::string sMax = "";
 
@@ -93,19 +92,16 @@ bool Engine::readVariables()
                 sMin = interv[0];
                 sMax = interv[1];
             }
-            else
-            {
-                std::cerr << "Erreur, un intervalle doit etre de la forme i;j ou i. Variable = " << nameAttr->Value() << std::endl;
-                return false;
+            else {
+                err << "Un intervalle doit etre de la forme i;j ou i !";
+                throw EngineCreationException(err.str());
             }
-
             int nMin = 0;
             int nMax = 0;
 
-            if (!parseNumber(sMin.c_str(),&nMin) || !parseNumber(sMax.c_str(),&nMax))
-            {
-                std::cerr << "Erreur, les intervalles doivent etre composes de nombre entier. Variable = " << nameAttr->Value() << std::endl;
-                return false;
+            if (!parseNumber(sMin.c_str(),&nMin) || !parseNumber(sMax.c_str(),&nMax)) {
+                err << "Les intervalles doivent etre composes de nombres entiers !";
+                throw EngineCreationException(err.str());
             }
 
 
@@ -135,17 +131,15 @@ bool Engine::readVariables()
             {
                 TiXmlElement* elemIndex = indexes[i];
                 TiXmlAttribute* indexAttr = findAttribute(elemIndex,"max");
-                if (!indexAttr)
-                {
-                    std::cerr << "Erreur, un index doit avoir l'attribut max. Variable = " << nameAttr->Value() << std::endl;
-                    return false;
+                if (!indexAttr) {
+                    err << "Un index doit avoir l'attribut max !";
+                    throw EngineCreationException(err.str());
                 }
 
                 int indexMax = 0;
-                if (!parseNumber(indexAttr->Value(),&indexMax))
-                {
-                    std::cerr << "Erreur, un index doit avoir une valeur max entiere. Variable = " << nameAttr->Value() << std::endl;
-                    return false;
+                if (!parseNumber(indexAttr->Value(),&indexMax)) {
+                    err << "Un index doit avoir une valeur max entiere !";
+                    throw EngineCreationException(err.str());
                 }
 
                 indexer.addIndex(indexMax);
@@ -179,7 +173,4 @@ bool Engine::readVariables()
         //TODO: Ajouter les variables quelque part (et pas oublier de register l'index)
 
     }
-
-    return false;
-
 }

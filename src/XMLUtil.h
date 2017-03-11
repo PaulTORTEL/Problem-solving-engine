@@ -1,5 +1,4 @@
-#ifndef XMLUTIL_H_INCLUDED
-#define XMLUTIL_H_INCLUDED
+#pragma once
 
 #include "tinyxml.h"
 #include <iostream>
@@ -8,5 +7,3 @@
 std::vector<TiXmlElement*> findNodes(TiXmlElement* root, const char* name);
 TiXmlAttribute* findAttribute(TiXmlElement* root, const char* name);
 
-
-#endif // XMLUTIL_H_INCLUDED

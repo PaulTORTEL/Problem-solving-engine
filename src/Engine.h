@@ -1,22 +1,31 @@
 #pragma once
 
 #include <iostream>
+#include <stdexcept>
 #include <vector>
-#include <map>
+#include "tinyxml.h"
 #include "Variable.h"
 
-class Engine
-{
-    private:
+class EngineCreationException: public std::runtime_error {
+public:
+	EngineCreationException(const std::string& msg):
+		std::runtime_error(msg) {
+	}
+};
 
-    std::string _fileName;
+class Engine {
+    Engine();
 
     std::vector<Variable> _variables;
 
-    public:
-        Engine(const std::string& fileName);
+  	void readVariablesFromXML(const TiXmlHandle& hdl);
 
-        bool readVariables();
+public:
+	//Peut lancer une EngineCreationException
+	static Engine fromXMLFile(const std::string& file);
+
+
+    
 
 
 };
