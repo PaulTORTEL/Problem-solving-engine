@@ -1,8 +1,7 @@
 #include "Engine.h"
 #include "Node.h"
 
-Engine::Engine(const std::string& fileName): _fileName(fileName)
-{
+Engine::Engine() {
 }
 
 void Engine::createDumbTree(int index) {

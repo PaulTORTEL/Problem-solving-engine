@@ -19,18 +19,18 @@ bool Node::createDumbNode(int value, std::vector<Variable> vars, std::vector<int
         std::vector<Domain> all_vars_domain;
         for (unsigned int i = 0; i < vars.size(); i++) {
             Domain temp = vars[i].getDomain();
-            std::cout << "frer je need de laide : " << i << " et " << temp.getMin() << " " << temp.getMax() << std::endl;
+            std::cout << i << " et " << temp.getMin() << " " << temp.getMax() << std::endl;
             all_vars_domain.push_back(temp); // On récupère tous les domaines
         }
 
         for (int i = vars.size() - 1; i >= 0; i--) {
             if (!constraints->isValuePossible(all_vars_domain, i, chosenValues[i])) {
-                std::cout << "QUOOOOOOOOOOOOOOOOOI ????? MAIS POURQUOI FAIRE !! i : "<< i << " et sa value : " << chosenValues[i] << std::endl;
+                std::cout << "i : "<< i << " et sa value : " << chosenValues[i] << std::endl;
 //system("pause");
                 return false;
             }
             else {
-                std::cout << "mdeerr frer des ours " << std::endl;
+                std::cout << "isValuePossible a renvoye true " << std::endl;
             }
 
         }
@@ -38,7 +38,6 @@ bool Node::createDumbNode(int value, std::vector<Variable> vars, std::vector<int
 
         // TEST CONTRAINTES
         // APPEL DE LA FONCTION QUI MEMORISE LA REPONSE SI OK
-        std::cout << "ca return true poto : " << this->_index << std::endl;
 
         return true;// ou true si c'est ok
     }
