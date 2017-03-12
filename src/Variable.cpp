@@ -1,12 +1,26 @@
 #include "Variable.h"
 
-Variable::Variable()
+Variable::Variable(Domain d, std::string& name) : _name(name), _domain(d)
 {
 
 }
 
-Variable::~Variable()
-{
+Variable::~Variable() {
+
+}
+
+std::ostream& operator<<(std::ostream& o, const Variable& v) {
+	o << "{ name : ";
+
+    o << v._name;
+
+    o << ", [ ";
+
+    o << v._domain;
+
+    o << " ]";
+
+	return o << "}";
 
 }
 

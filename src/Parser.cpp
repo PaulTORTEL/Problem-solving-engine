@@ -2,12 +2,12 @@
 #include "tinyxml.h"
 #include "XMLUtil.h"
 #include "Utils.h"
-
+#include "Domain.h"
+#include "Indexer.h"
 
 bool Engine::readVariables()
 {
-    return false;
-    /*
+
     TiXmlDocument doc(_fileName.c_str());
 
     if(!doc.LoadFile())
@@ -44,127 +44,145 @@ bool Engine::readVariables()
             return false;
         }
 
-        TiXmlAttribute* typeAttr = findAttribute(varElem,"type");
+        std::vector<TiXmlElement*> domains = findNodes(varElem,"Domain");
 
-        if (!typeAttr)
+        if (domains.size() != 1)
         {
-            std::cerr << "Erreur, une variable doit avoir un type ! Utilisez l'attribut type ( variable " << nameAttr->Value() << " )" << std::endl;
+            std::cerr << "Erreur,il doit y avoir un domaine, utilisez <Domain> pour la variable  " << nameAttr->Value() << std::endl;
             return false;
         }
 
-        std::vector<TiXmlElement*> domain = findNodes(varElem,"Domain");
+        TiXmlElement* domain = domains[0];
 
-        if (domain.size() != 1)
+        TiXmlAttribute* domainValue = findAttribute(domain,"value");
+
+        if (!domainValue)
         {
-            std::cerr << "Erreur, une variable doit avoir une et une seule fois la balise <Domain> pour la variable " << nameAttr->Value() << std::endl;
+            std::cerr << "Erreur, un domain doit avoir un nom ! Utilisez l'attribut value (variable = " << nameAttr->Value() << ")" << std::endl;
             return false;
         }
 
-        std::vector<TiXmlElement*> subdomains = findNodes(domain[0],"Subdomain");
 
-        if (subdomains.size() < 1)
+        std::string sDomain = domainValue->Value();
+
+        std::vector<std::string> splitted = split(sDomain,' ');
+
+        if (splitted.size() == 0)
         {
-            std::cerr << "Erreur, vous devez definir au moins un <Subdomain> pour la variable " << nameAttr->Value() << std::endl;
+            std::cerr << "Erreur, le domaine doit au moins avoir un sous domaine. Variable = " << nameAttr->Value() << std::endl;
             return false;
         }
 
-        std::map<int,VariableDomain*> vDomains;
 
-        for (unsigned int i = 0; i < subdomains.size(); i++)
+        Domain dom;
+
+
+        for (unsigned int j = 0; j < splitted.size(); j++)
         {
-            TiXmlElement* eDomain = subdomains[i];
+            std::vector<std::string> interv = split(splitted[j],';');
+            std::string sMin = "";
+            std::string sMax = "";
 
-            TiXmlAttribute* orderAttr = findAttribute(eDomain,"order");
-            if (!orderAttr)
+            if (interv.size() == 1)
             {
-                std::cerr << "Erreur, un domaine doit avoir un ordre ! Utilisez l'attribut order. Variable = " << nameAttr->Value() << std::endl;
+                sMin = interv[0];
+                sMax = interv[0];
+            }
+            else if (interv.size() == 2)
+            {
+                sMin = interv[0];
+                sMax = interv[1];
+            }
+            else
+            {
+                std::cerr << "Erreur, un intervalle doit etre de la forme i;j ou i. Variable = " << nameAttr->Value() << std::endl;
                 return false;
             }
 
-            int order = 0;
-            if (!parseNumber(orderAttr->Value(), &order))
+            int nMin = 0;
+            int nMax = 0;
+
+            if (!parseNumber(sMin.c_str(),&nMin) || !parseNumber(sMax.c_str(),&nMax))
             {
-                std::cerr << "Erreur, l'ordre d'un sous domaine doit etre un nombre. Variable = " << nameAttr->Value() << std::endl;
+                std::cerr << "Erreur, les intervalles doivent etre composes de nombre entier. Variable = " << nameAttr->Value() << std::endl;
                 return false;
             }
 
-            domain* domain = new VariableDomain(order);
 
-            vDomains[order] = vDomain;
+            Range r = Range::fromInclusive(nMin,nMax);
+            dom.add(r);
+        }
 
+        std::vector<TiXmlElement*> indexes = findNodes(varElem,"Index");
 
-            TiXmlAttribute *domainAttr = findAttribute(eDomain,"domain");
+        std::string name(nameAttr->Value());
 
-            if (!domainAttr)
+        if (indexes.size() == 0)
+        {
+
+            Variable variable(dom,name);
+
+            std::cout << variable << std::endl;
+
+            //TODO: PushBack
+            _variables.push_back(variable); // ?
+        }
+
+        else
+        {
+
+            Indexer indexer;
+            for (unsigned int i = 0; i < indexes.size(); i++)
             {
-                std::cerr << "Erreur, le domaine doit etre defini ! Utilisez l'attribut domain. Variable = " << nameAttr->Value() << std::endl;
-                return false;
-            }
-
-            std::string sDomain = domainAttr->Value();
-
-            std::vector<std::string> splitted = split(sDomain,' ');
-
-            if (splitted.size() == 0)
-            {
-                std::cerr << "Erreur, le domaine doit au moins avoir un sous domaine. Variable = " << nameAttr->Value() << std::endl;
-                return false;
-            }
-
-            for (unsigned int j = 0; j < splitted.size(); j++)
-            {
-                std::vector<std::string> interv = split(splitted[j],';');
-                std::string sMin = "";
-                std::string sMax = "";
-
-                if (interv.size() == 1)
+                TiXmlElement* elemIndex = indexes[i];
+                TiXmlAttribute* indexAttr = findAttribute(elemIndex,"max");
+                if (!indexAttr)
                 {
-                    sMin = interv[0];
-                    sMax = interv[0];
-                }
-                else if (interv.size() == 2)
-                {
-                    sMin = interv[0];
-                    sMax = interv[1];
-                }
-                else
-                {
-                    std::cerr << "Erreur, un intervalle doit etre de la forme i;j ou i. Variable = " << nameAttr->Value() << std::endl;
+                    std::cerr << "Erreur, un index doit avoir l'attribut max. Variable = " << nameAttr->Value() << std::endl;
                     return false;
                 }
 
-                int nMin = 0;
-                int nMax = 0;
-
-                if (!parseNumber(sMin.c_str(),&nMin) || !parseNumber(sMax.c_str(),&nMax))
+                int indexMax = 0;
+                if (!parseNumber(indexAttr->Value(),&indexMax))
                 {
-                    std::cerr << "Erreur, les intervalles doivent etre composes de nombre entier. Variable = " << nameAttr->Value() << std::endl;
+                    std::cerr << "Erreur, un index doit avoir une valeur max entiere. Variable = " << nameAttr->Value() << std::endl;
                     return false;
                 }
 
-                Domain *d = new Domain(nMin, nMax);
-
-                vDomain->AddSubDomain(d);
+                indexer.addIndex(indexMax);
 
             }
+            int cpt = 1;
 
-        }
+            std::string temp;
 
-        for (unsigned int n = 1; n < vDomains.size() + 1; n++)
-        {
-            if(  vDomains.find( n ) == vDomains.end() )
+            while (indexer.hasNext())
             {
-                std::cerr << "Erreur, les ordres de domaines ne sont pas corrects. Variable = " << nameAttr->Value() << std::endl;
-                return false;
+
+                cpt++;
+                temp = indexer.getVarIndex();
+                indexer.next();
+
+                temp = concatString(name,temp);
+                Variable v(dom,temp);
+                std::cout << v << std::endl;
+                _variables.push_back(v);
             }
+
+            temp = indexer.getVarIndex();
+
+            temp = concatString(name,temp);
+
+            Variable v(dom,temp);
+
+            std::cout << v << std::endl;
+            _variables.push_back(v);
         }
 
-
+        //TODO: Ajouter les variables quelque part (et pas oublier de register l'index)
 
     }
 
-
-
     return false;
-    */
+
 }

@@ -1,14 +1,8 @@
 #include "Engine.h"
 #include "Node.h"
 
-Engine::Engine(std::string fileName)
+Engine::Engine(const std::string& fileName): _fileName(fileName)
 {
-    _fileName = fileName;
-}
-
-Engine::~Engine()
-{
-    //dtor
 }
 
 void Engine::createDumbTree(int index) {
@@ -19,13 +13,42 @@ void Engine::createDumbTree(int index) {
     Domain& d = _variables[0].getDomain();
 
     std::vector<int> values = d.getPossibleValues();
+
     for (unsigned int i = 0; i < values.size(); i++) {
-        _root->addChild(new Node(index+1));
+        Node *new_node = new Node(index+1);
+        _root->addChild(new_node);
         std::vector<int> chosenValues;
         chosenValues.push_back(values[i]);
-        if (_root->createDumbNode(values[i], _variables, chosenValues)) {
+
+        if (new_node->createDumbNode(values[i], _variables, chosenValues, _constraints)) {
             // C'est ok il faut enregistrer la réponse (chosenValues à afficher)
+            std::cout << "c'est ok " << std::endl;
+
+            for (unsigned int j = 0; j < chosenValues.size(); j++)
+                std::cout << "Pour var " << j << " value => " << chosenValues[j] << std::endl;
+            break;
         }
     }
 
+}
+
+void Engine::tempConstFulfiller() {
+
+    _constraints = new Constraints(_variables.size());
+
+    /*_constraints->addBinConstraint(1, 2, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);
+    _constraints->addBinConstraint(1, 3, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);*/
+    _constraints->addBinConstraint(1, 0, /*Constraints::BIN_CON_LESS | */Constraints::BIN_CON_GREATER);
+
+    /*_constraints->addBinConstraint(2, 1, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);
+    _constraints->addBinConstraint(2, 3, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);*/
+    _constraints->addBinConstraint(2, 1, /*Constraints::BIN_CON_LESS | */Constraints::BIN_CON_GREATER);
+
+    /*_constraints->addBinConstraint(3, 1, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);
+    _constraints->addBinConstraint(3, 2, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);*/
+    _constraints->addBinConstraint(3, 2, /*Constraints::BIN_CON_LESS |*/ Constraints::BIN_CON_GREATER);
+
+    /*_constraints->addBinConstraint(0, 1, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);
+    _constraints->addBinConstraint(0, 2, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);
+    _constraints->addBinConstraint(0, 3, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);*/
 }

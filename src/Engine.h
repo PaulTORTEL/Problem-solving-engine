@@ -1,11 +1,11 @@
-#ifndef ENGINE_H
-#define ENGINE_H
+#pragma once
 
 #include <iostream>
 #include <vector>
 #include <map>
 #include "Variable.h"
 #include "Node.h"
+#include "Constraints.h"
 
 class Engine
 {
@@ -15,19 +15,17 @@ class Engine
 
     std::vector<Variable> _variables;
 
+    Constraints *_constraints;
     Node *_root;
 
 
 
     public:
-        Engine(std::string fileName);
+        Engine(const std::string& fileName);
 
         bool readVariables();
         void createDumbTree(int index);
 
-        virtual ~Engine();
-
+        void tempConstFulfiller();
 
 };
-
-#endif // ENGINE_H

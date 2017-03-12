@@ -1,10 +1,12 @@
-#ifndef VARIABLE_H
-#define VARIABLE_H
+#pragma once
+
 #include <iostream>
 #include <vector>
 #include "Domain.h"
 #include <string>
 #include <map>
+
+typedef int VarID;
 
 class Variable
 {
@@ -12,17 +14,17 @@ class Variable
 
 
     std::string _name;
-
     Domain _domain;
 
 
     public:
 
-        Variable();
         Domain& getDomain();
-        virtual ~Variable();
+        ~Variable();
+        friend std::ostream& operator<<(std::ostream& o, const Variable& v);
 
+
+        Variable(Domain d, std::string& name);
 
 };
 
-#endif // VARIABLE_H

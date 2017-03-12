@@ -1,5 +1,5 @@
 #include "Node.h"
-
+#include <stdlib.h>
 Node::Node(int index)
 {
     _index = index;
@@ -10,24 +10,52 @@ Node::~Node()
 
 }
 
-bool Node::createDumbNode(int value, std::vector<Variable>& vars, std::vector<int>& chosenValues) {
+bool Node::createDumbNode(int value, std::vector<Variable> vars, std::vector<int>& chosenValues, Constraints* constraints) {
 
+    std::cout << "value : " << value << " et l'index : " << _index << " et chosen " << chosenValues.size() << std::endl;
+    //system("pause");
     if ((unsigned)_index + 1 >= vars.size()) {
+
+        std::vector<Domain> all_vars_domain;
+        for (unsigned int i = 0; i < vars.size(); i++) {
+            Domain temp = vars[i].getDomain();
+            std::cout << "frer je need de laide : " << i << " et " << temp.getMin() << " " << temp.getMax() << std::endl;
+            all_vars_domain.push_back(temp); // On récupère tous les domaines
+        }
+
+        for (int i = vars.size() - 1; i >= 0; i--) {
+            if (!constraints->isValuePossible(all_vars_domain, i, chosenValues[i])) {
+                std::cout << "QUOOOOOOOOOOOOOOOOOI ????? MAIS POURQUOI FAIRE !! i : "<< i << " et sa value : " << chosenValues[i] << std::endl;
+//system("pause");
+                return false;
+            }
+            else {
+                std::cout << "mdeerr frer des ours " << std::endl;
+            }
+
+        }
+
+
         // TEST CONTRAINTES
         // APPEL DE LA FONCTION QUI MEMORISE LA REPONSE SI OK
+        std::cout << "ca return true poto : " << this->_index << std::endl;
 
-        return false;// ou true si c'est ok
+        return true;// ou true si c'est ok
     }
 
 
     Domain& d = vars[_index+1].getDomain();
+    for (unsigned int i = 0; i < chosenValues.size(); i++)
+        d.remove(chosenValues[i]);
 
     std::vector<int> values = d.getPossibleValues();
-
+    std::cout << "values : " << values[0] << std::endl;
+   // system("pause");
     for (unsigned int i = 0; i < values.size(); i++) {
-        this->addChild(new Node(_index+1));
+        Node * new_node = new Node(_index+1);
+        this->addChild(new_node);
         chosenValues.push_back(values[i]);
-        if (this->createDumbNode(values[i], vars, chosenValues)) {
+        if (new_node->createDumbNode(values[i], vars, chosenValues, constraints)) {
             return true;
         }
         else {

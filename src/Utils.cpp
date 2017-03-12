@@ -1,6 +1,17 @@
 #include "Utils.h"
+#include <sstream>
 
+std::string concatString(const std::string& str1, const std::string& str2) {
+    std::string temp = "";
+    std::stringstream ss;
 
+    ss << str1;
+    ss << str2;
+
+    ss >> temp;
+
+    return temp;
+}
 
 bool parseNumber(const char* s, int* i) {
 

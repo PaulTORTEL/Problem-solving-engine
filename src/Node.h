@@ -1,8 +1,9 @@
-#ifndef NODE_H
-#define NODE_H
+#pragma once
+
 #include "Variable.h"
 #include <iostream>
 #include <vector>
+#include "Constraints.h"
 
 class Node
 {
@@ -16,9 +17,7 @@ class Node
     public:
         Node(int index  = -1);
         virtual ~Node();
-        bool createDumbNode(int index, std::vector<Variable>& vars, std::vector<int>& chosenValues);
+        bool createDumbNode(int index, std::vector<Variable> vars, std::vector<int>& chosenValues, Constraints* constraints);
         void addChild(Node * new_node);
 
 };
-
-#endif // NODE_H

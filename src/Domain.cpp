@@ -54,7 +54,7 @@ int Domain::getMin() const {
 }
 
 int Domain::getMax() const {
-	return _ranges.empty() ? INT_MIN : _ranges.back().min;
+	return _ranges.empty() ? INT_MIN : _ranges.back().max;
 }
 
 Range Domain::getEnclosingRange() const {

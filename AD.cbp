@@ -35,12 +35,17 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-std=c++11" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="src/Constraints.cpp" />
+		<Unit filename="src/Constraints.h" />
 		<Unit filename="src/Domain.cpp" />
 		<Unit filename="src/Domain.h" />
 		<Unit filename="src/Engine.cpp" />
 		<Unit filename="src/Engine.h" />
+		<Unit filename="src/Indexer.cpp" />
+		<Unit filename="src/Indexer.h" />
 		<Unit filename="src/Node.cpp" />
 		<Unit filename="src/Node.h" />
 		<Unit filename="src/Parser.cpp" />
