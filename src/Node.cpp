@@ -17,15 +17,15 @@ bool Node::createDumbNode(int value, std::vector<Variable> vars, std::vector<int
     if ((unsigned)_index + 1 >= vars.size()) {
 
         std::vector<Domain> all_vars_domain;
-        for (unsigned int i = 0; i < vars.size(); i++) {
-            Domain temp = vars[i].getDomain();
-            std::cout << i << " et " << temp.getMin() << " " << temp.getMax() << std::endl;
-            all_vars_domain.push_back(temp); // On récupère tous les domaines
+        for (Variable& var: vars) {
+            Domain& dom = var.getDomain();
+            std::cout << var.getName() << " et " << dom << std::endl;
+            all_vars_domain.push_back(dom); // On récupère tous les domaines
         }
 
         for (int i = vars.size() - 1; i >= 0; i--) {
             if (!constraints->isValuePossible(all_vars_domain, i, chosenValues[i])) {
-                std::cout << "i : "<< i << " et sa value : " << chosenValues[i] << std::endl;
+                std::cout << "i : "<< vars[i].getName() << " et sa value : " << chosenValues[i] << std::endl;
 //system("pause");
                 return false;
             }
@@ -44,17 +44,17 @@ bool Node::createDumbNode(int value, std::vector<Variable> vars, std::vector<int
 
 
     Domain& d = vars[_index+1].getDomain();
-    for (unsigned int i = 0; i < chosenValues.size(); i++)
-        d.remove(chosenValues[i]);
+    for (int value: chosenValues)
+        d.remove(value);
 
     std::vector<int> values = d.getPossibleValues();
     std::cout << "values : " << values[0] << std::endl;
    // system("pause");
-    for (unsigned int i = 0; i < values.size(); i++) {
+    for (int value: values) {
         Node * new_node = new Node(_index+1);
         this->addChild(new_node);
-        chosenValues.push_back(values[i]);
-        if (new_node->createDumbNode(values[i], vars, chosenValues, constraints)) {
+        chosenValues.push_back(value);
+        if (new_node->createDumbNode(value, vars, chosenValues, constraints)) {
             return true;
         }
         else {
@@ -67,5 +67,5 @@ bool Node::createDumbNode(int value, std::vector<Variable> vars, std::vector<int
 }
 
 void Node::addChild(Node * new_node) {
-    _childs.push_back(new_node);
+    _children.push_back(new_node);
 }

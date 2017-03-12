@@ -55,6 +55,12 @@ public:
 	//(non défini si le domaine est vide)
 	int getMax() const;
 
+	//Renvoie le nombre de valeurs contenues dans le domaine
+	unsigned int getNumberOfPossibleValues();
+
+	//Renvoie la liste des valeurs du domaine
+	std::vector<int> getPossibleValues();
+
 	//Renvoie un intervalle contenant toutes les valeurs du domaine
 	//(non défini si le domaine est vide)
 	Range getEnclosingRange() const;
@@ -89,8 +95,6 @@ public:
 
 	friend std::ostream& operator<<(std::ostream& o, const Domain& r);
 
-	unsigned int getNumberOfPossibleValues();
-	std::vector<int> getPossibleValues();
 
 private:
 	//Une position dans la liste d'intervalle

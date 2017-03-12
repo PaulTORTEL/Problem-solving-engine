@@ -9,7 +9,7 @@ class Node
 {
     private:
 
-    std::vector<Node*> _childs;
+    std::vector<Node*> _children;
 
     int _index; // index dans le vector des variables dans Engine.h
     int _value;

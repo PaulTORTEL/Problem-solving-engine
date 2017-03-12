@@ -19,8 +19,8 @@ class Variable
 
     public:
 
+        const std::string& getName() const;
         Domain& getDomain();
-        ~Variable();
         friend std::ostream& operator<<(std::ostream& o, const Variable& v);
 
 

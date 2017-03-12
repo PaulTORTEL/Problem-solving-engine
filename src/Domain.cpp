@@ -278,9 +278,8 @@ std::ostream& operator<<(std::ostream& o, const Domain& d) {
 unsigned int Domain::getNumberOfPossibleValues() {
 
     unsigned int counter = 0;
-
-    for (unsigned int i = 0; i < _ranges.size(); i++) {
-        counter += _ranges[i].max - _ranges[i].min;
+    for (Range r: _ranges) {
+        counter += r.max - r.min;
     }
     return counter;
 }
@@ -288,10 +287,9 @@ unsigned int Domain::getNumberOfPossibleValues() {
 std::vector<int> Domain::getPossibleValues() {
 
     std::vector<int> values;
-
-    for (unsigned int i = 0; i < _ranges.size(); i++) {
-        for (int j = _ranges[i].min; j <= _ranges[i].max; j++)
-            values.push_back(j);
+    for (Range r: _ranges) {
+        for (int i = r.min; i <= r.max; i++)
+            values.push_back(i);
     }
 
     return values;
