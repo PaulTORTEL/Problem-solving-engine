@@ -163,31 +163,12 @@ static std::vector<Variable> readVariables(const TiXmlHandle& hdl) {
                 indexer.addIndex(indexMax);
 
             }
-            int cpt = 1;
-
-            std::string temp;
 
             while (indexer.hasNext())
             {
-
-                cpt++;
-                temp = indexer.getVarIndex();
-                indexer.next();
-
-                temp = concatString(name,temp);
-                Variable v(dom,temp);
-                std::cout << v << std::endl;
-                variables.push_back(v);
+                std::string index = indexer.next();
+                variables.emplace_back(Variable(dom, concatString(name, index)));
             }
-
-            temp = indexer.getVarIndex();
-
-            temp = concatString(name,temp);
-
-            Variable v(dom,temp);
-
-            std::cout << v << std::endl;
-            variables.push_back(v);
         }
 
         //TODO: Ajouter les variables quelque part (et pas oublier de register l'index)

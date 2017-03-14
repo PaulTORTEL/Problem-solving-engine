@@ -26,6 +26,9 @@ int main(int argc, char** argv)
 	Engine engine = createEngine(file);
 	Constraints& constraints = engine.getConstraints();
 
+	for(auto& v: engine.getVariables())
+		std::cout << v << std::endl;
+
 	/*constraints.addBinConstraint(1, 2, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);
     constraints.addBinConstraint(1, 3, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);*/
     constraints.addBinConstraint(1, 0, /*Constraints::BIN_CON_LESS | */Constraints::BIN_CON_GREATER);

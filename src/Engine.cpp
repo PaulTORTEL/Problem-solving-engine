@@ -14,6 +14,10 @@ const Constraints& Engine::getConstraints() const {
 	return _constraints;
 }
 
+const std::vector<Variable>& Engine::getVariables() const {
+	return _variables;
+}
+
 void Engine::createDumbTree(int index) {
 
     //On crée le premier noeud (qui sert uniquement de point de jonction donc value inutile et index inutile)

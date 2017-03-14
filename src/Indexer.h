@@ -11,11 +11,12 @@ class Indexer
         void addIndex(int max);
 
         bool hasNext();
-        void next();
-        std::string getVarIndex();
+        std::string next();
 
 
     private:
         std::vector<int> _maxes;
         std::vector<int> _values;
+
+        void advance();
 };

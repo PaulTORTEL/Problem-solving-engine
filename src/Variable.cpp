@@ -1,6 +1,6 @@
 #include "Variable.h"
 
-Variable::Variable(Domain d, std::string& name) : _name(name), _domain(d)
+Variable::Variable(Domain d, const std::string& name) : _name(name), _domain(d)
 {
 
 }

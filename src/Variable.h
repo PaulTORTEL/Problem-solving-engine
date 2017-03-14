@@ -24,7 +24,7 @@ class Variable
         friend std::ostream& operator<<(std::ostream& o, const Variable& v);
 
 
-        Variable(Domain d, std::string& name);
+        Variable(Domain d, const std::string& name);
 
 };
 
