@@ -47,7 +47,7 @@ bool Node::createDumbNode(int value, std::vector<Variable> vars, std::vector<int
     for (int value: chosenValues)
         d.remove(value);
 
-    std::vector<int> values = d.getPossibleValues();
+    std::vector<int> values = d.getValues();
     std::cout << "values : " << values[0] << std::endl;
    // system("pause");
     for (int value: values) {

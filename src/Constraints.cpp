@@ -1,14 +1,9 @@
 #include "Constraints.h"
 
-#include <cstring>
-
-Constraints::Constraints(int n): _varsNum(n) {
-	_binConstraints = new char[n*n];
-	memset(_binConstraints, BIN_CON_ALL, sizeof(char[n*n]));
-}
-
-Constraints::~Constraints() {
-	delete[] _binConstraints;
+Constraints::Constraints(int n):
+	_varsNum(n),
+	//Sans le '+' ça ne compile pas sous gcc/clang (parce que lol)
+	_binConstraints(n*n, +BIN_CON_ALL) {
 }
 
 void Constraints::addBinConstraint(int v1, int v2, char constraint) {
@@ -26,6 +21,7 @@ void Constraints::addBinConstraint(int v1, int v2, char constraint) {
 }
 
 bool Constraints::checkBinary(int v1, int v2, char constraint) {
+	std::cout << BIN_CON_ALL;
 	if(!(constraint & BIN_CON_LESS) && v1 < v2)
 		return false;
 

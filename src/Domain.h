@@ -14,6 +14,8 @@ struct Range {
 	bool isEmpty() const;
 	//Renvoie true si l'intervalle ne contient qu'un seul nombre
 	bool isSingleton() const;
+	//Renvoie le nombre de valeurs dans l'intervalle
+	unsigned int size() const;
 
 	//Construit un intervalle singleton {n}
 	static Range from(int n);
@@ -43,6 +45,8 @@ class Domain {
 	// - aucun intervalle n'est vide
 	// - aucune paire d'intervalle ne se chevauche ni se touche
 	std::vector<Range> _ranges;
+	//Nombre de valeurs dans le domaine
+	unsigned int _size;
 
 public:
 	//Construit un nouveau domaine vide
@@ -56,10 +60,10 @@ public:
 	int getMax() const;
 
 	//Renvoie le nombre de valeurs contenues dans le domaine
-	unsigned int getNumberOfPossibleValues();
+	unsigned int getSize();
 
 	//Renvoie la liste des valeurs du domaine
-	std::vector<int> getPossibleValues();
+	std::vector<int> getValues();
 
 	//Renvoie un intervalle contenant toutes les valeurs du domaine
 	//(non défini si le domaine est vide)

@@ -11,7 +11,7 @@ void Engine::createDumbTree(int index) {
 
     Domain& d = _variables[0].getDomain();
 
-    std::vector<int> values = d.getPossibleValues();
+    std::vector<int> values = d.getValues();
 
     for (unsigned int i = 0; i < values.size(); i++) {
         Node *new_node = new Node(index+1);

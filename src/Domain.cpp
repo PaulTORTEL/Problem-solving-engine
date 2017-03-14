@@ -14,6 +14,10 @@ bool Range::isSingleton() const {
 	return min == max;
 }
 
+unsigned int Range::size() const {
+	return isEmpty() ? 0 : max - min;
+}
+
 Range Range::from(int n) {
 	return Range {n, n};
 }
@@ -113,12 +117,14 @@ bool Domain::add(Range r) {
 		if(touchPrev(start, r.min))
 			_ranges.back().max = r.max;
 		else _ranges.push_back(r);
+		_size += r.size();
 		return true;
 	}
 
 	Domain::Location end = locate(r.max, start);
 
 	//On ajuste r pour pas que ça touche les intervalles
+	//A la place, on chevauche
 	if(touchPrev(start, r.min)) {
 		r.min--;
 		start.idx--;
@@ -136,6 +142,7 @@ bool Domain::add(Range r) {
 		//Disjoint de tous les intervalles, on l'ajoute
 		if(!start.inside && !end.inside) {
 			_ranges.insert(_ranges.begin() + start.idx, r);
+			_size += r.size();
 			return true;
 		}
 
@@ -147,8 +154,9 @@ bool Domain::add(Range r) {
 	Range& final = _ranges[start.idx];
 
 	//On ajuste la borne inférieure
-	if(!start.inside)
+	if(!start.inside) {
 		final.min = r.min;
+	}
 
 	//On ajuste la borne supérieure
 	if(end.inside) {
@@ -159,6 +167,12 @@ bool Domain::add(Range r) {
 
 	//On supprime les intervalles "avalés"
 	_ranges.erase(_ranges.begin() + start.idx+1, _ranges.begin() + end.idx);
+
+	//recalcul de la taille
+	//TODO faire mieux ?
+	_size = 0;
+	for (Range r: _ranges)
+        _size += r.size();
 
 	return true;
 }
@@ -183,6 +197,7 @@ bool Domain::add(int n) {
 		_ranges.insert(_ranges.begin() + i, Range::from(n));
 	}
 
+	_size++;
 	return true;
 }
 
@@ -205,6 +220,7 @@ bool Domain::remove(int n) {
 		_ranges.insert(_ranges.begin() + loc.idx+1, r);
 	}
 
+	_size--;
 	return true;
 }
 
@@ -212,18 +228,27 @@ bool Domain::removeLessThan(int n, bool inclusive) {
 	if(inclusive) {
 		if(n == INT_MAX) {
 			bool empty = _ranges.empty();
+			_size = 0;
 			_ranges.clear();
 			return empty;
 		}
 		n++;
 	}
 
+	int removed = 0;
+
 	Domain::Location loc = locate(n);
-	if(loc.inside)
+	if(loc.inside) {
+		removed = n - _ranges[loc.idx].min;
 		_ranges[loc.idx].min = n;
+	}
 	else if(loc.idx == 0)
 		return false;
 
+	for(unsigned int i = 0; i < loc.idx; i++)
+		removed += _ranges[i].size();
+
+	_size -= removed;	
 	_ranges.erase(_ranges.begin(), _ranges.begin() + loc.idx);
 	return true;
 }
@@ -234,17 +259,26 @@ bool Domain::removeGreaterThan(int n, bool inclusive) {
 		if(n == INT_MIN) {
 			bool empty = _ranges.empty();
 			_ranges.clear();
+			_size = 0;
 			return empty;
 		}
 		n--;
 	}
 
+	int removed = 0;
+
 	Domain::Location loc = locate(n);
-	if(loc.inside)
+	if(loc.inside) {
+		removed = n - _ranges[loc.idx].max;
 		_ranges[loc.idx].max = n;
+	}
 	else if(loc.idx == _ranges.size()-1)
 		return false;
 
+	for(unsigned int i = loc.idx; i < _ranges.size(); i++)
+		removed += _ranges[i].size();
+
+	_size -= removed;
 	_ranges.erase(_ranges.begin() + loc.idx+1, _ranges.end());
 	return true;
 }
@@ -275,16 +309,11 @@ std::ostream& operator<<(std::ostream& o, const Domain& d) {
 	return o << "}";
 }
 
-unsigned int Domain::getNumberOfPossibleValues() {
-
-    unsigned int counter = 0;
-    for (Range r: _ranges) {
-        counter += r.max - r.min;
-    }
-    return counter;
+unsigned int Domain::getSize() {
+	return _size;
 }
 
-std::vector<int> Domain::getPossibleValues() {
+std::vector<int> Domain::getValues() {
 
     std::vector<int> values;
     for (Range r: _ranges) {
