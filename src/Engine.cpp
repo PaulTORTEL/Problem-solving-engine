@@ -1,7 +1,17 @@
 #include "Engine.h"
 #include "Node.h"
 
-Engine::Engine() {
+Engine::Engine(std::vector<Variable>&& variables):
+	_variables(variables),
+	_constraints(variables.size()) {
+}
+
+Constraints& Engine::getConstraints() {
+	return _constraints;
+}
+
+const Constraints& Engine::getConstraints() const {
+	return _constraints;
 }
 
 void Engine::createDumbTree(int index) {
@@ -19,7 +29,7 @@ void Engine::createDumbTree(int index) {
         std::vector<int> chosenValues;
         chosenValues.push_back(values[i]);
 
-        if (new_node->createDumbNode(values[i], _variables, chosenValues, _constraints)) {
+        if (new_node->createDumbNode(values[i], _variables, chosenValues, &_constraints)) {
             // C'est ok il faut enregistrer la réponse (chosenValues à afficher)
             std::cout << "c'est ok " << std::endl;
 
@@ -29,25 +39,4 @@ void Engine::createDumbTree(int index) {
         }
     }
 
-}
-
-void Engine::tempConstFulfiller() {
-
-    _constraints = new Constraints(_variables.size());
-
-    /*_constraints->addBinConstraint(1, 2, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);
-    _constraints->addBinConstraint(1, 3, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);*/
-    _constraints->addBinConstraint(1, 0, /*Constraints::BIN_CON_LESS | */Constraints::BIN_CON_GREATER);
-
-    /*_constraints->addBinConstraint(2, 1, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);
-    _constraints->addBinConstraint(2, 3, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);*/
-    _constraints->addBinConstraint(2, 1, /*Constraints::BIN_CON_LESS | */Constraints::BIN_CON_GREATER);
-
-    /*_constraints->addBinConstraint(3, 1, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);
-    _constraints->addBinConstraint(3, 2, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);*/
-    _constraints->addBinConstraint(3, 2, /*Constraints::BIN_CON_LESS |*/ Constraints::BIN_CON_GREATER);
-
-    /*_constraints->addBinConstraint(0, 1, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);
-    _constraints->addBinConstraint(0, 2, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);
-    _constraints->addBinConstraint(0, 3, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);*/
 }

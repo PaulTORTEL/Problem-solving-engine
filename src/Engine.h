@@ -16,22 +16,19 @@ public:
 };
 
 class Engine {
-    Engine();
 
     std::vector<Variable> _variables;
 
-    Constraints *_constraints;
+    Constraints _constraints;
     Node *_root;
 
-    void readVariablesFromXML(const TiXmlHandle& hdl);
+public:
 
-    public:
-        Engine(const std::string& fileName);
+    Engine(std::vector<Variable>&& variables);
 
-        void createDumbTree(int index);
+    Constraints& getConstraints();
+    const Constraints& getConstraints() const;
 
-        //Peut lancer une EngineCreationException
-        static Engine fromXMLFile(const std::string& file);
-        void tempConstFulfiller();
+    void createDumbTree(int index);
 
 };

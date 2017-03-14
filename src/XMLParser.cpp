@@ -1,13 +1,17 @@
-#include "Engine.h"
+
+#include "XMLParser.h"
+
 #include "XMLUtil.h"
 #include "Utils.h"
 #include "Domain.h"
 #include "Indexer.h"
 
+static std::vector<Variable> readVariables(const TiXmlHandle& hdl);
 
-Engine Engine::fromXMLFile(const std::string& file) {
-    Engine engine;
+static Domain readDomain(std::stringstream& err, const std::string& str);
 
+
+Engine XMLParser::fromFile(const std::string& file) {
     TiXmlDocument doc(file.c_str());
 
     if(!doc.LoadFile()) {
@@ -18,12 +22,67 @@ Engine Engine::fromXMLFile(const std::string& file) {
     }
 
     TiXmlHandle hdl(&doc);
-    engine.readVariablesFromXML(hdl);
 
-    return engine;
+    return XMLParser::from(hdl);
 }
 
-void Engine::readVariablesFromXML(const TiXmlHandle& hdl) {
+Engine XMLParser::from(const TiXmlHandle& hdl) {
+    Engine engine(readVariables(hdl));
+
+    return engine;
+
+}
+
+
+static Domain readDomain(std::stringstream& err, const std::string& sDomain) {
+
+    std::vector<std::string> splitted = split(sDomain,' ');
+
+    if (splitted.size() == 0) {
+        err << "Le domaine ne peut etre vide !";
+        throw EngineCreationException(err.str());
+    }
+
+
+    Domain dom;
+
+    for (const std::string& s: splitted)
+    {
+        std::vector<std::string> interv = split(s,';');
+        std::string sMin = "";
+        std::string sMax = "";
+
+        if (interv.size() == 1)
+        {
+            sMin = interv[0];
+            sMax = interv[0];
+        }
+        else if (interv.size() == 2)
+        {
+            sMin = interv[0];
+            sMax = interv[1];
+        }
+        else {
+            err << "Un intervalle doit etre de la forme i;j ou i !";
+            throw EngineCreationException(err.str());
+        }
+        int nMin = 0;
+        int nMax = 0;
+
+        if (!parseNumber(sMin.c_str(),&nMin) || !parseNumber(sMax.c_str(),&nMax)) {
+            err << "Les intervalles doivent etre composes de nombres entiers !";
+            throw EngineCreationException(err.str());
+        }
+
+
+        Range r = Range::fromInclusive(nMin,nMax);
+        dom.add(r);
+    }
+
+    return dom;
+}
+
+static std::vector<Variable> readVariables(const TiXmlHandle& hdl) {
     std::stringstream err;
 
     TiXmlElement *root = hdl.FirstChildElement().Element();
@@ -35,6 +94,7 @@ void Engine::readVariablesFromXML(const TiXmlHandle& hdl) {
     }
 
     std::vector<TiXmlElement*> vars = findNodes(all_var[0],"Var");
+    std::vector<Variable> variables;
 
     for (TiXmlElement* varElem: vars) {
 
@@ -63,50 +123,8 @@ void Engine::readVariablesFromXML(const TiXmlHandle& hdl) {
         }
 
 
-        std::string sDomain = domainValue->Value();
+        Domain dom = readDomain(err, domainValue->Value());
 
-        std::vector<std::string> splitted = split(sDomain,' ');
-
-        if (splitted.size() == 0) {
-            err << "Le domaine ne peut etre vide !";
-            throw EngineCreationException(err.str());
-        }
-
-
-        Domain dom;
-
-        for (const std::string& s: splitted)
-        {
-            std::vector<std::string> interv = split(s,';');
-            std::string sMin = "";
-            std::string sMax = "";
-
-            if (interv.size() == 1)
-            {
-                sMin = interv[0];
-                sMax = interv[0];
-            }
-            else if (interv.size() == 2)
-            {
-                sMin = interv[0];
-                sMax = interv[1];
-            }
-            else {
-                err << "Un intervalle doit etre de la forme i;j ou i !";
-                throw EngineCreationException(err.str());
-            }
-            int nMin = 0;
-            int nMax = 0;
-
-            if (!parseNumber(sMin.c_str(),&nMin) || !parseNumber(sMax.c_str(),&nMax)) {
-                err << "Les intervalles doivent etre composes de nombres entiers !";
-                throw EngineCreationException(err.str());
-            }
-
-
-            Range r = Range::fromInclusive(nMin,nMax);
-            dom.add(r);
-        }
 
         std::vector<TiXmlElement*> indexes = findNodes(varElem,"Index");
 
@@ -120,7 +138,7 @@ void Engine::readVariablesFromXML(const TiXmlHandle& hdl) {
             std::cout << variable << std::endl;
 
             //TODO: PushBack
-            _variables.push_back(variable); // ?
+            variables.push_back(variable); // ?
         }
 
         else
@@ -159,7 +177,7 @@ void Engine::readVariablesFromXML(const TiXmlHandle& hdl) {
                 temp = concatString(name,temp);
                 Variable v(dom,temp);
                 std::cout << v << std::endl;
-                _variables.push_back(v);
+                variables.push_back(v);
             }
 
             temp = indexer.getVarIndex();
@@ -169,10 +187,12 @@ void Engine::readVariablesFromXML(const TiXmlHandle& hdl) {
             Variable v(dom,temp);
 
             std::cout << v << std::endl;
-            _variables.push_back(v);
+            variables.push_back(v);
         }
 
         //TODO: Ajouter les variables quelque part (et pas oublier de register l'index)
 
     }
+
+    return variables;
 }
