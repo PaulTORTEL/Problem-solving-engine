@@ -7,7 +7,7 @@ Variable::Variable(Domain d, std::string& name) : _name(name), _domain(d)
 
 std::ostream& operator<<(std::ostream& o, const Variable& v) {
 	o << "{ name : " << v._name;
-	o << ", [ " << v._domain << " ]";
+	o << ", " << v._domain << " ";
 	return o << "}";
 
 }

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-#include "tinyxml.h"
+#include "xml/tinyxml.h"
 #include "Variable.h"
 #include "Node.h"
 #include "Constraints.h"
