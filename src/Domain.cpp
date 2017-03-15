@@ -61,6 +61,14 @@ int Domain::getMax() const {
 	return _ranges.empty() ? INT_MIN : _ranges.back().max;
 }
 
+Domain::iterator Domain::begin() const {
+	return Domain::iterator(_ranges.begin(), _ranges.empty() ? INT_MIN : _ranges.front().min); 	
+}
+
+Domain::iterator Domain::end() const {
+	return Domain::iterator(_ranges.end(), _ranges.empty() ? INT_MIN : _ranges.back().max);
+}
+
 Range Domain::getEnclosingRange() const {
 	return Range {getMin(), getMax()};
 }
@@ -313,13 +321,44 @@ unsigned int Domain::getSize() {
 	return _size;
 }
 
-std::vector<int> Domain::getValues() {
 
-    std::vector<int> values;
-    for (Range r: _ranges) {
-        for (int i = r.min; i <= r.max; i++)
-            values.push_back(i);
-    }
-
-    return values;
+Domain::iterator::iterator(std::vector<Range>::const_iterator it, int n):
+	_cur(it),
+	_n(n) {	
 }
+
+Domain::iterator& Domain::iterator::operator++() { // pre-increment
+
+	if(_n < _cur->max) {
+		_n++;
+		return *this;
+	}
+	_cur++;
+
+	return *this;
+}
+
+Domain::iterator Domain::iterator::operator++(int) { // post-increment
+	Domain::iterator old = *this;
+	++(*this);
+	return old;
+}
+
+
+bool Domain::iterator::operator==(const Domain::iterator& other) const {
+	std::cout << ";" << *_cur << ";" <<  _n << " - " << *other._cur << ";" << other._n << std::endl;
+	return other._cur == _cur && other._n == _n;
+}
+
+bool Domain::iterator::operator!=(const Domain::iterator& other) const {
+
+	return !((*this) == other);
+}
+
+int Domain::iterator::operator*() {
+	return _n;
+}
+int Domain::iterator::operator->() {
+	return _n;
+}
+

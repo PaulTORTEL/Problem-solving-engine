@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include "XMLParser.h"
+#include "parser/Parser.h"
 #include <string>
 using namespace std;
 
@@ -7,7 +8,7 @@ using namespace std;
 Engine createEngine(const std::string& file) {
 	try {
 		return XMLParser::fromFile(file);
-
+		//return Parser::fromFile(file);
 	} catch(EngineCreationException e) {
 		std::cerr << "Erreur lors de la creation de l'engine :" << std::endl;
 		std::cerr << e.what() << std::endl;
@@ -21,13 +22,17 @@ int main(int argc, char** argv)
 	std::string file = "problems/test2.xml";
 	if(argc > 1)
 		file = argv[1];
-
+	
 
 	Engine engine = createEngine(file);
 	Constraints& constraints = engine.getConstraints();
 
-	for(auto& v: engine.getVariables())
-		std::cout << v << std::endl;
+	for(auto it = engine.beginVars(); it != engine.endVars(); it++)
+		std::cout << *it << std::endl;
+
+	for(int i: engine.beginVars()->getDomain())
+		std::cout << i << std::endl;
+
 
 	/*constraints.addBinConstraint(1, 2, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);
     constraints.addBinConstraint(1, 3, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);*/

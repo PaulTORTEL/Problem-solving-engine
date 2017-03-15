@@ -130,47 +130,35 @@ static std::vector<Variable> readVariables(const TiXmlHandle& hdl) {
 
         std::string name(nameAttr->Value());
 
-        if (indexes.size() == 0)
-        {
-
-            Variable variable(dom,name);
-
-            std::cout << variable << std::endl;
-
-            //TODO: PushBack
-            variables.push_back(variable); // ?
-        }
-
-        else
-        {
-
-            Indexer indexer;
-            for (unsigned int i = 0; i < indexes.size(); i++)
-            {
-                TiXmlElement* elemIndex = indexes[i];
-                TiXmlAttribute* indexAttr = findAttribute(elemIndex,"max");
-                if (!indexAttr) {
-                    err << "Un index doit avoir l'attribut max !";
-                    throw EngineCreationException(err.str());
-                }
-
-                int indexMax = 0;
-                if (!parseNumber(indexAttr->Value(),&indexMax)) {
-                    err << "Un index doit avoir une valeur max entiere !";
-                    throw EngineCreationException(err.str());
-                }
-
-                indexer.addIndex(indexMax);
-
+        Indexer indexer;
+        for (unsigned int i = 0; i < indexes.size(); i++) {
+            TiXmlElement* elemIndex = indexes[i];
+            TiXmlAttribute* indexAttr = findAttribute(elemIndex,"max");
+            if (!indexAttr) {
+                err << "Un index doit avoir l'attribut max !";
+                throw EngineCreationException(err.str());
             }
 
-            while (indexer.hasNext())
-            {
+            int indexMax = 0;
+            if (!parseNumber(indexAttr->Value(),&indexMax)) {
+                err << "Un index doit avoir une valeur max entiere !";
+                throw EngineCreationException(err.str());
+            }
+
+            indexer.addIndex(indexMax);
+
+        }
+
+
+        if(indexer.numIndices() == 0) {
+            variables.emplace_back(Variable(dom, name));
+        } else {
+
+            while (indexer.hasNext()) {
                 std::string index = indexer.next();
-                variables.emplace_back(Variable(dom, concatString(name, index)));
+                variables.emplace_back(Variable(dom, name + index));
             }
         }
-
         //TODO: Ajouter les variables quelque part (et pas oublier de register l'index)
 
     }

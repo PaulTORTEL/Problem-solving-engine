@@ -49,6 +49,26 @@ class Domain {
 	unsigned int _size;
 
 public:
+	class iterator {
+		std::vector<Range>::const_iterator _cur;
+		int _n;
+
+    	iterator(std::vector<Range>::const_iterator it, int n);
+
+	public:
+		friend Domain;
+
+    	iterator& operator++();   // pre-increment
+    	iterator operator++(int); // post-increment
+
+    	bool operator==(const iterator& other) const;
+		bool operator!=(const iterator& other) const;
+
+    	int operator*();
+    	int operator->();
+    };
+
+
 	//Construit un nouveau domaine vide
 	Domain(){}
 
@@ -62,8 +82,9 @@ public:
 	//Renvoie le nombre de valeurs contenues dans le domaine
 	unsigned int getSize();
 
-	//Renvoie la liste des valeurs du domaine
-	std::vector<int> getValues();
+	//Renvoie un itérateur sur les valeurs du domaine
+	iterator begin() const;
+	iterator end() const;
 
 	//Renvoie un intervalle contenant toutes les valeurs du domaine
 	//(non défini si le domaine est vide)

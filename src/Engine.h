@@ -29,7 +29,8 @@ public:
     Constraints& getConstraints();
     const Constraints& getConstraints() const;
 
-    const std::vector<Variable>& getVariables() const;
+    std::vector<Variable>::iterator beginVars();
+    std::vector<Variable>::iterator endVars();
 
     void createDumbTree(int index);
 

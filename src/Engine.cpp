@@ -14,8 +14,12 @@ const Constraints& Engine::getConstraints() const {
 	return _constraints;
 }
 
-const std::vector<Variable>& Engine::getVariables() const {
-	return _variables;
+
+std::vector<Variable>::iterator Engine::beginVars() {
+	return _variables.begin();
+}
+std::vector<Variable>::iterator Engine::endVars() {
+	return _variables.end();
 }
 
 void Engine::createDumbTree(int index) {
@@ -25,15 +29,15 @@ void Engine::createDumbTree(int index) {
 
     Domain& d = _variables[0].getDomain();
 
-    std::vector<int> values = d.getValues();
 
-    for (unsigned int i = 0; i < values.size(); i++) {
+    for (int value: d) {
+
         Node *new_node = new Node(index+1);
         _root->addChild(new_node);
         std::vector<int> chosenValues;
-        chosenValues.push_back(values[i]);
+        chosenValues.push_back(value);
 
-        if (new_node->createDumbNode(values[i], _variables, chosenValues, &_constraints)) {
+        if (new_node->createDumbNode(value, _variables, chosenValues, &_constraints)) {
             // C'est ok il faut enregistrer la réponse (chosenValues à afficher)
             std::cout << "c'est ok " << std::endl;
 
