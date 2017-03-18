@@ -10,7 +10,7 @@ class Constraints {
 
 public:
 	static const char BIN_CON_NONE = 0;
-	static const char BIN_CON_LESS = 1; 
+	static const char BIN_CON_LESS = 1;
 	static const char BIN_CON_EQUALS = 2;
 	static const char BIN_CON_GREATER = 4;
 	static const char BIN_CON_ALL = 7;

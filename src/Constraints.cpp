@@ -7,6 +7,7 @@ Constraints::Constraints(int n):
 }
 
 void Constraints::addBinConstraint(int v1, int v2, char constraint) {
+
 	_binConstraints[getIndexOf(v1, v2)] &= constraint;
 
 	char inv = BIN_CON_NONE;
@@ -35,23 +36,23 @@ bool Constraints::checkBinary(int v1, int v2, char constraint) {
 }
 
 
-bool Constraints::isValuePossible(std::vector<Domain>& vars, VarID var, int value) const {
-	Domain& d1 = vars[var];
+bool Constraints::isValuePossible(std::vector<Domain>& domains, VarID var, int value) const {
+	Domain& d1 = domains[var];
 	if(!d1.contains(value))
 		return false;
 
 	for(int i = 0; i < _varsNum; i++) {
 		char c = _binConstraints[getIndexOf(var, i)];
-		Domain& d2 = vars[i];
+		Domain& d2 = domains[i];
 
-		if(!(c & BIN_CON_LESS) && value >= d2.getMax())
-			return false;
+		if(!(c & BIN_CON_LESS) && value < d2.getMin())
+            return false;
 
-		if(!(c & BIN_CON_GREATER) && value <= d2.getMin())
-			return false;
+        if(!(c & BIN_CON_GREATER) && value > d2.getMax())
+            return false;
 
-		if(!(c & BIN_CON_EQUALS) && !d2.contains(value))
-			return false;
+        if(!(c & BIN_CON_EQUALS) && d2.getMax() == value && d2.getMin() == value)
+            return false;
 	}
 
 	return true;

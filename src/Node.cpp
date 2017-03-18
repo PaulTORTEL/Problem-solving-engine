@@ -3,34 +3,47 @@
 Node::Node(int index)
 {
     _index = index;
+    _count++;
+    std::cout << "\t var cree : X" << index << " le count  " << _count << std::endl;
 }
 
 Node::~Node()
 {
-
+    _count--;
 }
 
-bool Node::createDumbNode(int value, std::vector<Variable> vars, std::vector<int>& chosenValues, Constraints* constraints) {
+unsigned int Node::_count = 0;
 
-    std::cout << "value : " << value << " et l'index : " << _index << " et chosen " << chosenValues.size() << std::endl;
+bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& chosenValues, Constraints* constraints) {
+
+   // std::cout << "X[" << chosenValues.size() << "]" << std::endl;
+    // réduire le domaine du noeud actuel en un singleton
+    Domain& domain_current_var = vars[_index].getDomain();
+    domain_current_var.removeLessThan(chosenValues[chosenValues.size()-1]);
+    domain_current_var.removeGreaterThan(chosenValues[chosenValues.size()-1]);
+
+ //   std::cout << domain_current_var << "et value : " << chosenValues[chosenValues.size()-1] << std::endl;
+
+    //std::cout << "value : " << value << " et l'index : " << _index << " et chosen " << chosenValues.size() << std::endl;
     //system("pause");
     if ((unsigned)_index + 1 >= vars.size()) {
 
         std::vector<Domain> all_vars_domain;
         for (Variable& var: vars) {
             Domain& dom = var.getDomain();
-            std::cout << var.getName() << " et " << dom << std::endl;
+
+            //std::cout << var.getName() << " et " << dom << std::endl;
             all_vars_domain.push_back(dom); // On récupère tous les domaines
         }
 
-        for (int i = vars.size() - 1; i >= 0; i--) {
+        for (unsigned int i = 0; i < vars.size(); i++) {
             if (!constraints->isValuePossible(all_vars_domain, i, chosenValues[i])) {
-                std::cout << "i : "<< vars[i].getName() << " et sa value : " << chosenValues[i] << std::endl;
+               // std::cout << "i : "<< vars[i].getName() << " et sa value : " << chosenValues[i] << std::endl;
 //system("pause");
                 return false;
             }
             else {
-                std::cout << "isValuePossible a renvoye true " << std::endl;
+                //std::cout << "isValuePossible a renvoye true " << std::endl;
             }
 
         }
@@ -42,19 +55,20 @@ bool Node::createDumbNode(int value, std::vector<Variable> vars, std::vector<int
         return true;// ou true si c'est ok
     }
 
+    //intervention de la brigade
+    if (!reduceDomains(chosenValues, vars, constraints)) // Si on a trouvé un ou plusieurs domaines de valeurs vides
+        return false;
 
     Domain& d = vars[_index+1].getDomain();
-    for (int value: chosenValues)
-        d.remove(value);
 
     std::vector<int> values = d.getValues();
-    std::cout << "values : " << values[0] << std::endl;
+    //std::cout << "values : " << values[0] << std::endl;
    // system("pause");
     for (int value: values) {
         Node * new_node = new Node(_index+1);
         this->addChild(new_node);
         chosenValues.push_back(value);
-        if (new_node->createDumbNode(value, vars, chosenValues, constraints)) {
+        if (new_node->createNode(value, vars, chosenValues, constraints)) {
             return true;
         }
         else {
@@ -64,6 +78,44 @@ bool Node::createDumbNode(int value, std::vector<Variable> vars, std::vector<int
 
 
     return false;
+}
+
+bool Node::reduceDomains(std::vector<int> const & chosenValues, std::vector<Variable>& vars, Constraints* constraints) {
+
+    std::cout << "chosenVal : " << chosenValues.back() << " taille du chosen: " << chosenValues.size() << std:: endl;
+    if ((unsigned)_index + 1 >= vars.size())
+        return true;
+
+    std::vector<Domain> all_vars_domain;
+    for (Variable& var: vars) {
+        Domain& dom = var.getDomain();
+        //std::cout << var.getName() << " et " << dom << std::endl;
+        all_vars_domain.push_back(dom); // On récupère tous les domaines
+    }
+
+    for (unsigned int i = _index + 1; i < vars.size(); i++) {
+        Domain& d = vars[i].getDomain();
+
+        std::vector<int> values = d.getValues();
+        for (unsigned int j = 0 ; j < values.size(); j++) {
+
+            if (!constraints->isValuePossible(all_vars_domain, i, values[j])) {
+                std::cout << "\tvalue supprimee : " << values[j] << std::endl;
+                d.remove(values[j]);
+            }
+        }
+        std::cout << "le domaine de " << i << d << std::endl << std::endl << std::endl;
+
+        if (d.isEmpty()) { // 1 ou plusieurs domaines vides
+            std::cout << "\tempty" << std::endl;
+            system("pause");
+            return false;
+        }
+
+        system("pause");
+    }
+
+    return true;
 }
 
 void Node::addChild(Node * new_node) {

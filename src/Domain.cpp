@@ -248,7 +248,7 @@ bool Domain::removeLessThan(int n, bool inclusive) {
 	for(unsigned int i = 0; i < loc.idx; i++)
 		removed += _ranges[i].size();
 
-	_size -= removed;	
+	_size -= removed;
 	_ranges.erase(_ranges.begin(), _ranges.begin() + loc.idx);
 	return true;
 }
@@ -310,7 +310,13 @@ std::ostream& operator<<(std::ostream& o, const Domain& d) {
 }
 
 unsigned int Domain::getSize() {
-	return _size;
+
+    unsigned int count = 0;
+    for (unsigned int i = 0; i < _ranges.size(); i++) {
+        count += _ranges[i].size();
+    }
+
+	return count;
 }
 
 std::vector<int> Domain::getValues() {

@@ -18,9 +18,10 @@ const std::vector<Variable>& Engine::getVariables() const {
 	return _variables;
 }
 
-void Engine::createDumbTree(int index) {
+void Engine::createTree(int index) {
 
     //On crée le premier noeud (qui sert uniquement de point de jonction donc value inutile et index inutile)
+
     _root = new Node(index);
 
     Domain& d = _variables[0].getDomain();
@@ -33,9 +34,9 @@ void Engine::createDumbTree(int index) {
         std::vector<int> chosenValues;
         chosenValues.push_back(values[i]);
 
-        if (new_node->createDumbNode(values[i], _variables, chosenValues, &_constraints)) {
+        if (new_node->createNode(values[i], _variables, chosenValues, &_constraints)) {
             // C'est ok il faut enregistrer la réponse (chosenValues à afficher)
-            std::cout << "c'est ok " << std::endl;
+            std::cout << "Nombre de noeuds cree dans l'arbre : " << _root->getCount() - 1 << std::endl;
 
             for (unsigned int j = 0; j < chosenValues.size(); j++)
                 std::cout << "Pour var " << j << " value => " << chosenValues[j] << std::endl;

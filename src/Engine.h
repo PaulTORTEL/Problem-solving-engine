@@ -31,6 +31,6 @@ public:
 
     const std::vector<Variable>& getVariables() const;
 
-    void createDumbTree(int index);
+    void createTree(int index);
 
 };
