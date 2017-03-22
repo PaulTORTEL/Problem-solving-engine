@@ -22,6 +22,7 @@ class Engine {
     Constraints _constraints;
     Node *_root;
 
+
 public:
 
     Engine(std::vector<Variable>&& variables);
@@ -32,6 +33,6 @@ public:
     std::vector<Variable>::iterator beginVars();
     std::vector<Variable>::iterator endVars();
 
-    void createTree(int index);
+    void createTree();
 
 };

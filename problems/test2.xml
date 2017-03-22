@@ -2,9 +2,9 @@
 <PSC>
 	<Vars>
 		<Var name = "X" >
+			<Index max = "5" />
 			<Index max = "2" />
-			<Index max = "2" />
-			<Domain value = "1;4" />
+			<Domain value = "1;10" />
 		</Var>
 	</Vars>
 	

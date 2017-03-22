@@ -1,8 +1,10 @@
 #include "Constraints.h"
+#include <algorithm>
+#include <map>
 
 Constraints::Constraints(int n):
 	_varsNum(n),
-	//Sans le '+' ça ne compile pas sous gcc/clang (parce que lol)
+	//Sans le '+' ça ne compile pas sous gcc/clang
 	_binConstraints(n*n, +BIN_CON_ALL) {
 }
 
@@ -61,3 +63,44 @@ bool Constraints::isValuePossible(std::vector<Domain>& domains, VarID var, int v
 int Constraints::getIndexOf(int n, int m) const {
 	return n*_varsNum + m;
 }
+
+std::vector<int> Constraints::getRelatedVariablesIndex(unsigned int n) {
+
+    std::vector<int> temp;
+    if ((int) n >= _varsNum)
+        return temp;
+
+    for (int i = 0; i < _varsNum; i++) {
+        if (_binConstraints[getIndexOf(n, i)] != BIN_CON_ALL)
+            temp.push_back(i);
+    }
+
+    return temp;
+}
+
+const std::vector<int> Constraints::getVariablesIndexOrderedByMostConstrained() {
+
+    // 1 : compter toutes les contraintes déclarées par var
+    // 2 : trier le tab
+    // 3 : le renvoyer
+ //   std::map<int, int> temp_map;
+    std::vector<int> temp;
+    unsigned int count = 0;
+
+    for (int i = 0; i < _varsNum; i++) {
+        for (int j = 0; j < _varsNum; j++) {
+            if (_binConstraints[getIndexOf(i,j)] != BIN_CON_ALL)
+                count++;
+        }
+        //temp_map[i] = count;
+        temp.push_back(count);
+        count = 0;
+    }
+
+    std::sort(temp.begin(), temp.end()); // Trie par ordre croissant de base
+    std::reverse(temp.begin(), temp.end()); // On veut du + contraint au - donc on reverse le tri croissant
+
+ // PB : ON NE SAIT PAS QUI EST placé où !! comme on a tout trié !!
+    return temp;
+}
+

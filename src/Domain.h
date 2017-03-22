@@ -128,7 +128,6 @@ public:
 
 	friend std::ostream& operator<<(std::ostream& o, const Domain& r);
 
-
 private:
 	//Une position dans la liste d'intervalle
 	// - si inside == true, alors n est dans l'intervalle n°index

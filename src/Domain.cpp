@@ -15,7 +15,7 @@ bool Range::isSingleton() const {
 }
 
 unsigned int Range::size() const {
-	return isEmpty() ? 0 : max - min;
+	return isEmpty() ? 0 : max - min + 1;
 }
 
 Range Range::from(int n) {
