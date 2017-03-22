@@ -80,7 +80,7 @@ public:
 	int getMax() const;
 
 	//Renvoie le nombre de valeurs contenues dans le domaine
-	unsigned int getSize();
+	unsigned int getSize() const;
 
 	//Renvoie un itérateur sur les valeurs du domaine
 	iterator begin() const;

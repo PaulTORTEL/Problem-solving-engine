@@ -32,6 +32,6 @@ public:
     std::vector<Variable>::iterator beginVars();
     std::vector<Variable>::iterator endVars();
 
-    void createDumbTree(int index);
+    void createTree(int index);
 
 };

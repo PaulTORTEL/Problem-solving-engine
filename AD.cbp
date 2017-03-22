@@ -56,12 +56,12 @@
 		<Unit filename="src/XMLUtil.cpp" />
 		<Unit filename="src/XMLUtil.h" />
 		<Unit filename="src/main.cpp" />
-		<Unit filename="src/tinystr.cpp" />
-		<Unit filename="src/tinystr.h" />
-		<Unit filename="src/tinyxml.cpp" />
-		<Unit filename="src/tinyxml.h" />
-		<Unit filename="src/tinyxmlerror.cpp" />
-		<Unit filename="src/tinyxmlparser.cpp" />
+		<Unit filename="src/xml/tinystr.cpp" />
+		<Unit filename="src/xml/tinystr.h" />
+		<Unit filename="src/xml/tinyxml.cpp" />
+		<Unit filename="src/xml/tinyxml.h" />
+		<Unit filename="src/xml/tinyxmlerror.cpp" />
+		<Unit filename="src/xml/tinyxmlparser.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
