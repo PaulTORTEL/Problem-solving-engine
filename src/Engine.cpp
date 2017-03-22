@@ -18,30 +18,62 @@ const std::vector<Variable>& Engine::getVariables() const {
 	return _variables;
 }
 
-void Engine::createTree(int index) {
+void Engine::createTree() {
 
-    //On crée le premier noeud (qui sert uniquement de point de jonction donc value inutile et index inutile)
-
+    //On crée le premier noeud (qui sert uniquement de point de jonction donc index inutile (mis à -1))
+    int index = -1;
     _root = new Node(index);
 
     Domain& d = _variables[0].getDomain();
 
+    const std::vector<int> varsOrderedByMostConstrained = _constraints.getVariablesIndexOrderedByMostConstrained();
+    for (int i : varsOrderedByMostConstrained)
+        std::cout << " var " << i << std::endl;
+
     std::vector<int> values = d.getValues();
+
+    bool success = false;
+    std::vector<int> chosenValues; // Stocke la solution
 
     for (unsigned int i = 0; i < values.size(); i++) {
         Node *new_node = new Node(index+1);
         _root->addChild(new_node);
-        std::vector<int> chosenValues;
+
         chosenValues.push_back(values[i]);
 
         if (new_node->createNode(values[i], _variables, chosenValues, &_constraints)) {
-            // C'est ok il faut enregistrer la réponse (chosenValues à afficher)
-            std::cout << "Nombre de noeuds cree dans l'arbre : " << _root->getCount() - 1 << std::endl;
-
-            for (unsigned int j = 0; j < chosenValues.size(); j++)
-                std::cout << "Pour var " << j << " value => " << chosenValues[j] << std::endl;
+            success = true;
             break;
+        }
+        else {
+            chosenValues.pop_back();
+            delete(new_node);
         }
     }
 
+
+    delete(_root);
+
+    std::cout << "Nombre de noeuds cree : " << _root->getCount() - 1 << std::endl;
+
+    /** Calcul du nombre de noeuds élagués : **/
+    unsigned long long countPrunedNodes = 1; // var qui va être multipliée donc doit être = 1 pour commencer
+
+    for (Variable v : _variables)
+        countPrunedNodes *= v.getDomain().getSize();  // compte le nombre total de noeuds qui auraient pu être créé (sans prendre en compte les contraintes)
+
+    countPrunedNodes -= (_root->getCount() - 1); // Nb noeuds élagués = nb max de noeuds créés - les noeuds créés (car les noeuds élagués n'ont pas été créé)
+    /** -- -- -- -- **/
+
+    std::cout << "Nombre de noeuds elagues : " << countPrunedNodes << std::endl;
+
+    if (success) {
+            for (unsigned int j = 0; j < chosenValues.size(); j++)
+                std::cout << "Pour var " << j+1 << " value => " << chosenValues[j] << std::endl;
+    }
+
+    else {
+        std::cout << "Aucune solution trouvee !" << std::endl;
+    }
 }
+

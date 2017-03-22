@@ -29,17 +29,48 @@ int main(int argc, char** argv)
 	for(auto& v: engine.getVariables())
 		std::cout << v << std::endl;
 
-    constraints.addBinConstraint(0, 1, /*Constraints::BIN_CON_LESS | */Constraints::BIN_CON_GREATER);
-    constraints.addBinConstraint(0, 2, /*Constraints::BIN_CON_LESS | */Constraints::BIN_CON_GREATER);
-    constraints.addBinConstraint(0, 3, /*Constraints::BIN_CON_LESS | */Constraints::BIN_CON_GREATER);
+    /*constraints.addBinConstraint(0,1, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(1,2, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(2,3, Constraints::BIN_CON_GREATER);*/
 
-    constraints.addBinConstraint(1,2, /*Constraints::BIN_CON_LESS | */Constraints::BIN_CON_GREATER);
-    constraints.addBinConstraint(1,2, /*Constraints::BIN_CON_LESS | */Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(0, 1, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(0, 5, Constraints::BIN_CON_EQUALS);
+    constraints.addBinConstraint(0, 2, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(0, 9, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(1, 2, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(1, 3, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(1, 4, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(1, 6, Constraints::BIN_CON_EQUALS);
+    constraints.addBinConstraint(1, 5, Constraints::BIN_CON_LESS);
+    constraints.addBinConstraint(1, 8, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(2, 3, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(2, 1, Constraints::BIN_CON_LESS);
+    constraints.addBinConstraint(2, 7, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(2, 8, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(2, 9, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(3, 4, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(3, 7, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(3, 8, Constraints::BIN_CON_EQUALS);
+    constraints.addBinConstraint(3, 9, Constraints::BIN_CON_LESS);
+    constraints.addBinConstraint(4, 7, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(4, 8, Constraints::BIN_CON_LESS);
+    constraints.addBinConstraint(5, 2, Constraints::BIN_CON_GREATER | Constraints::BIN_CON_LESS);
+    constraints.addBinConstraint(5, 6, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(5, 7, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(5, 8, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(5, 9, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(6, 2, Constraints::BIN_CON_GREATER | Constraints::BIN_CON_LESS);
+    constraints.addBinConstraint(6, 0, Constraints::BIN_CON_LESS);
+    constraints.addBinConstraint(6, 1, Constraints::BIN_CON_EQUALS);
+    constraints.addBinConstraint(7, 4, Constraints::BIN_CON_LESS);
+    constraints.addBinConstraint(8, 3, Constraints::BIN_CON_EQUALS);
+    constraints.addBinConstraint(9, 0, Constraints::BIN_CON_GREATER | Constraints::BIN_CON_LESS);
+    constraints.addBinConstraint(9, 2, Constraints::BIN_CON_LESS);
+    constraints.addBinConstraint(9, 6, Constraints::BIN_CON_LESS);
+    constraints.addBinConstraint(9, 3, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(9, 4, Constraints::BIN_CON_GREATER);
 
-    constraints.addBinConstraint(2, 3, /*Constraints::BIN_CON_LESS |*/ Constraints::BIN_CON_GREATER);
-
-
-    engine.createTree(-1);
+    engine.createTree();
 
     return 0;
 }
