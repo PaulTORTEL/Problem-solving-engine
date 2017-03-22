@@ -95,7 +95,11 @@ public:
 	//Renvoie true si l'intervalle ne contient qu'une seule valeur
 	bool isSingleton() const;
 
+	//Renvoie true si la valeur est contenue dans le domaine
 	bool contains(int n) const;
+
+	//Vide le domaine de toutes ses valeurs
+	bool clear();
 
 	//Ajoute un intervalle au domaine; renvoie true si le domaine a été modifié
 	bool add(Range r);
@@ -118,6 +122,10 @@ public:
 	//renvoie true si le domaine a été modifié
 	bool restrictTo(Range r);
 
+	//Supprime tous les nombres qui ne sont pas dans le domaine passé en paramètre;
+	//renvoie true si le domaine a été modifié
+	bool restrictTo(Domain& dom);
+
 	friend std::ostream& operator<<(std::ostream& o, const Domain& r);
 
 
@@ -132,6 +140,8 @@ private:
 
 	bool touchNext(Location loc, int n);
 	bool touchPrev(Location loc, int n);
+
+	void recalculateSize();
 
 	//Calcule la position de n dans la liste d'intervalles
 	Location locate(int n) const;

@@ -113,6 +113,20 @@ bool Domain::touchNext(Domain::Location loc, int n) {
 		&& _ranges[loc.idx].min == n+1;
 }
 
+bool Domain::clear() {
+	bool empty = isEmpty();
+	_size = 0;
+	_ranges.clear();
+	return empty;
+}
+
+
+void Domain::recalculateSize() {
+	_size = 0;
+	for (Range r: _ranges)
+        _size += r.size();
+}
+
 //La fonction la plus compliquée de toutes, trouver comment simplifier ??
 bool Domain::add(Range r) {
 	if(r.isEmpty())
@@ -176,11 +190,7 @@ bool Domain::add(Range r) {
 	//On supprime les intervalles "avalés"
 	_ranges.erase(_ranges.begin() + start.idx+1, _ranges.begin() + end.idx);
 
-	//recalcul de la taille
-	//TODO faire mieux ?
-	_size = 0;
-	for (Range r: _ranges)
-        _size += r.size();
+	recalculateSize();
 
 	return true;
 }
@@ -234,12 +244,8 @@ bool Domain::remove(int n) {
 
 bool Domain::removeLessThan(int n, bool inclusive) {
 	if(inclusive) {
-		if(n == INT_MAX) {
-			bool empty = _ranges.empty();
-			_size = 0;
-			_ranges.clear();
-			return empty;
-		}
+		if(n == INT_MAX)
+			return clear();
 		n++;
 	}
 
@@ -264,12 +270,8 @@ bool Domain::removeLessThan(int n, bool inclusive) {
 
 bool Domain::removeGreaterThan(int n, bool inclusive) {
 	if(inclusive) {
-		if(n == INT_MIN) {
-			bool empty = _ranges.empty();
-			_ranges.clear();
-			_size = 0;
-			return empty;
-		}
+		if(n == INT_MIN)
+			return clear();
 		n--;
 	}
 
@@ -292,14 +294,38 @@ bool Domain::removeGreaterThan(int n, bool inclusive) {
 }
 
 bool Domain::restrictTo(Range r) {
-	if(r.isEmpty()) {
-		bool empty = _ranges.empty();
-		_ranges.clear();
-		return empty;
+	if(r.isEmpty())
+		return clear();
+
+	bool modif = removeGreaterThan(r.max);
+	modif |= removeLessThan(r.min);
+	return modif;
+}
+
+bool Domain::restrictTo(Domain& dom) {
+	if(dom.isEmpty())
+		return clear();
+
+	bool modif = restrictTo(dom.getEnclosingRange());
+	if(dom._ranges.size() == 1)
+		return modif;
+
+	//TODO boucle compliquée
+	/*
+		this  =======	
+		dom  ===  =====
+
+	*/
+	auto cur = _ranges.begin();
+	auto other = dom._ranges.begin();
+
+	while(true) {
+
+
 	}
 
-	bool modif = removeLessThan(r.min);
-	modif |= removeGreaterThan(r.max);
+	recalculateSize();
+
 	return modif;
 }
 
@@ -346,7 +372,7 @@ Domain::iterator Domain::iterator::operator++(int) { // post-increment
 
 
 bool Domain::iterator::operator==(const Domain::iterator& other) const {
-	std::cout << ";" << *_cur << ";" <<  _n << " - " << *other._cur << ";" << other._n << std::endl;
+	//std::cout << ";" << *_cur << ";" <<  _n << " - " << *other._cur << ";" << other._n << std::endl;
 	return other._cur == _cur && other._n == _n;
 }
 

@@ -27,31 +27,41 @@ int main(int argc, char** argv)
 	Engine engine = createEngine(file);
 	Constraints& constraints = engine.getConstraints();
 
-	for(auto it = engine.beginVars(); it != engine.endVars(); it++)
+
+	std::vector<Domain> domains;	
+	(engine.beginVars() + 1)->getDomain().remove(1);
+
+
+	for(auto it = engine.beginVars(); it != engine.endVars(); it++) {
 		std::cout << *it << std::endl;
-
-	for(int i: engine.beginVars()->getDomain())
-		std::cout << i << std::endl;
-
+		domains.push_back(it->getDomain());
+	}
 
 	/*constraints.addBinConstraint(1, 2, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);
     constraints.addBinConstraint(1, 3, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);*/
-    constraints.addBinConstraint(1, 0, /*Constraints::BIN_CON_LESS | */Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(0, 1, /*Constraints::BIN_CON_LESS | */Constraints::BIN_CON_GREATER);
 
     /*constraints.addBinConstraint(2, 1, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);
     constraints.addBinConstraint(2, 3, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);*/
-    constraints.addBinConstraint(2, 1, /*Constraints::BIN_CON_LESS | */Constraints::BIN_CON_GREATER);
+    //constraints.addBinConstraint(2, 1, /*Constraints::BIN_CON_LESS | */Constraints::BIN_CON_GREATER);
 
     /*constraints.addBinConstraint(3, 1, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);
     constraints.addBinConstraint(3, 2, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);*/
-    constraints.addBinConstraint(3, 2, /*Constraints::BIN_CON_LESS |*/ Constraints::BIN_CON_GREATER);
+    //constraints.addBinConstraint(3, 2, /*Constraints::BIN_CON_LESS |*/ Constraints::BIN_CON_GREATER);
 
     /*constraints.addBinConstraint(0, 1, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);
     constraints.addBinConstraint(0, 2, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);
     constraints.addBinConstraint(0, 3, Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER);*/
 
 
-    engine.createDumbTree(-1);
+
+
+	std::cout << constraints.isValuePossible(domains, 0, 1) << std::endl;
+	std::cout << constraints.isValuePossible(domains, 0, 2) << std::endl;
+	std::cout << constraints.isValuePossible(domains, 0, 3) << std::endl;
+
+
+    //engine.createDumbTree(-1);
 
     return 0;
 }
