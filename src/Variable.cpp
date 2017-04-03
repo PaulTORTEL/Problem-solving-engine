@@ -1,6 +1,6 @@
 #include "Variable.h"
 
-Variable::Variable(Domain d, const std::string& name) : _name(name), _domain(d)
+Variable::Variable(Domain d, const std::string& name) : _name(name), _domain(d), _level(-1)
 {
 
 }
@@ -18,4 +18,12 @@ const std::string& Variable::getName() const {
 
 Domain& Variable::getDomain() {
     return _domain;
+}
+
+int Variable::getLevel() const {
+    return _level;
+}
+
+void Variable::setLevel(int level) {
+    this->_level = level;
 }

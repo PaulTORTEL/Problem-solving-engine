@@ -13,6 +13,9 @@ class Node
     int _index; // index dans le vector des variables dans Engine.h
     static unsigned int _count;
 
+    static float _countPruning;
+    static float _countDepth;
+
     public:
 
         Node(int index  = -1);
@@ -24,13 +27,37 @@ class Node
         void addChild(Node * new_node);
         bool reduceDomains(std::vector<int> const & chosenValues, std::vector<Variable>& vars, Constraints* constraints);
         bool edgeConsistency(std::vector<Variable>& vars, Constraints* constraints, unsigned int index, std::vector<int>& already_treated);
-
+        void sortChosenValuesByNaturalOrder(const std::vector<Variable>& vars, std::vector<int>& chosenValues);
 
         inline unsigned int getCount();
-        inline unsigned int getCountPruned();
+        inline float getCountPruning();
+        inline float getCountDepth();
+
+        inline void refreshCount();
+        inline void refreshCountPruning();
+        inline void refreshCountDepth();
 
 };
 
 inline unsigned int Node::getCount() {
     return _count;
+}
+
+inline float Node::getCountPruning() {
+    return _countPruning;
+}
+
+inline float Node::getCountDepth() {
+    return _countDepth;
+}
+
+inline void Node::refreshCount() {
+    _count = 0;
+}
+
+inline void Node::refreshCountPruning() {
+    _countPruning = 0.0;
+}
+inline void Node::refreshCountDepth() {
+    _countDepth = 0.0;
 }

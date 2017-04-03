@@ -1,5 +1,4 @@
 #include "Constraints.h"
-#include <algorithm>
 #include <map>
 
 Constraints::Constraints(int n):
@@ -78,29 +77,58 @@ std::vector<int> Constraints::getRelatedVariablesIndex(unsigned int n) {
     return temp;
 }
 
-const std::vector<int> Constraints::getVariablesIndexOrderedByMostConstrained() {
+const std::vector<int> Constraints::getVariablesIndexOrderedByMostOrLeastConstrained(const std::vector<Variable>& vars, bool most) {
 
-    // 1 : compter toutes les contraintes déclarées par var
-    // 2 : trier le tab
-    // 3 : le renvoyer
- //   std::map<int, int> temp_map;
-    std::vector<int> temp;
-    unsigned int count = 0;
+    std::vector<int> result; // Stocke les index des variables selon leur nombre de contraintes respectives dans l'ordre décroissant
+    std::map<int, int> temp_map; // (ex Var8 à 6 contraintes, Var2 à 1 contraintes => [IndexVar8][IndexVar2]...
+
+    int count = 0;
 
     for (int i = 0; i < _varsNum; i++) {
         for (int j = 0; j < _varsNum; j++) {
             if (_binConstraints[getIndexOf(i,j)] != BIN_CON_ALL)
                 count++;
         }
-        //temp_map[i] = count;
-        temp.push_back(count);
+
+        temp_map[i] = count; // On compte le nombre de contrainte pour chaque variable
         count = 0;
     }
 
-    std::sort(temp.begin(), temp.end()); // Trie par ordre croissant de base
-    std::reverse(temp.begin(), temp.end()); // On veut du + contraint au - donc on reverse le tri croissant
+    // Ici on va insérer à la bonne place l'index afin qu'on récupère les index des vars ayant le + de contraintes au - de contraintes
+    for (std::map<int,int>::iterator it = temp_map.begin(); it != temp_map.end(); ++it) {
 
- // PB : ON NE SAIT PAS QUI EST placé où !! comme on a tout trié !!
-    return temp;
+        if (result.empty()) // Si c'est le premier élément, rien à comparer donc on push
+            result.push_back(it->first);
+
+        else {
+            for (std::vector<int>::iterator it2 = result.begin(); it2 != result.end(); ++it2) { // On parcourt ce qu'on a déjà trié
+
+                if (most) { // On veut les + contraintes d'abord
+                    if (it->second >= temp_map.find(*it2)->second) { // On compare le nb de contraintes de ceux triés avec celui qu'on veut insérer
+                        result.insert(it2, it->first);
+                        break;
+                    }
+
+                    else if (it2 + 1 == result.end()) { // Traite le + petit élément
+                        result.insert(it2 + 1, it->first);
+                        break;
+                    }
+                }
+                else { // On veut les moins contraintes d'abord
+                    if (it->second <= temp_map.find(*it2)->second) { // On compare le nb de contraintes de ceux triés avec celui qu'on veut insérer
+                        result.insert(it2, it->first);
+                        break;
+                    }
+
+                    else if (it2 + 1 == result.end()) { // Traite le + petit élément
+                        result.insert(it2 + 1, it->first);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    return result;
 }
 

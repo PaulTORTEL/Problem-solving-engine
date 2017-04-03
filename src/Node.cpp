@@ -1,5 +1,7 @@
 #include "Node.h"
 #include <stdlib.h>
+#include "Engine.h" // Attention à voir....
+
 Node::Node(int index)
 {
     _index = index;
@@ -12,33 +14,36 @@ Node::~Node()
 }
 
 unsigned int Node::_count = 0;
+float Node::_countPruning = 0.0;
+float Node::_countDepth = 0.0;
 
 bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& chosenValues, Constraints* constraints) {
 
    // std::cout << "X[" << chosenValues.size() << "]" << std::endl;
     // réduire le domaine du noeud actuel en un singleton
-    Domain& domain_current_var = vars[_index].getDomain();
+    Domain& domain_current_var = vars[Engine::getIndexByLevel(vars, _index)].getDomain();
+
+    // Le domaine de la variable traitée est transformé en un singleton
     domain_current_var.removeLessThan(chosenValues[chosenValues.size()-1]);
     domain_current_var.removeGreaterThan(chosenValues[chosenValues.size()-1]);
 
- //   std::cout << domain_current_var << "et value : " << chosenValues[chosenValues.size()-1] << std::endl;
-
-    //std::cout << "value : " << value << " et l'index : " << _index << " et chosen " << chosenValues.size() << std::endl;
-    //system("pause");
     if ((unsigned)_index + 1 >= vars.size()) {
-        //std::cout << "on est passe dans la boucle " << std::endl;
+
         std::vector<Domain> all_vars_domain;
         for (Variable& var: vars) {
             Domain& dom = var.getDomain();
 
-            //std::cout << var.getName() << " et " << dom << std::endl;
             all_vars_domain.push_back(dom); // On récupère tous les domaines
         }
 
+        // Il faut remettre dans l'ordre chosenValues dans le cas où on aurait traité les vars dans le désordre (ex avec variables + contraintes)
+        std::vector<int> chosenValuesSave = chosenValues;
+
+        sortChosenValuesByNaturalOrder(vars, chosenValues);
+
         for (unsigned int i = 0; i < chosenValues.size(); i++) {
             if (!constraints->isValuePossible(all_vars_domain, i, chosenValues[i])) {
-               // std::cout << "i : "<< vars[i].getName() << " et sa value : " << chosenValues[i] << std::endl;
-//system("pause");
+                chosenValues = chosenValuesSave;
                 return false;
             }
             else {
@@ -56,8 +61,11 @@ bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& c
 
     //intervention de la Brigade civile
 
-    if (!reduceDomains(chosenValues, vars, constraints)) // Si on a trouvé un ou plusieurs domaines de valeurs vides
+    if (!reduceDomains(chosenValues, vars, constraints)) { // Si on a trouvé un ou plusieurs domaines de valeurs vides
+        _countPruning++;
+        _countDepth += _index;
         return false;
+    }
 
     //intervention de la Brigade anti-espions
     std::vector<int> already_treated;
@@ -65,7 +73,7 @@ bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& c
     /*if (!edgeConsistency(vars, constraints, _index, already_treated))
         return false;*/
 
-    Domain& d = vars[_index+1].getDomain();
+    Domain& d = vars[Engine::getIndexByLevel(vars, _index+1)].getDomain();
 
     std::vector<int> values = d.getValues();
 
@@ -90,28 +98,24 @@ bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& c
 
 bool Node::reduceDomains(std::vector<int> const & chosenValues, std::vector<Variable>& vars, Constraints* constraints) {
 
-    std::cout << "chosenVal : ";
-    for (int c : chosenValues)
-        std::cout << c << " " ;
-
-    std::cout << std::endl << " taille du chosen: " << chosenValues.size() << std:: endl;
     if ((unsigned)_index + 1 >= vars.size())
         return true;
 
     std::vector<Domain> all_vars_domain;
-    for (Variable& var: vars) {
+    for (Variable& var : vars) {
         Domain& dom = var.getDomain();
 
         all_vars_domain.push_back(dom); // On récupère tous les domaines
     }
 
     for (unsigned int i = _index + 1; i < vars.size(); i++) {
-        Domain& d = vars[i].getDomain();
+        int indexByLevel = Engine::getIndexByLevel(vars, i);
+        Domain& d = vars[indexByLevel].getDomain();
 
         std::vector<int> values = d.getValues();
         for (unsigned int j = 0 ; j < values.size(); j++) {
 
-            if (!constraints->isValuePossible(all_vars_domain, i, values[j])) {
+            if (!constraints->isValuePossible(all_vars_domain, indexByLevel, values[j])) {
                 d.remove(values[j]);
             }
         }
@@ -194,4 +198,20 @@ std::cout << " omg so tard X" << related_var_index[i] << std::endl;
     }
 
     return true;
+}
+
+
+void Node::sortChosenValuesByNaturalOrder(const std::vector<Variable>& vars, std::vector<int>& chosenValues) {
+
+    int *temp = new int[chosenValues.size()];
+    unsigned int size = chosenValues.size();
+
+    for (unsigned int i = 0; i < vars.size(); i++)
+        temp[i] = chosenValues[vars[i].getLevel()];
+
+    chosenValues.clear();
+
+    for (unsigned int i = 0; i < size; i++) {
+        chosenValues.push_back(temp[i]);
+    }
 }

@@ -32,6 +32,9 @@ public:
 
     const std::vector<Variable>& getVariables() const;
 
-    void createTree();
+    void createTree(int choice);
+    static int getIndexByLevel(const std::vector<Variable>& variables, int level);
+
+    void refreshVarsLevels(); // Remet tous les niveaux des variables à -1
 
 };

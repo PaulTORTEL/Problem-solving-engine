@@ -70,7 +70,17 @@ int main(int argc, char** argv)
     constraints.addBinConstraint(9, 3, Constraints::BIN_CON_GREATER);
     constraints.addBinConstraint(9, 4, Constraints::BIN_CON_GREATER);
 
-    engine.createTree();
+    std::cout << "\tMethode + contrainte d'abord : " << std::endl;
+    engine.createTree(1);
+    std::cout << std::endl;
+
+    std::cout << "\tMethode - contrainte d'abord : " << std::endl;
+    engine.createTree(2);
+    std::cout << std::endl;
+
+    std::cout << "\tMethode classique :" << std::endl;
+    engine.createTree(0);
+
 
     return 0;
 }
