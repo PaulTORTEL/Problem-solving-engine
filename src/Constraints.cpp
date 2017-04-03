@@ -63,10 +63,10 @@ int Constraints::getIndexOf(int n, int m) const {
 	return n*_varsNum + m;
 }
 
-std::vector<int> Constraints::getRelatedVariablesIndex(unsigned int n) {
+std::vector<VarID> Constraints::getRelatedVariablesIndex(VarID n) {
 
-    std::vector<int> temp;
-    if ((int) n >= _varsNum)
+    std::vector<VarID> temp;
+    if (n >= _varsNum)
         return temp;
 
     for (int i = 0; i < _varsNum; i++) {
@@ -79,8 +79,8 @@ std::vector<int> Constraints::getRelatedVariablesIndex(unsigned int n) {
 
 const std::vector<int> Constraints::getVariablesIndexOrderedByMostOrLeastConstrained(const std::vector<Variable>& vars, bool most) {
 
-    std::vector<int> result; // Stocke les index des variables selon leur nombre de contraintes respectives dans l'ordre décroissant
-    std::map<int, int> temp_map; // (ex Var8 à 6 contraintes, Var2 à 1 contraintes => [IndexVar8][IndexVar2]...
+    std::vector<VarID> result; // Stocke les index des variables selon leur nombre de contraintes respectives dans l'ordre décroissant
+    std::map<VarID, int> temp_map; // (ex Var8 à 6 contraintes, Var2 à 1 contraintes => [IndexVar8][IndexVar2]...
 
     int count = 0;
 
@@ -95,13 +95,13 @@ const std::vector<int> Constraints::getVariablesIndexOrderedByMostOrLeastConstra
     }
 
     // Ici on va insérer à la bonne place l'index afin qu'on récupère les index des vars ayant le + de contraintes au - de contraintes
-    for (std::map<int,int>::iterator it = temp_map.begin(); it != temp_map.end(); ++it) {
+    for (auto it = temp_map.begin(); it != temp_map.end(); ++it) {
 
         if (result.empty()) // Si c'est le premier élément, rien à comparer donc on push
             result.push_back(it->first);
 
         else {
-            for (std::vector<int>::iterator it2 = result.begin(); it2 != result.end(); ++it2) { // On parcourt ce qu'on a déjà trié
+            for (auto it2 = result.begin(); it2 != result.end(); ++it2) { // On parcourt ce qu'on a déjà trié
 
                 if (most) { // On veut les + contraintes d'abord
                     if (it->second >= temp_map.find(*it2)->second) { // On compare le nb de contraintes de ceux triés avec celui qu'on veut insérer

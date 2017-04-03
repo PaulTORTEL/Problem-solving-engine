@@ -73,15 +73,15 @@ int main(int argc, char** argv)
     constraints.addBinConstraint(9, 4, Constraints::BIN_CON_GREATER);
 
     std::cout << "\tMethode + contrainte d'abord : " << std::endl;
-    engine.createTree(1);
+    engine.createTree(TraversingOrder::CONSTRAINTS_MOST);
     std::cout << std::endl;
 
     std::cout << "\tMethode - contrainte d'abord : " << std::endl;
-    engine.createTree(2);
+    engine.createTree(TraversingOrder::CONSTRAINTS_LEAST);
     std::cout << std::endl;
 
     std::cout << "\tMethode classique :" << std::endl;
-    engine.createTree(0);
+    engine.createTree(TraversingOrder::VARIABLES);
 
 
     return 0;

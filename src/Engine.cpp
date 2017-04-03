@@ -22,35 +22,31 @@ std::vector<Variable>::iterator Engine::endVars() {
 	return _variables.end();
 }
 
-void Engine::createTree(int choice) {
+void Engine::createTree(TraversingOrder order) {
 
     //On crée le premier noeud (qui sert uniquement de point de jonction donc index inutile (mis à -1))
     int index = -1;
     _root = new Node(index);
 
-    if (choice == 1 || choice == 2) {
-        std::vector<int> varsOrderedByMostOrLeastConstrained;
+    if (order == TraversingOrder::CONSTRAINTS_MOST || order == TraversingOrder::CONSTRAINTS_LEAST) {
+        std::vector<int> varsOrder;
 
         /** METHODE VARIABLE LA PLUS CONTRAINTE **/
-        if (choice == 1)
-            varsOrderedByMostOrLeastConstrained = _constraints.getVariablesIndexOrderedByMostOrLeastConstrained(_variables, true);
+        if (order == TraversingOrder::CONSTRAINTS_MOST)
+            varsOrder = _constraints.getVariablesIndexOrderedByMostOrLeastConstrained(_variables, true);
 
         /** METHODE VARIABLE LA MOINS CONTRAINTE **/
-        else // choice == 2
-            varsOrderedByMostOrLeastConstrained = _constraints.getVariablesIndexOrderedByMostOrLeastConstrained(_variables, false);
+        else // TraversingOrder::CONSTRAINTS_LEAST
+            varsOrder = _constraints.getVariablesIndexOrderedByMostOrLeastConstrained(_variables, false);
 
-        for (unsigned int i = 0; i < varsOrderedByMostOrLeastConstrained.size(); i++) {
-            for (unsigned int j = 0; j < _variables.size(); j++) {
-                if ((unsigned)varsOrderedByMostOrLeastConstrained[i] == j) {
-                    _variables[j].setLevel(i);
-                }
-            }
+        for (unsigned int i = 0; i < varsOrder.size(); i++) {
+            _variables[varsOrder[i]].setLevel(i);
         }
     }
 
 
     /** METHODE CLASSIQUE (premiere var à la derniere) **/
-    if (choice == 0) {
+    if (order == TraversingOrder::VARIABLES) {
         for (unsigned int i = 0; i < _variables.size(); i++)
             _variables[i].setLevel(i);
     }
