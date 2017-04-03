@@ -14,8 +14,12 @@ const Constraints& Engine::getConstraints() const {
 	return _constraints;
 }
 
-const std::vector<Variable>& Engine::getVariables() const {
-	return _variables;
+
+std::vector<Variable>::iterator Engine::beginVars() {
+	return _variables.begin();
+}
+std::vector<Variable>::iterator Engine::endVars() {
+	return _variables.end();
 }
 
 void Engine::createTree(int choice) {
@@ -23,7 +27,6 @@ void Engine::createTree(int choice) {
     //On crée le premier noeud (qui sert uniquement de point de jonction donc index inutile (mis à -1))
     int index = -1;
     _root = new Node(index);
-
 
     if (choice == 1 || choice == 2) {
         std::vector<int> varsOrderedByMostOrLeastConstrained;
@@ -61,18 +64,17 @@ void Engine::createTree(int choice) {
 
 
 
-    std::vector<int> values = d.getValues();
 
     bool success = false;
     std::vector<int> chosenValues; // Stocke la solution
 
-    for (unsigned int i = 0; i < values.size(); i++) {
+    for (int value : d) {
         Node *new_node = new Node(index+1);
         _root->addChild(new_node);
 
-        chosenValues.push_back(values[i]);
+        chosenValues.push_back(value);
 
-        if (new_node->createNode(values[i], _variables, chosenValues, &_constraints)) {
+        if (new_node->createNode(value, _variables, chosenValues, &_constraints)) {
             success = true;
             break;
         }
@@ -98,7 +100,7 @@ void Engine::createTree(int choice) {
     std::cout << "Nombre de noeuds elagues : " << countPrunedNodes << std::endl;
     /** -- -- -- -- **/
 
-    std::cout << "Moyenne des elagages : " << (_root->getCountDepth()/_root->getCountPruning()) << std::endl;
+    std::cout << "Profondeur moyenne des elagages : " << (_root->getCountDepth()/_root->getCountPruning()) << std::endl;
     if (success) {
             for (unsigned int j = 0; j < chosenValues.size(); j++)
                 std::cout << "Pour var " << j+1 << " value => " << chosenValues[j] << std::endl;

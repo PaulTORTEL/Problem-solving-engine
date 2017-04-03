@@ -75,10 +75,7 @@ bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& c
 
     Domain& d = vars[Engine::getIndexByLevel(vars, _index+1)].getDomain();
 
-    std::vector<int> values = d.getValues();
-
-    for (int value : values) {
-
+    for (int value : d) {
         Node * new_node = new Node(_index+1);
         this->addChild(new_node);
         chosenValues.push_back(value);
@@ -112,13 +109,15 @@ bool Node::reduceDomains(std::vector<int> const & chosenValues, std::vector<Vari
         int indexByLevel = Engine::getIndexByLevel(vars, i);
         Domain& d = vars[indexByLevel].getDomain();
 
-        std::vector<int> values = d.getValues();
-        for (unsigned int j = 0 ; j < values.size(); j++) {
-
-            if (!constraints->isValuePossible(all_vars_domain, indexByLevel, values[j])) {
-                d.remove(values[j]);
+        std::vector<int> toRemove;
+        for (int value: d) {
+            if (!constraints->isValuePossible(all_vars_domain, indexByLevel, value)) {
+                toRemove.push_back(value);
             }
         }
+
+        for(int value : toRemove)
+        	d.remove(value);
 
         if (d.isEmpty())  // 1 ou plusieurs domaines vides
             return false;
@@ -146,7 +145,7 @@ bool Node::edgeConsistency(std::vector<Variable>& vars, Constraints* constraints
         std::cout << i+1 << std::endl;
         for (int j : already_treated) {
             if (i == j) {
-                    std::cout << "putain de bordel i : " << i+1 << std::endl;
+                    std::cout << "i : " << i+1 << std::endl;
                 related_var_index.erase(related_var_index.begin() + i);
             }
         }
@@ -170,14 +169,13 @@ std::cout << std::endl;
     for (unsigned int i = 0 ; i < related_var_index.size(); i++) {
 std::cout << " omg so tard X" << related_var_index[i] << std::endl;
         Domain& d = vars[related_var_index[i]].getDomain();
-        std::vector<int> values = d.getValues();
 
-        for (unsigned int j = 0 ; j < values.size(); j++) {
+        std::vector<int> toRemove;
+        for (int value: d) {
             std::cout << "related_var_index[i]+1: " << related_var_index[i]+1 << std::endl;
            // system("pause");
-            if (!constraints->isValuePossible(all_vars_domain, related_var_index[i], values[j])) {
-                std::cout << values[j] << " vient d etre suppr du domaine de X" << related_var_index[i]+1 << " et d : " << d << std::endl;
-                d.remove(values[j]);
+            if (!constraints->isValuePossible(all_vars_domain, related_var_index[i], value)) {
+                std::cout << value << " vient d etre suppr du domaine de X" << related_var_index[i]+1 << " et d : " << d << std::endl;
             }
             else {
                 std::cout << "\t wallah frer ca marche qued " << std::endl;
@@ -188,6 +186,8 @@ std::cout << " omg so tard X" << related_var_index[i] << std::endl;
                 }
             }
         }
+        for(int value: toRemove)
+        	d.remove(value);
 
         std::cout << "le domaine de X" << related_var_index[i] + 1 << " => " << d << std::endl << std::endl << std::endl;
 

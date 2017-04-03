@@ -61,6 +61,14 @@ int Domain::getMax() const {
 	return _ranges.empty() ? INT_MIN : _ranges.back().max;
 }
 
+Domain::iterator Domain::begin() const {
+	return Domain::iterator(_ranges.begin(), _ranges.empty() ? INT_MIN : _ranges.front().min); 	
+}
+
+Domain::iterator Domain::end() const {
+	return Domain::iterator(_ranges.end(), _ranges.empty() ? INT_MIN : _ranges.back().max);
+}
+
 Range Domain::getEnclosingRange() const {
 	return Range {getMin(), getMax()};
 }
@@ -103,6 +111,20 @@ bool Domain::touchNext(Domain::Location loc, int n) {
 	return !loc.inside
 		&& loc.idx < _ranges.size()
 		&& _ranges[loc.idx].min == n+1;
+}
+
+bool Domain::clear() {
+	bool empty = isEmpty();
+	_size = 0;
+	_ranges.clear();
+	return empty;
+}
+
+
+void Domain::recalculateSize() {
+	_size = 0;
+	for (Range r: _ranges)
+        _size += r.size();
 }
 
 //La fonction la plus compliquée de toutes, trouver comment simplifier ??
@@ -168,11 +190,7 @@ bool Domain::add(Range r) {
 	//On supprime les intervalles "avalés"
 	_ranges.erase(_ranges.begin() + start.idx+1, _ranges.begin() + end.idx);
 
-	//recalcul de la taille
-	//TODO faire mieux ?
-	_size = 0;
-	for (Range r: _ranges)
-        _size += r.size();
+	recalculateSize();
 
 	return true;
 }
@@ -226,12 +244,8 @@ bool Domain::remove(int n) {
 
 bool Domain::removeLessThan(int n, bool inclusive) {
 	if(inclusive) {
-		if(n == INT_MAX) {
-			bool empty = _ranges.empty();
-			_size = 0;
-			_ranges.clear();
-			return empty;
-		}
+		if(n == INT_MAX)
+			return clear();
 		n++;
 	}
 
@@ -256,12 +270,8 @@ bool Domain::removeLessThan(int n, bool inclusive) {
 
 bool Domain::removeGreaterThan(int n, bool inclusive) {
 	if(inclusive) {
-		if(n == INT_MIN) {
-			bool empty = _ranges.empty();
-			_ranges.clear();
-			_size = 0;
-			return empty;
-		}
+		if(n == INT_MIN)
+			return clear();
 		n--;
 	}
 
@@ -284,14 +294,38 @@ bool Domain::removeGreaterThan(int n, bool inclusive) {
 }
 
 bool Domain::restrictTo(Range r) {
-	if(r.isEmpty()) {
-		bool empty = _ranges.empty();
-		_ranges.clear();
-		return empty;
+	if(r.isEmpty())
+		return clear();
+
+	bool modif = removeGreaterThan(r.max);
+	modif |= removeLessThan(r.min);
+	return modif;
+}
+
+bool Domain::restrictTo(Domain& dom) {
+	if(dom.isEmpty())
+		return clear();
+
+	bool modif = restrictTo(dom.getEnclosingRange());
+	if(dom._ranges.size() == 1)
+		return modif;
+
+	//TODO boucle compliquée
+	/*
+		this  =======	
+		dom  ===  =====
+
+	*/
+	auto cur = _ranges.begin();
+	auto other = dom._ranges.begin();
+
+	while(true) {
+
+
 	}
 
-	bool modif = removeLessThan(r.min);
-	modif |= removeGreaterThan(r.max);
+	recalculateSize();
+
 	return modif;
 }
 
@@ -309,7 +343,7 @@ std::ostream& operator<<(std::ostream& o, const Domain& d) {
 	return o << "}";
 }
 
-unsigned int Domain::getSize() {
+unsigned int Domain::getSize() const {
 
     unsigned int count = 0;
     for (unsigned int i = 0; i < _ranges.size(); i++) {
@@ -319,13 +353,44 @@ unsigned int Domain::getSize() {
 	return count;
 }
 
-std::vector<int> Domain::getValues() {
 
-    std::vector<int> values;
-    for (Range r: _ranges) {
-        for (int i = r.min; i <= r.max; i++)
-            values.push_back(i);
-    }
-
-    return values;
+Domain::iterator::iterator(std::vector<Range>::const_iterator it, int n):
+	_cur(it),
+	_n(n) {	
 }
+
+Domain::iterator& Domain::iterator::operator++() { // pre-increment
+
+	if(_n < _cur->max) {
+		_n++;
+		return *this;
+	}
+	_cur++;
+
+	return *this;
+}
+
+Domain::iterator Domain::iterator::operator++(int) { // post-increment
+	Domain::iterator old = *this;
+	++(*this);
+	return old;
+}
+
+
+bool Domain::iterator::operator==(const Domain::iterator& other) const {
+	//std::cout << ";" << *_cur << ";" <<  _n << " - " << *other._cur << ";" << other._n << std::endl;
+	return other._cur == _cur && other._n == _n;
+}
+
+bool Domain::iterator::operator!=(const Domain::iterator& other) const {
+
+	return !((*this) == other);
+}
+
+int Domain::iterator::operator*() {
+	return _n;
+}
+int Domain::iterator::operator->() {
+	return _n;
+}
+

@@ -47,13 +47,13 @@ bool Constraints::isValuePossible(std::vector<Domain>& domains, VarID var, int v
 		Domain& d2 = domains[i];
 
 		if(!(c & BIN_CON_LESS) && value < d2.getMin())
-            return false;
+			return false;
 
-        if(!(c & BIN_CON_GREATER) && value > d2.getMax())
-            return false;
+		if(!(c & BIN_CON_GREATER) && value > d2.getMax())
+			return false;
 
-        if(!(c & BIN_CON_EQUALS) && d2.getMax() == value && d2.getMin() == value)
-            return false;
+		if(!(c & BIN_CON_EQUALS) && d2.getMax() == value && d2.getMin() == value)
+			return false;
 	}
 
 	return true;

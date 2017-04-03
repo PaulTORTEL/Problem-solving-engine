@@ -7,7 +7,7 @@ using namespace std;
 Engine createEngine(const std::string& file) {
 	try {
 		return XMLParser::fromFile(file);
-
+		//return Parser::fromFile(file);
 	} catch(EngineCreationException e) {
 		std::cerr << "Erreur lors de la creation de l'engine :" << std::endl;
 		std::cerr << e.what() << std::endl;
@@ -26,8 +26,10 @@ int main(int argc, char** argv)
 	Engine engine = createEngine(file);
 	Constraints& constraints = engine.getConstraints();
 
-	for(auto& v: engine.getVariables())
-		std::cout << v << std::endl;
+	for(auto it = engine.beginVars(); it != engine.endVars(); it++) {
+		std::cout << *it << std::endl;
+	}
+
 
     /*constraints.addBinConstraint(0,1, Constraints::BIN_CON_GREATER);
     constraints.addBinConstraint(1,2, Constraints::BIN_CON_GREATER);

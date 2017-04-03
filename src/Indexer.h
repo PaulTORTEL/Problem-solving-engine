@@ -8,9 +8,11 @@ class Indexer
     public:
         Indexer();
 
+        int numIndices() const;
+
         void addIndex(int max);
 
-        bool hasNext();
+        bool hasNext() const;
         std::string next();
 
 

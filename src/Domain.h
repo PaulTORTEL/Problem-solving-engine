@@ -49,6 +49,26 @@ class Domain {
 	unsigned int _size;
 
 public:
+	class iterator {
+		std::vector<Range>::const_iterator _cur;
+		int _n;
+
+    	iterator(std::vector<Range>::const_iterator it, int n);
+
+	public:
+		friend Domain;
+
+    	iterator& operator++();   // pre-increment
+    	iterator operator++(int); // post-increment
+
+    	bool operator==(const iterator& other) const;
+		bool operator!=(const iterator& other) const;
+
+    	int operator*();
+    	int operator->();
+    };
+
+
 	//Construit un nouveau domaine vide
 	Domain(){}
 
@@ -60,10 +80,11 @@ public:
 	int getMax() const;
 
 	//Renvoie le nombre de valeurs contenues dans le domaine
-	unsigned int getSize();
+	unsigned int getSize() const;
 
-	//Renvoie la liste des valeurs du domaine
-	std::vector<int> getValues();
+	//Renvoie un itérateur sur les valeurs du domaine
+	iterator begin() const;
+	iterator end() const;
 
 	//Renvoie un intervalle contenant toutes les valeurs du domaine
 	//(non défini si le domaine est vide)
@@ -74,7 +95,11 @@ public:
 	//Renvoie true si l'intervalle ne contient qu'une seule valeur
 	bool isSingleton() const;
 
+	//Renvoie true si la valeur est contenue dans le domaine
 	bool contains(int n) const;
+
+	//Vide le domaine de toutes ses valeurs
+	bool clear();
 
 	//Ajoute un intervalle au domaine; renvoie true si le domaine a été modifié
 	bool add(Range r);
@@ -97,6 +122,10 @@ public:
 	//renvoie true si le domaine a été modifié
 	bool restrictTo(Range r);
 
+	//Supprime tous les nombres qui ne sont pas dans le domaine passé en paramètre;
+	//renvoie true si le domaine a été modifié
+	bool restrictTo(Domain& dom);
+
 	friend std::ostream& operator<<(std::ostream& o, const Domain& r);
 
 private:
@@ -110,6 +139,8 @@ private:
 
 	bool touchNext(Location loc, int n);
 	bool touchPrev(Location loc, int n);
+
+	void recalculateSize();
 
 	//Calcule la position de n dans la liste d'intervalles
 	Location locate(int n) const;

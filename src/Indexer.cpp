@@ -5,6 +5,12 @@ Indexer::Indexer()
 {
 }
 
+
+int Indexer::numIndices() const {
+    return _maxes.size();
+}
+
+
 void Indexer::addIndex(int max)
 {
     _maxes.push_back(max);
@@ -52,7 +58,7 @@ std::string Indexer::next() {
     return ss.str();
 }
 
-bool Indexer::hasNext()
+bool Indexer::hasNext() const
 {
     for (unsigned int i = 0; i < _maxes.size(); i++) {
         if (_values[i] < _maxes[i])
