@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<PSC>
+	<Vars>
+		<Var name = "X" >
+			<Index max = "5" />
+			<Index max = "1" />
+			<Domain value = "1;5" />
+		</Var>
+	</Vars>
+	
+	<Constraints>
+	</Constraints>
+</PSC>
+

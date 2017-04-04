@@ -16,11 +16,22 @@ Node::~Node()
 unsigned int Node::_count = 0;
 float Node::_countPruning = 0.0;
 float Node::_countDepth = 0.0;
+unsigned int Node::_maxPruningDepth = 0;
 
-bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& chosenValues, Constraints* constraints) {
 
-   // std::cout << "X[" << chosenValues.size() << "]" << std::endl;
-    // réduire le domaine du noeud actuel en un singleton
+bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& chosenValues, Constraints* constraints, const bool& domain_method) {
+
+    if (domain_method) {
+        for (unsigned int i = 0; i < vars.size(); i++) {
+            if (vars[i].getLevel() > _index)
+                vars[i].setLevel(-1);
+        }
+        for (unsigned int i = _index+1; i < vars.size(); i++) {
+            int indexBySmallestDomain = Engine::getIndexBySmallestDomain(vars);
+            vars[indexBySmallestDomain].setLevel(i);
+        }
+    }
+
     Domain& domain_current_var = vars[Engine::getIndexByLevel(vars, _index)].getDomain();
 
     // Le domaine de la variable traitée est transformé en un singleton
@@ -64,6 +75,9 @@ bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& c
     if (!reduceDomains(chosenValues, vars, constraints)) { // Si on a trouvé un ou plusieurs domaines de valeurs vides
         _countPruning++;
         _countDepth += _index;
+        if ((unsigned)_index > _maxPruningDepth)
+            _maxPruningDepth = _index;
+
         return false;
     }
 
@@ -80,7 +94,7 @@ bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& c
         this->addChild(new_node);
         chosenValues.push_back(value);
 
-        if (new_node->createNode(value, vars, chosenValues, constraints)) {
+        if (new_node->createNode(value, vars, chosenValues, constraints, domain_method)) {
             return true;
         }
         else {

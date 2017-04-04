@@ -62,7 +62,7 @@ int Domain::getMax() const {
 }
 
 Domain::iterator Domain::begin() const {
-	return Domain::iterator(_ranges.begin(), _ranges.empty() ? INT_MIN : _ranges.front().min); 	
+	return Domain::iterator(_ranges.begin(), _ranges.empty() ? INT_MIN : _ranges.front().min);
 }
 
 Domain::iterator Domain::end() const {
@@ -312,7 +312,7 @@ bool Domain::restrictTo(Domain& dom) {
 
 	//TODO boucle compliquée
 	/*
-		this  =======	
+		this  =======
 		dom  ===  =====
 
 	*/
@@ -346,9 +346,8 @@ std::ostream& operator<<(std::ostream& o, const Domain& d) {
 unsigned int Domain::getSize() const {
 
     unsigned int count = 0;
-    for (unsigned int i = 0; i < _ranges.size(); i++) {
+    for (unsigned int i = 0; i < _ranges.size(); i++)
         count += _ranges[i].size();
-    }
 
 	return count;
 }
@@ -356,7 +355,7 @@ unsigned int Domain::getSize() const {
 
 Domain::iterator::iterator(std::vector<Range>::const_iterator it, int n):
 	_cur(it),
-	_n(n) {	
+	_n(n) {
 }
 
 Domain::iterator& Domain::iterator::operator++() { // pre-increment

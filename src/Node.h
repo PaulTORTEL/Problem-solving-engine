@@ -15,6 +15,7 @@ class Node
 
     static float _countPruning;
     static float _countDepth;
+    static unsigned int _maxPruningDepth;
 
     public:
 
@@ -22,7 +23,7 @@ class Node
         virtual ~Node();
 
         // 1er vect des variables => réduc domaine, 2e => pour récupérer
-        bool createNode(int index, std::vector<Variable> vars, std::vector<int>& chosenValues, Constraints* constraints);
+        bool createNode(int index, std::vector<Variable> vars, std::vector<int>& chosenValues, Constraints* constraints, const bool& domain_method);
 
         void addChild(Node * new_node);
         bool reduceDomains(std::vector<int> const & chosenValues, std::vector<Variable>& vars, Constraints* constraints);
@@ -32,10 +33,12 @@ class Node
         inline unsigned int getCount();
         inline float getCountPruning();
         inline float getCountDepth();
+        inline unsigned int getMaxPruningDepth();
 
         inline void refreshCount();
         inline void refreshCountPruning();
         inline void refreshCountDepth();
+        inline void refreshMaxPruningDepth();
 
 };
 
@@ -51,6 +54,10 @@ inline float Node::getCountDepth() {
     return _countDepth;
 }
 
+inline unsigned int Node::getMaxPruningDepth() {
+    return _maxPruningDepth;
+}
+
 inline void Node::refreshCount() {
     _count = 0;
 }
@@ -60,4 +67,8 @@ inline void Node::refreshCountPruning() {
 }
 inline void Node::refreshCountDepth() {
     _countDepth = 0.0;
+}
+
+inline void Node::refreshMaxPruningDepth() {
+    _maxPruningDepth = 0;
 }

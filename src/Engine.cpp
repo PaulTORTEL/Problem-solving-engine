@@ -44,6 +44,15 @@ void Engine::createTree(TraversingOrder order) {
         }
     }
 
+    /** METHODE DOMAINE DE VALEURS LE PLUS PETIT **/
+    bool domain_method = false;
+    if (order == TraversingOrder::DOMAINS) {
+        domain_method = true;
+        int indexByDomain = Engine::getIndexBySmallestDomain(_variables);
+        if (indexByDomain != -1)
+            _variables[indexByDomain].setLevel(0);
+
+    }
 
     /** METHODE CLASSIQUE (premiere var à la derniere) **/
     if (order == TraversingOrder::VARIABLES) {
@@ -70,7 +79,7 @@ void Engine::createTree(TraversingOrder order) {
 
         chosenValues.push_back(value);
 
-        if (new_node->createNode(value, _variables, chosenValues, &_constraints)) {
+        if (new_node->createNode(value, _variables, chosenValues, &_constraints, domain_method)) {
             success = true;
             break;
         }
@@ -96,7 +105,13 @@ void Engine::createTree(TraversingOrder order) {
     std::cout << "Nombre de noeuds elagues : " << countPrunedNodes << std::endl;
     /** -- -- -- -- **/
 
-    std::cout << "Profondeur moyenne des elagages : " << (_root->getCountDepth()/_root->getCountPruning()) << std::endl;
+    if (_root->getCountPruning() == 0)
+        std::cout << "Profondeur moyenne des elagages : aucun elagage" << std::endl;
+    else
+        std::cout << "Profondeur moyenne des elagages : " << (_root->getCountDepth()/_root->getCountPruning()) << std::endl;
+
+    std::cout << "Profondeur maximum d'elagage : " << _root->getMaxPruningDepth() << std::endl;
+
     if (success) {
             for (unsigned int j = 0; j < chosenValues.size(); j++)
                 std::cout << "Pour var " << j+1 << " value => " << chosenValues[j] << std::endl;
@@ -109,6 +124,7 @@ void Engine::createTree(TraversingOrder order) {
     _root->refreshCount();
     _root->refreshCountPruning();
     _root->refreshCountDepth();
+    _root->refreshMaxPruningDepth();
 }
 
 int Engine::getIndexByLevel(const std::vector<Variable>& variables, int level) {
@@ -117,6 +133,28 @@ int Engine::getIndexByLevel(const std::vector<Variable>& variables, int level) {
             return (int)i;
     }
     return -1;
+}
+
+int Engine::getIndexBySmallestDomain(std::vector<Variable>& variables) {
+    int index_found = -1;
+    unsigned int smallest_domain_size = 0;
+
+    for (unsigned int i = 0; i < variables.size(); i++) {
+        if (variables[i].getLevel() == -1) { // On a pas encore défini son niveau dans le traitement pour la résolution
+            if (index_found == -1) {
+                index_found = i;
+                smallest_domain_size = variables[i].getDomain().getSize();
+            }
+            else {
+                unsigned int temp_size = variables[i].getDomain().getSize();
+                if (temp_size < smallest_domain_size) {
+                    index_found = i;
+                    smallest_domain_size = temp_size;
+                }
+            }
+        }
+    }
+    return index_found;
 }
 
 void Engine::refreshVarsLevels() {
