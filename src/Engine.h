@@ -15,8 +15,16 @@ public:
 	}
 };
 
+
+enum class TraversingOrder {
+    VARIABLES,
+    CONSTRAINTS_MOST,
+    CONSTRAINTS_LEAST
+};
+
 class Engine {
 
+private:
     std::vector<Variable> _variables;
 
     Constraints _constraints;
@@ -33,7 +41,7 @@ public:
     std::vector<Variable>::iterator beginVars();
     std::vector<Variable>::iterator endVars();
 
-    void createTree(int choice);
+    void createTree(TraversingOrder order);
     static int getIndexByLevel(const std::vector<Variable>& variables, int level);
 
     void refreshVarsLevels(); // Remet tous les niveaux des variables à -1

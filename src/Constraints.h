@@ -24,7 +24,7 @@ public:
 
 	static bool checkBinary(int v1, int v2, char constraint);
 
-	std::vector<int> getRelatedVariablesIndex(unsigned int n); // Renvoie un vecteur d'index des variables ayant une contrainte avec la variable d'index n
+	std::vector<int> getRelatedVariablesIndex(VarID); // Renvoie un vecteur d'index des variables ayant une contrainte avec la variable d'index n
 	const std::vector<int> getVariablesIndexOrderedByMostOrLeastConstrained(const std::vector<Variable>& vars, bool most);
 
 
