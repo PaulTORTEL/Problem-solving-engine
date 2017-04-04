@@ -110,7 +110,7 @@ bool Node::reduceDomains(std::vector<int> const & chosenValues, std::vector<Vari
         Domain& d = vars[indexByLevel].getDomain();
 
         std::vector<int> toRemove;
-        for (int value: d) {
+        for (int value : d) {
             if (!constraints->isValuePossible(all_vars_domain, indexByLevel, value)) {
                 toRemove.push_back(value);
             }
