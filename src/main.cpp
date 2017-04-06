@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 	}
 
     /** contraintes pour test 3 **/
-   /* constraints.addBinConstraint(0,1, Constraints::BIN_CON_GREATER);
+    /*constraints.addBinConstraint(0,1, Constraints::BIN_CON_GREATER);
     constraints.addBinConstraint(1,2, Constraints::BIN_CON_GREATER);
     constraints.addBinConstraint(2,3, Constraints::BIN_CON_GREATER);*/
 
