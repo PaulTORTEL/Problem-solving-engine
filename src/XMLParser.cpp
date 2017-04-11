@@ -5,16 +5,26 @@
 #include "Utils.h"
 #include "Domain.h"
 #include "Indexer.h"
+#include <regex>
+#include <string>
 
-static std::vector<Variable> readVariables(const TiXmlHandle& hdl);
+static std::vector<Variable> readVariables(const TiXmlHandle& hdl, std::map<std::string, int>& indexesMap);
+
+static void readConstraints(Engine& engine, const TiXmlHandle& hdl);
 
 static Domain readDomain(std::stringstream& err, const std::string& str);
 
 
-Engine XMLParser::fromFile(const std::string& file) {
+static void loadIndexes(std::vector< std::vector <int> >& indexes, std::string indexStr);
+
+static char GetOperator(std::string op);
+
+Engine XMLParser::fromFile(const std::string& file)
+{
     TiXmlDocument doc(file.c_str());
 
-    if(!doc.LoadFile()) {
+    if(!doc.LoadFile())
+    {
         std::stringstream err;
         err << "Impossible de lire le fichier " << file << " : " << std::endl;
         err << "error #" << doc.ErrorId() << " : " << doc.ErrorDesc();
@@ -26,19 +36,26 @@ Engine XMLParser::fromFile(const std::string& file) {
     return XMLParser::from(hdl);
 }
 
-Engine XMLParser::from(const TiXmlHandle& hdl) {
-    Engine engine(readVariables(hdl));
+Engine XMLParser::from(const TiXmlHandle& hdl)
+{
+    std::map<std::string, int> indexes;
 
+    Engine engine(readVariables(hdl,indexes));
+    engine.setIndexes(indexes);
+
+    readConstraints(engine, hdl);
     return engine;
 
 }
 
 
-static Domain readDomain(std::stringstream& err, const std::string& sDomain) {
+static Domain readDomain(std::stringstream& err, const std::string& sDomain)
+{
 
     std::vector<std::string> splitted = split(sDomain,' ');
 
-    if (splitted.size() == 0) {
+    if (splitted.size() == 0)
+    {
         err << "Le domaine ne peut etre vide !";
         throw EngineCreationException(err.str());
     }
@@ -62,14 +79,16 @@ static Domain readDomain(std::stringstream& err, const std::string& sDomain) {
             sMin = interv[0];
             sMax = interv[1];
         }
-        else {
+        else
+        {
             err << "Un intervalle doit etre de la forme i;j ou i !";
             throw EngineCreationException(err.str());
         }
         int nMin = 0;
         int nMax = 0;
 
-        if (!parseNumber(sMin.c_str(),&nMin) || !parseNumber(sMax.c_str(),&nMax)) {
+        if (!parseNumber(sMin.c_str(),&nMin) || !parseNumber(sMax.c_str(),&nMax))
+        {
             err << "Les intervalles doivent etre composes de nombres entiers !";
             throw EngineCreationException(err.str());
         }
@@ -82,24 +101,28 @@ static Domain readDomain(std::stringstream& err, const std::string& sDomain) {
     return dom;
 }
 
-static std::vector<Variable> readVariables(const TiXmlHandle& hdl) {
+static std::vector<Variable> readVariables(const TiXmlHandle& hdl, std::map<std::string, int>& indexesMap)
+{
     std::stringstream err;
 
     TiXmlElement *root = hdl.FirstChildElement().Element();
 
     std::vector<TiXmlElement*> all_var = findNodes(root,"Vars");
 
-    if (all_var.size() != 1) {
+    if (all_var.size() != 1)
+    {
         throw EngineCreationException("Il doit y avoir exactement un noeud Vars");
     }
 
     std::vector<TiXmlElement*> vars = findNodes(all_var[0],"Var");
     std::vector<Variable> variables;
 
-    for (TiXmlElement* varElem: vars) {
+    for (TiXmlElement* varElem: vars)
+    {
 
         TiXmlAttribute* nameAttr = findAttribute(varElem,"name");
-        if (!nameAttr) {
+        if (!nameAttr)
+        {
             throw EngineCreationException("Une variable doit avoir un nom ! Utilisez l'attribut name.");
         }
 
@@ -108,7 +131,8 @@ static std::vector<Variable> readVariables(const TiXmlHandle& hdl) {
 
         std::vector<TiXmlElement*> domains = findNodes(varElem,"Domain");
 
-        if (domains.size() != 1) {
+        if (domains.size() != 1)
+        {
             err << "La variable doit posseder un domaine ! Utilisez <Domain>.";
             throw EngineCreationException(err.str());
         }
@@ -117,7 +141,8 @@ static std::vector<Variable> readVariables(const TiXmlHandle& hdl) {
 
         TiXmlAttribute* domainValue = findAttribute(domain,"value");
 
-        if (!domainValue) {
+        if (!domainValue)
+        {
             err << "Un domaine doit avoir une valeur ! Utilisez l'attribut value.";
             throw EngineCreationException(err.str());
         }
@@ -131,16 +156,19 @@ static std::vector<Variable> readVariables(const TiXmlHandle& hdl) {
         std::string name(nameAttr->Value());
 
         Indexer indexer;
-        for (unsigned int i = 0; i < indexes.size(); i++) {
+        for (unsigned int i = 0; i < indexes.size(); i++)
+        {
             TiXmlElement* elemIndex = indexes[i];
             TiXmlAttribute* indexAttr = findAttribute(elemIndex,"max");
-            if (!indexAttr) {
+            if (!indexAttr)
+            {
                 err << "Un index doit avoir l'attribut max !";
                 throw EngineCreationException(err.str());
             }
 
             int indexMax = 0;
-            if (!parseNumber(indexAttr->Value(),&indexMax)) {
+            if (!parseNumber(indexAttr->Value(),&indexMax))
+            {
                 err << "Un index doit avoir une valeur max entiere !";
                 throw EngineCreationException(err.str());
             }
@@ -150,18 +178,363 @@ static std::vector<Variable> readVariables(const TiXmlHandle& hdl) {
         }
 
 
-        if(indexer.numIndices() == 0) {
+        if(indexer.numIndices() == 0)
+        {
+            indexesMap[name] = variables.size();
             variables.emplace_back(Variable(dom, name));
-        } else {
 
-            while (indexer.hasNext()) {
+        }
+        else
+        {
+
+            while (indexer.hasNext())
+            {
                 std::string index = indexer.next();
+                indexesMap[name + index] = variables.size();
                 variables.emplace_back(Variable(dom, name + index));
             }
         }
         //TODO: Ajouter les variables quelque part (et pas oublier de register l'index)
-
     }
 
     return variables;
+}
+
+static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
+{
+    std::stringstream err;
+
+    TiXmlElement *root = hdl.FirstChildElement().Element();
+
+    std::vector<TiXmlElement*> all_cstr = findNodes(root,"Constraints");
+
+    if (all_cstr.size() != 1)
+    {
+        throw EngineCreationException("Il doit y avoir exactement un noeud Constraints");
+    }
+
+    std::vector<TiXmlElement*> cstrs = findNodes(all_cstr[0],"Constraint");
+
+    for (TiXmlElement* cstrElem: cstrs)
+    {
+        TiXmlAttribute* typeAttr = findAttribute(cstrElem,"type");
+
+        if (!typeAttr)
+        {
+            throw EngineCreationException("Une contrainte doit avoir un type! Utilisez l'attribut type.");
+        }
+
+        if (!strcmp(typeAttr->Value(),"bin"))
+        {
+            TiXmlAttribute* var1Attr = findAttribute(cstrElem,"var1");
+
+            if (!var1Attr)
+            {
+                throw EngineCreationException("Une contrainte binnaire doit avoir une premiere variable. utilisez l'attribut var1.");
+            }
+
+            std::string var1 = var1Attr->Value();
+
+            TiXmlAttribute* var2Attr = findAttribute(cstrElem,"var2");
+
+            bool isValue = false;
+
+            std::string var2 = "";
+
+            int value = 0;
+
+            if (!var2Attr)
+            {
+                TiXmlAttribute* valueAttr = findAttribute(cstrElem,"value");
+
+                if (!valueAttr)
+                {
+                    throw EngineCreationException("Une contrainte binnaire doit avoir une deuxieme variable ou une valeur fixe. utilisez l'attribut var2 ou value.");
+                }
+
+                isValue = true;
+
+                if (!parseNumber(valueAttr->Value(),&value))
+                {
+                    throw EngineCreationException("L'attribut value d'une contrainte binnaire doit etre un nombre entier");
+                }
+            }
+
+            else
+                var2 = var2Attr->Value();
+
+
+            TiXmlAttribute* opAttr = findAttribute(cstrElem,"op");
+
+            if (!opAttr)
+            {
+                throw EngineCreationException("Une contrainte binnaire doit avoir un operateur. Utilisez l'attribut op");
+            }
+
+            std::string opStr = opAttr->Value();
+
+            char opChar = GetOperator(opStr);
+
+            if (opChar == -1)
+            {
+                throw EngineCreationException("Les operateurs binnaires sont : =  !=  <  >  <=  >=");
+            }
+
+            std::regex validPattern { "[[:alnum:]]+(\\[[[:digit:]]+([;][[:digit:]]+)?\\])*" };
+            std::regex searchPatternVar { "([[:alnum:]]+)(\\[[[:digit:]]+([;][[:digit:]]+)?\\])*" };
+            std::regex searchPatternIndexes { "[[:alnum:]]+((\\[[[:digit:]]+([;][[:digit:]]+)?\\])*)" };
+
+            if(!std::regex_match(var1, validPattern))
+            {
+                throw EngineCreationException("Mauvaise syntaxe de variable (var1)");
+            }
+
+            if(!isValue && !std::regex_match(var2, validPattern))
+            {
+                throw EngineCreationException("Mauvaise syntaxe de variable (var2)");
+            }
+
+            std::string var1Name = regex_replace(var1, searchPatternVar, "$1");
+            std::string var1Indexes = regex_replace(var1, searchPatternIndexes, "$1");
+
+            std::string var2Name = "TempVar";
+            std::string var2Indexes = "";
+
+            if (!isValue)
+            {
+                var2Name = regex_replace(var2, searchPatternVar, "$1");
+                var2Indexes = regex_replace(var2, searchPatternIndexes, "$1");
+            }
+
+            std::vector< std::vector<int> > var1IndexesArray;
+            std::vector< std::vector<int> > var2IndexesArray;
+
+            loadIndexes(var1IndexesArray,var1Indexes);
+
+            Indexer indexerVar1;
+            Indexer indexerVar2;
+
+            for (unsigned int i = 0; i < var1IndexesArray.size(); i++)
+            {
+                indexerVar1.addIndex(var1IndexesArray[i][1],var1IndexesArray[i][0]);
+            }
+
+            if (!isValue)
+            {
+                loadIndexes(var2IndexesArray,var2Indexes);
+
+                for (unsigned int i = 0; i < var2IndexesArray.size(); i++)
+                {
+                    indexerVar2.addIndex(var2IndexesArray[i][1],var2IndexesArray[i][0]);
+                }
+            }
+
+
+
+            Constraints& constraints = engine.getConstraints();
+
+            if (indexerVar1.numIndices() != 0)
+            {
+                if (!isValue)
+                {
+                    while (indexerVar1.hasNext())
+                    {
+                        std::string dynVar1 = var1Name + indexerVar1.next();
+
+                        int indexVar1 = engine.getIndex(dynVar1);
+
+                        if (indexVar1 == -1)
+                        {
+                            err << "Cette variable n'existe pas : " << dynVar1;
+                            throw EngineCreationException(err.str());
+                        }
+
+                        if (indexerVar2.numIndices() != 0)
+                        {
+                            while (indexerVar2.hasNext())
+                            {
+
+                                std::string dynVar2 = var2Name + indexerVar2.next();
+                                int indexVar2 = engine.getIndex(dynVar2);
+
+                                if (indexVar2 == -1)
+                                {
+                                    err << "Cette variable n'existe pas : " << dynVar2;
+                                    throw EngineCreationException(err.str());
+                                }
+
+                                std::cout << dynVar1 << "(" << indexVar1 << ")" << opStr << dynVar2 << "(" << indexVar2 << ")" << std::endl;
+                                constraints.addBinConstraint(indexVar1,indexVar2,opChar);
+                            }
+
+                            indexerVar2.reset();
+
+                        }
+                        else
+                        {
+                            int indexVar2 = engine.getIndex(var2Name);
+
+                            if (indexVar2 == -1)
+                            {
+                                err << "Cette variable n'existe pas : " << var2Name;
+                                throw EngineCreationException(err.str());
+                            }
+
+                            std::cout << dynVar1 << "(" << indexVar1 << ")" << opStr << var2Name << "(" << indexVar2 << ")" << std::endl;
+                            constraints.addBinConstraint(indexVar1,indexVar2,opChar);
+                        }
+
+                    }
+
+                }
+                else
+                {
+                    //TODO: Constantes
+                }
+
+            }
+
+            else
+            {
+
+                if (!isValue)
+                {
+                    int indexVar1 = engine.getIndex(var1Name);
+
+                    if (indexVar1 == -1)
+                    {
+                        err << "Cette variable n'existe pas : " << var1Name;
+                        throw EngineCreationException(err.str());
+                    }
+
+                    if (indexerVar2.numIndices() != 0)
+                    {
+                        while (indexerVar2.hasNext())
+                        {
+
+                            std::string dynVar2 = var2Name + indexerVar2.next();
+                            int indexVar2 = engine.getIndex(dynVar2);
+
+                            if (indexVar2 == -1)
+                            {
+                                err << "Cette variable n'existe pas : " << dynVar2;
+                                throw EngineCreationException(err.str());
+                            }
+
+                            std::cout << var1Name << "(" << indexVar1 << ")" << opStr << dynVar2 << "(" << indexVar2 << ")" << std::endl;
+                            constraints.addBinConstraint(indexVar1,indexVar2,opChar);
+                        }
+
+                        indexerVar2.reset();
+
+                    }
+                    else
+                    {
+                        int indexVar2 = engine.getIndex(var2Name);
+
+                        if (indexVar2 == -1)
+                        {
+                            err << "Cette variable n'existe pas : " << var2Name;
+                            throw EngineCreationException(err.str());
+                        }
+
+                        std::cout << var1Name << "(" << indexVar1 << ")" << opStr << var2Name << "(" << indexVar2 << ")" << std::endl;
+                        constraints.addBinConstraint(indexVar1,indexVar2,opChar);
+                    }
+                }
+                else
+                {
+                    //TODO: Constantes
+                }
+            }
+        }
+        else if (!strcmp(typeAttr->Value(),"sum"))
+        {
+
+        }
+
+
+    }
+}
+
+
+static void loadIndexes(std::vector< std::vector <int> >& indexes, std::string indexStr)
+{
+
+    if (indexStr.size() > 0)
+    {
+        std::regex variableIndexPattern { "([[:digit:]]+)([;]([[:digit:]]+))?" };
+
+        std::smatch match;
+
+
+        while (std::regex_search(indexStr, match, variableIndexPattern))
+        {
+            if (match.size() != 4)
+            {
+                throw EngineCreationException("Mauvaise syntaxe de variable (var1)");
+            }
+
+            std::vector<int> temp;
+            int index1 = 0;
+            int index2 = 0;
+            if (match[0] != match[1])
+            {
+                std::string str(match[1]);
+                std::string str2(match[3]);
+                if (!parseNumber(str.c_str(),&index1))
+                {
+                    throw EngineCreationException("Mauvaise syntaxe de variable (var1)");
+                }
+                if (!parseNumber(str2.c_str(),&index2))
+                {
+                    throw EngineCreationException("Mauvaise syntaxe de variable (var1)");
+                }
+
+            }
+            else
+            {
+                std::string str(match[0]);
+                std::string str2(match[1]);
+                if (!parseNumber(str.c_str(),&index1))
+                {
+                    throw EngineCreationException("Mauvaise syntaxe de variable (var1)");
+                }
+                if (!parseNumber(str2.c_str(),&index2))
+                {
+                    throw EngineCreationException("Mauvaise syntaxe de variable (var1)");
+                }
+
+            }
+
+            temp.push_back(index1);
+            temp.push_back(index2);
+
+            indexes.push_back(temp);
+
+            indexStr = match.suffix().str();
+        }
+    }
+
+
+}
+
+
+static char GetOperator(std::string op)
+{
+    if (op == "=")
+        return Constraints::BIN_CON_EQUALS;
+    else if (op == ">=")
+        return Constraints::BIN_CON_EQUALS | Constraints::BIN_CON_GREATER;
+    else if (op == ">")
+        return Constraints::BIN_CON_GREATER;
+    else if (op == "<=")
+        return Constraints::BIN_CON_EQUALS | Constraints::BIN_CON_LESS;
+    else if (op == "<")
+        return Constraints::BIN_CON_LESS;
+    else if (op == "!=")
+        return Constraints::BIN_CON_LESS | Constraints::BIN_CON_GREATER;
+    else
+        return -1;
+
 }

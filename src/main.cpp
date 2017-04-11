@@ -7,7 +7,6 @@ using namespace std;
 Engine createEngine(const std::string& file) {
 	try {
 		return XMLParser::fromFile(file);
-		//return Parser::fromFile(file);
 	} catch(EngineCreationException e) {
 		std::cerr << "Erreur lors de la creation de l'engine :" << std::endl;
 		std::cerr << e.what() << std::endl;
@@ -18,7 +17,7 @@ Engine createEngine(const std::string& file) {
 
 int main(int argc, char** argv)
 {
-	std::string file = "problems/test2.xml";
+	std::string file = "problems/test5.xml";
 	if(argc > 1)
 		file = argv[1];
 
@@ -30,13 +29,16 @@ int main(int argc, char** argv)
 		std::cout << *it << std::endl;
 	}
 
+	/** test 5 **/
+	//constraints.addBinConstraint(0,1, Constraints::BIN_CON_EQUALS);
+
     /** contraintes pour test 3 **/
     /*constraints.addBinConstraint(0,1, Constraints::BIN_CON_GREATER);
     constraints.addBinConstraint(1,2, Constraints::BIN_CON_GREATER);
     constraints.addBinConstraint(2,3, Constraints::BIN_CON_GREATER);*/
 
      /** contraintes pour test 2 **/
-    constraints.addBinConstraint(0, 1, Constraints::BIN_CON_GREATER);
+    /*constraints.addBinConstraint(0, 1, Constraints::BIN_CON_GREATER);
     constraints.addBinConstraint(0, 5, Constraints::BIN_CON_EQUALS);
     constraints.addBinConstraint(0, 2, Constraints::BIN_CON_GREATER);
     constraints.addBinConstraint(0, 9, Constraints::BIN_CON_GREATER);
@@ -71,7 +73,7 @@ int main(int argc, char** argv)
     constraints.addBinConstraint(9, 2, Constraints::BIN_CON_LESS);
     constraints.addBinConstraint(9, 6, Constraints::BIN_CON_LESS);
     constraints.addBinConstraint(9, 3, Constraints::BIN_CON_GREATER);
-    constraints.addBinConstraint(9, 4, Constraints::BIN_CON_GREATER);
+    constraints.addBinConstraint(9, 4, Constraints::BIN_CON_GREATER);*/
 
     /** contraintes pour test 4 **/
 /*    constraints.addBinConstraint(0, 1, Constraints::BIN_CON_GREATER);

@@ -6,6 +6,15 @@ Engine::Engine(std::vector<Variable>&& variables):
 	_constraints(variables.size()) {
 }
 
+void Engine::setIndexes(std::map<std::string, int>& indexes) {
+    _varIndexes = indexes;
+}
+int Engine::getIndex(std::string varName) {
+    if (_varIndexes.count( varName ) == 1)
+        return _varIndexes[varName];
+    return -1;
+}
+
 Constraints& Engine::getConstraints() {
 	return _constraints;
 }

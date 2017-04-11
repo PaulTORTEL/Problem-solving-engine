@@ -7,6 +7,7 @@
 #include "Variable.h"
 #include "Node.h"
 #include "Constraints.h"
+#include <map>
 
 class EngineCreationException: public std::runtime_error {
 public:
@@ -31,10 +32,16 @@ private:
     Constraints _constraints;
     Node *_root;
 
+    std::map<std::string, int> _varIndexes;
+
 
 public:
 
     Engine(std::vector<Variable>&& variables);
+
+    void setIndexes(std::map<std::string, int>& indexes);
+
+    int getIndex(std::string varName);
 
     Constraints& getConstraints();
     const Constraints& getConstraints() const;

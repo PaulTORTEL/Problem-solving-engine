@@ -53,6 +53,7 @@
 		<Unit filename="src/Variable.cpp" />
 		<Unit filename="src/Variable.h" />
 		<Unit filename="src/XMLParser.cpp" />
+		<Unit filename="src/XMLParser.h" />
 		<Unit filename="src/XMLUtil.cpp" />
 		<Unit filename="src/XMLUtil.h" />
 		<Unit filename="src/main.cpp" />

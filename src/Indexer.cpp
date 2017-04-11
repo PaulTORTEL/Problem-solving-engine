@@ -11,10 +11,18 @@ int Indexer::numIndices() const {
 }
 
 
-void Indexer::addIndex(int max)
+void Indexer::addIndex(int max, int min)
 {
+    _mins.push_back(min);
     _maxes.push_back(max);
-    _values.push_back(_values.empty() ? 0 : 1);
+    _values.push_back(_values.empty() ? (min - 1) : min);
+}
+
+void Indexer::reset() {
+
+    for (unsigned int i = 0; i < _values.size(); i++) {
+        _values[i] = (i == 0 ? (_mins[i] - 1) : _mins[i]);
+    }
 }
 
 void Indexer::advance() {
@@ -28,14 +36,14 @@ void Indexer::advance() {
                 return;
             else {
                 int k = i;
-                _values[k] = 1;
+                _values[k] = _mins[k];
                 k++;
                 while (true) {
                     if (_values[k] < _maxes[k]) {
                         _values[k]++;
                         return;
                     } else {
-                        _values[k] = 1;
+                        _values[k] = _mins[k];
                         k++;
                     }
                 }
