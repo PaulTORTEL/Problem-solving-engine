@@ -48,6 +48,8 @@
 		<Unit filename="src/Indexer.h" />
 		<Unit filename="src/Node.cpp" />
 		<Unit filename="src/Node.h" />
+		<Unit filename="src/Sum.cpp" />
+		<Unit filename="src/Sum.h" />
 		<Unit filename="src/Utils.cpp" />
 		<Unit filename="src/Utils.h" />
 		<Unit filename="src/Variable.cpp" />

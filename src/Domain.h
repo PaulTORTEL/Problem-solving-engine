@@ -66,6 +66,10 @@ public:
 
     	int operator*();
     	int operator->();
+
+    	bool operator<(const iterator& other) const;// A vérifier par Arthur
+
+    	int getValue(); // A vérifier par Arthur
     };
 
 

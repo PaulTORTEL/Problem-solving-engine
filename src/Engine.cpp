@@ -170,3 +170,4 @@ void Engine::refreshVarsLevels() {
     for (Variable& v : _variables)
         v.setLevel(-1);
 }
+

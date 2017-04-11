@@ -2,11 +2,13 @@
 
 #include <vector>
 #include "Variable.h"
+#include "Sum.h"
 
 class Constraints {
 
 	const int _varsNum;
 	std::vector<char> _binConstraints;
+	std::vector<Sum> _sumConstraints;
 
 public:
 	static const char BIN_CON_NONE = 0;
@@ -24,10 +26,13 @@ public:
 
 	static bool checkBinary(int v1, int v2, char constraint);
 
-	std::vector<int> getRelatedVariablesIndex(VarID); // Renvoie un vecteur d'index des variables ayant une contrainte avec la variable d'index n
 	const std::vector<int> getVariablesIndexOrderedByMostOrLeastConstrained(const std::vector<Variable>& vars, bool most);
 
 
+	void addSumConstraint(std::vector<VarCoeff> involvedVars, std::string op, std::string type, int resultNumber = 0, Variable* resultVar = nullptr);
+	std::vector<Sum> getSumsWhereVarIsInvolved(const VarID& v) const;
+
+	bool testCombinationForSum(std::vector<Domain>& domains, Sum& s, std::vector<VarValue>& values_test, const std::vector<VarID>& varsID, unsigned int index) const;
 
 private:
 	int getIndexOf(int n, int m) const;

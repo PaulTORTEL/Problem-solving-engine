@@ -1,5 +1,6 @@
 #include "Constraints.h"
 #include <map>
+#include <stdlib.h>
 
 Constraints::Constraints(int n):
 	_varsNum(n),
@@ -56,25 +57,35 @@ bool Constraints::isValuePossible(std::vector<Domain>& domains, VarID var, int v
 			return false;
 	}
 
+    const std::vector<Sum> sums = getSumsWhereVarIsInvolved(var);
+
+    for (Sum s : sums) {
+        std::vector<VarID> involvedVars = s.getInvolvedVars();
+        std::vector<VarValue> varsValues;
+
+        VarValue v = {var, value};
+        varsValues.push_back(v);
+
+        for (std::vector<VarID>::iterator it = involvedVars.begin(); it < involvedVars.end(); ++it) {
+            if (*it == var)
+                involvedVars.erase(it);
+        }
+
+        if (involvedVars.size() > 0) {
+            if(!testCombinationForSum(domains, s, varsValues, involvedVars, 0))
+                return false;
+        }
+        else {
+            if(!s.isValuesPossibleForSum(varsValues))
+                return false;
+        }
+    }
+
 	return true;
 }
 
 int Constraints::getIndexOf(int n, int m) const {
 	return n*_varsNum + m;
-}
-
-std::vector<VarID> Constraints::getRelatedVariablesIndex(VarID n) {
-
-    std::vector<VarID> temp;
-    if (n >= _varsNum)
-        return temp;
-
-    for (int i = 0; i < _varsNum; i++) {
-        if (_binConstraints[getIndexOf(n, i)] != BIN_CON_ALL)
-            temp.push_back(i);
-    }
-
-    return temp;
 }
 
 const std::vector<int> Constraints::getVariablesIndexOrderedByMostOrLeastConstrained(const std::vector<Variable>& vars, bool most) {
@@ -132,3 +143,37 @@ const std::vector<int> Constraints::getVariablesIndexOrderedByMostOrLeastConstra
     return result;
 }
 
+void Constraints::addSumConstraint(std::vector<VarCoeff> involvedVars, std::string op, std::string type, int resultNumber, Variable* resultVar) {
+    _sumConstraints.push_back(Sum(involvedVars, op, type, resultNumber, resultVar));
+}
+
+
+std::vector<Sum> Constraints::getSumsWhereVarIsInvolved(const VarID& v) const {
+
+    std::vector<Sum> allSum;
+    for (unsigned int i = 0; i < _sumConstraints.size(); i++) {
+        if (_sumConstraints[i].checkInvolvedVar(v))
+            allSum.push_back(_sumConstraints[i]);
+    }
+    return allSum;
+}
+
+bool Constraints::testCombinationForSum(std::vector<Domain>& domains, Sum& s, std::vector<VarValue>& values_test, const std::vector<VarID>& varsID, unsigned int index) const {
+    if (index < varsID.size()) {
+        Domain& d = domains[varsID[index]];
+
+        Domain::iterator it2 = d.end();
+        std::cout << it2.getValue() << std::endl;
+        for (Domain::iterator it = d.begin(); it < d.end(); ++it) {
+            VarValue v = {varsID[index], it.getValue()};
+            values_test.push_back(v);
+            if (!testCombinationForSum(domains, s, values_test, varsID, index+1))
+                values_test.pop_back();
+        }
+    }
+    else {
+        if(s.isValuesPossibleForSum(values_test))
+            return true;
+    }
+    return false;
+}
