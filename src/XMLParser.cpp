@@ -511,9 +511,10 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
                 variableStr = refAttr->Value();
 
                 int dex = engine.getIndex(variableStr);
-                if (dex == -1) {
-                        err << "L'attribut ref doit faire reference a une variable existante" << std::endl;
-                        err << variableStr << " n'existe pas.";
+                if (dex == -1)
+                {
+                    err << "L'attribut ref doit faire reference a une variable existante" << std::endl;
+                    err << variableStr << " n'existe pas.";
                     throw EngineCreationException(err.str());
                 }
 
@@ -625,12 +626,16 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
                     varsCoeff.push_back(temp);
                 }
 
-                if (isValue) {
-                    constraints.addSumConstraint(varsCoeff,opStr,"number",value);
-                }
-                else {
-                    constraints.addSumConstraint(varsCoeff,opStr,"var",-1,variable);
-                }
+
+            }
+
+            if (isValue)
+            {
+                constraints.addSumConstraint(varsCoeff,opStr,"number",value);
+            }
+            else
+            {
+                constraints.addSumConstraint(varsCoeff,opStr,"var",-1,variable);
             }
         }
 
