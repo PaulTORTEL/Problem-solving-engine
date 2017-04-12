@@ -23,6 +23,7 @@ int main(int argc, char** argv)
 
 
 	Engine engine = createEngine(file);
+
 	Constraints& constraints = engine.getConstraints();
 
 	for(auto it = engine.beginVars(); it != engine.endVars(); it++) {

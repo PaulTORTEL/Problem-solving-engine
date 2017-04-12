@@ -269,12 +269,18 @@ bool Domain::removeLessThan(int n, bool inclusive) {
 
 
 bool Domain::removeGreaterThan(int n, bool inclusive) {
+
 	if(inclusive) {
 		if(n == INT_MIN)
 			return clear();
 		n--;
 	}
 
+    if (_ranges.size() > 0) {
+        if (n < _ranges[0].min) {
+            return clear();
+        }
+    }
 	int removed = 0;
 
 	Domain::Location loc = locate(n);
@@ -282,8 +288,10 @@ bool Domain::removeGreaterThan(int n, bool inclusive) {
 		removed = n - _ranges[loc.idx].max;
 		_ranges[loc.idx].max = n;
 	}
-	else if(loc.idx == _ranges.size()-1)
-		return false;
+	else if(loc.idx == _ranges.size()-1) {
+        return false;
+	}
+
 
 	for(unsigned int i = loc.idx; i < _ranges.size(); i++)
 		removed += _ranges[i].size();

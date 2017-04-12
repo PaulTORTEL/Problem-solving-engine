@@ -19,6 +19,8 @@ static void loadIndexes(std::vector< std::vector <int> >& indexes, std::string i
 
 static char GetOperator(std::string op);
 
+static void ReduceVariable(Variable* var, int value, std::string op);
+
 Engine XMLParser::fromFile(const std::string& file)
 {
     TiXmlDocument doc(file.c_str());
@@ -389,7 +391,22 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
                 }
                 else
                 {
-                    //TODO: Constantes
+                    while (indexerVar1.hasNext())
+                    {
+                        std::string dynVar1 = var1Name + indexerVar1.next();
+
+                        int indexVar1 = engine.getIndex(dynVar1);
+
+                        if (indexVar1 == -1)
+                        {
+                            err << "Cette variable n'existe pas : " << dynVar1;
+                            throw EngineCreationException(err.str());
+                        }
+
+                        Variable* var = engine.getVariableByIndex(indexVar1);
+
+                        ReduceVariable(var,value,opStr);
+                    }
                 }
 
             }
@@ -444,15 +461,138 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
                 }
                 else
                 {
-                    //TODO: Constantes
+                    int indexVar1 = engine.getIndex(var1Name);
+
+                    if (indexVar1 == -1)
+                    {
+                        err << "Cette variable n'existe pas : " << var1Name;
+                        throw EngineCreationException(err.str());
+                    }
+
+                    Variable* var = engine.getVariableByIndex(indexVar1);
+
+                    ReduceVariable(var,value,opStr);
+
                 }
             }
         }
         else if (!strcmp(typeAttr->Value(),"sum"))
         {
 
-        }
+            TiXmlAttribute* valueAttr = findAttribute(cstrElem,"value");
+            TiXmlAttribute* refAttr = findAttribute(cstrElem,"ref");
 
+            int value = 0;
+
+            bool isValue = false;
+
+            if (!valueAttr && !refAttr)
+            {
+                throw EngineCreationException("Une contrainte de somme doit avoir une valeur constante ou une variable. Utilisez l'attribut value ou ref");
+            }
+
+            if (valueAttr)
+                isValue = true;
+
+
+            std::string varStr = "";
+
+            if (isValue)
+            {
+                if (!parseNumber(valueAttr->Value(),&value))
+                {
+                    throw EngineCreationException("L'attribut value d'une contrainte binnaire doit etre un nombre entier");
+                }
+            }
+            else
+            {
+                varStr = refAttr->Value();
+            }
+
+            TiXmlAttribute* opAttr = findAttribute(cstrElem,"op");
+
+            if (!opAttr)
+            {
+                throw EngineCreationException("Une contrainte de somme doit avoir un operateur. Utilisez l'attribut op");
+            }
+
+            std::string opStr = opAttr->Value();
+
+            std::vector<TiXmlElement*> sumVarsNodes = findNodes(cstrElem,"Var");
+
+            if (sumVarsNodes.size() < 1)
+            {
+                throw EngineCreationException("Une contrainte de somme doit avoir au moins un noeud Var.");
+            }
+
+            for (TiXmlElement* varElem: sumVarsNodes)
+            {
+                TiXmlAttribute* varAttr = findAttribute(varElem,"name");
+
+                if (!varAttr)
+                {
+                    throw EngineCreationException("Une variable dans une contrainte de somme doit avoir un nom. Utilisez l'attribut name.");
+                }
+
+                std::string varStr = varAttr->Value();
+
+                std::regex validPattern { "[[:alnum:]]+(\\[[[:digit:]]+([;][[:digit:]]+)?\\])*" };
+                std::regex searchPatternVar { "([[:alnum:]]+)(\\[[[:digit:]]+([;][[:digit:]]+)?\\])*" };
+                std::regex searchPatternIndexes { "[[:alnum:]]+((\\[[[:digit:]]+([;][[:digit:]]+)?\\])*)" };
+
+                if(!std::regex_match(varStr, validPattern))
+                {
+                    err << "Mauvaise syntaxe de variable : " << varStr;
+                    throw EngineCreationException(err.str());
+                }
+
+                std::string varName = regex_replace(varStr, searchPatternVar, "$1");
+                std::string varIndexes = regex_replace(varStr, searchPatternIndexes, "$1");
+
+                std::vector< std::vector<int> > varIndexesArray;
+
+                loadIndexes(varIndexesArray,varIndexes);
+
+                Indexer indexer;
+
+
+                for (unsigned int i = 0; i < varIndexesArray.size(); i++)
+                {
+                    indexer.addIndex(varIndexesArray[i][1],varIndexesArray[i][0]);
+                }
+
+                if (indexer.numIndices() != 0)
+                {
+                    while (indexer.hasNext())
+                    {
+                        std::string dynVar = varName + indexer.next();
+
+                        int indexVar = engine.getIndex(dynVar);
+
+                        if (indexVar == -1)
+                        {
+                            err << "Cette variable n'existe pas : " << dynVar;
+                            throw EngineCreationException(err.str());
+                        }
+
+
+                    }
+
+                }
+
+                else
+                {
+                    int indexVar = engine.getIndex(varStr);
+
+                    if (indexVar == -1)
+                    {
+                        err << "Cette variable n'existe pas : " << varStr;
+                        throw EngineCreationException(err.str());
+                    }
+                }
+
+            }
+        }
 
     }
 }
@@ -517,6 +657,28 @@ static void loadIndexes(std::vector< std::vector <int> >& indexes, std::string i
     }
 
 
+}
+
+static void ReduceVariable(Variable* var, int value, std::string op)
+{
+    if (op == "=")
+    {
+        var->getDomain().removeLessThan(value);
+        var->getDomain().removeGreaterThan(value);
+    }
+    else if (op == ">=")
+        var->getDomain().removeLessThan(value);
+    else if (op == ">")
+        var->getDomain().removeLessThan(value, true);
+    else if (op == "<=")
+        var->getDomain().removeGreaterThan(value);
+    else if (op == "<")
+    {
+        var->getDomain().removeGreaterThan(value, true);
+    }
+
+    else if (op == "!=")
+        var->getDomain().remove(value);
 }
 
 

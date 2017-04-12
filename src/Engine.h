@@ -55,4 +55,6 @@ public:
 
     void refreshVarsLevels(); // Remet tous les niveaux des variables à -1
 
+    Variable* getVariableByIndex(int index);
+
 };

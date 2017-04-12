@@ -15,6 +15,10 @@ int Engine::getIndex(std::string varName) {
     return -1;
 }
 
+Variable* Engine::getVariableByIndex(int index) {
+    return &_variables[index];
+}
+
 Constraints& Engine::getConstraints() {
 	return _constraints;
 }
