@@ -12,6 +12,8 @@ Sum::Sum(std::vector<VarCoeff> involvedVars, std::string op, std::string type, i
         _resultNumber = resultNumber;
     else if (_type == "var")
         _resultVar = resultVar;
+
+    std::cout << involvedVars.size() << " -> " << op << " / " << type << " / " << resultNumber << " / " << resultVar << std::endl;
 }
 
 Sum::~Sum()

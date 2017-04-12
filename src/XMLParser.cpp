@@ -217,6 +217,8 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
 
     std::vector<TiXmlElement*> cstrs = findNodes(all_cstr[0],"Constraint");
 
+    Constraints& constraints = engine.getConstraints();
+
     for (TiXmlElement* cstrElem: cstrs)
     {
         TiXmlAttribute* typeAttr = findAttribute(cstrElem,"type");
@@ -331,9 +333,6 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
                 }
             }
 
-
-
-            Constraints& constraints = engine.getConstraints();
 
             if (indexerVar1.numIndices() != 0)
             {
@@ -486,6 +485,8 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
 
             bool isValue = false;
 
+
+
             if (!valueAttr && !refAttr)
             {
                 throw EngineCreationException("Une contrainte de somme doit avoir une valeur constante ou une variable. Utilisez l'attribut value ou ref");
@@ -495,7 +496,8 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
                 isValue = true;
 
 
-            std::string varStr = "";
+            std::string variableStr = "";
+            Variable* variable = nullptr;
 
             if (isValue)
             {
@@ -506,7 +508,17 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
             }
             else
             {
-                varStr = refAttr->Value();
+                variableStr = refAttr->Value();
+
+                int dex = engine.getIndex(variableStr);
+                if (dex == -1) {
+                        err << "L'attribut ref doit faire reference a une variable existante" << std::endl;
+                        err << variableStr << " n'existe pas.";
+                    throw EngineCreationException(err.str());
+                }
+
+                variable = engine.getVariableByIndex(dex);
+
             }
 
             TiXmlAttribute* opAttr = findAttribute(cstrElem,"op");
@@ -525,6 +537,8 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
                 throw EngineCreationException("Une contrainte de somme doit avoir au moins un noeud Var.");
             }
 
+            std::vector<VarCoeff> varsCoeff;
+
             for (TiXmlElement* varElem: sumVarsNodes)
             {
                 TiXmlAttribute* varAttr = findAttribute(varElem,"name");
@@ -535,6 +549,18 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
                 }
 
                 std::string varStr = varAttr->Value();
+
+                TiXmlAttribute* coeffAttr = findAttribute(varElem,"coeff");
+
+                int coeff = 1;
+
+                if (coeffAttr)
+                {
+                    if (!parseNumber(coeffAttr->Value(),&coeff))
+                    {
+                        throw EngineCreationException("Le coefficient d'une variable dans une contrainte de somme doit etre un entier.");
+                    }
+                }
 
                 std::regex validPattern { "[[:alnum:]]+(\\[[[:digit:]]+([;][[:digit:]]+)?\\])*" };
                 std::regex searchPatternVar { "([[:alnum:]]+)(\\[[[:digit:]]+([;][[:digit:]]+)?\\])*" };
@@ -575,7 +601,10 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
                             throw EngineCreationException(err.str());
                         }
 
-
+                        VarCoeff temp;
+                        temp.coeff = coeff;
+                        temp.var = indexVar;
+                        varsCoeff.push_back(temp);
                     }
 
                 }
@@ -589,8 +618,19 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
                         err << "Cette variable n'existe pas : " << varStr;
                         throw EngineCreationException(err.str());
                     }
+
+                    VarCoeff temp;
+                    temp.coeff = coeff;
+                    temp.var = indexVar;
+                    varsCoeff.push_back(temp);
                 }
 
+                if (isValue) {
+                    constraints.addSumConstraint(varsCoeff,opStr,"number",value);
+                }
+                else {
+                    constraints.addSumConstraint(varsCoeff,opStr,"var",-1,variable);
+                }
             }
         }
 
