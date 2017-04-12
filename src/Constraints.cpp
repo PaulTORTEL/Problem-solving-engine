@@ -159,13 +159,17 @@ std::vector<Sum> Constraints::getSumsWhereVarIsInvolved(const VarID& v) const {
 }
 
 bool Constraints::testCombinationForSum(std::vector<Domain>& domains, Sum& s, std::vector<VarValue>& values_test, const std::vector<VarID>& varsID, unsigned int index) const {
+
     if (index < varsID.size()) {
+
         Domain& d = domains[varsID[index]];
 
         Domain::iterator it2 = d.end();
-        std::cout << it2.getValue() << std::endl;
-        for (Domain::iterator it = d.begin(); it < d.end(); ++it) {
+
+        for (Domain::iterator it = d.begin(); it != d.end(); ++it) {
+
             VarValue v = {varsID[index], it.getValue()};
+
             values_test.push_back(v);
             if (!testCombinationForSum(domains, s, values_test, varsID, index+1))
                 values_test.pop_back();
@@ -175,5 +179,6 @@ bool Constraints::testCombinationForSum(std::vector<Domain>& domains, Sum& s, st
         if(s.isValuesPossibleForSum(values_test))
             return true;
     }
+
     return false;
 }

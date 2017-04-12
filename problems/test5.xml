@@ -11,8 +11,7 @@
 	</Vars>
 	
 	<Constraints>
-		<Constraint type = "bin" var1 = "Y" value = "3" op = ">" />
-		
+
 		<Constraint type = "sum" value = "5" op = ">">
 			<Var name = "X[1;2]" />
 		</Constraint>
