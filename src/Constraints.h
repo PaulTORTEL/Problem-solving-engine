@@ -29,7 +29,7 @@ public:
 	const std::vector<int> getVariablesIndexOrderedByMostOrLeastConstrained(const std::vector<Variable>& vars, bool most);
 
 
-	void addSumConstraint(std::vector<VarCoeff> involvedVars, std::string op, std::string type, int resultNumber = -1, Variable* resultVar = nullptr);
+	void addSumConstraint(std::vector<VarCoeff> involvedVars, std::string op, std::string type, int resultNumber = -1, Variable* resultVar = nullptr, VarID resultVarID = -1);
 	std::vector<Sum> getSumsWhereVarIsInvolved(const VarID& v) const;
 
 	bool testCombinationForSum(std::vector<Domain>& domains, Sum& s, std::vector<VarValue>& values_test, const std::vector<VarID>& varsID, unsigned int index) const;

@@ -91,6 +91,7 @@ bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& c
             return false;
         }
     }
+
     /** === **/
 
     for (int value : d) {

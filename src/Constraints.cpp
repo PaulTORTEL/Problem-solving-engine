@@ -42,6 +42,9 @@ bool Constraints::isValuePossible(std::vector<Domain>& domains, VarID var, int v
 	Domain& d1 = domains[var];
 	if(!d1.contains(value))
 		return false;
+//std::cout << "\t\t\t\t TEST SUR " << var << " ==> " << value << std::endl;
+    //for (Domain dodo : domains)
+       // std::cout << dodo << std::endl;
 
 	for(int i = 0; i < _varsNum; i++) {
 		char c = _binConstraints[getIndexOf(var, i)];
@@ -60,30 +63,36 @@ bool Constraints::isValuePossible(std::vector<Domain>& domains, VarID var, int v
     const std::vector<Sum> sums = getSumsWhereVarIsInvolved(var);
 
     for (Sum s : sums) {
+
         std::vector<VarID> involvedVars = s.getInvolvedVars();
         std::vector<VarValue> varsValues;
 
         VarValue v = {var, value};
         varsValues.push_back(v);
-
-        for (std::vector<VarID>::iterator it = involvedVars.begin(); it < involvedVars.end(); ++it) {
-            if (*it == var)
+        //std::cout << "on analyse " << var << " on lui donne val " << v.value << " et le dom : " << domains[involvedVars[1]] << std::endl;
+        for (std::vector<VarID>::iterator it = involvedVars.begin(); it != involvedVars.end(); ++it) {
+            if (*it == var) {
                 involvedVars.erase(it);
+                break;
+            }
         }
 
-      /*  std::cout << "la struc : " << varsValues[0].var << " et " << varsValues[0].value << std::endl;
-        system("pause");*/
-
         if (involvedVars.size() > 0) {
-            if(!testCombinationForSum(domains, s, varsValues, involvedVars, 0))
+            if(!testCombinationForSum(domains, s, varsValues, involvedVars, 0)) {
+                //std::cout << "retourne faux : var " << var << " => " << value << " impossible et sera suppr du domaine" << std::endl;
                 return false;
+            }
         }
         else {
             if(!s.isValuesPossibleForSum(varsValues))
                 return false;
         }
+       // for (VarValue vv : varsValues)
+          //  std::cout << vv.var << " prend " << vv.value << std::endl;
     }
 
+ //std::cout << std::endl << "on passe avec " << var << " pour val : " << value << std::endl;
+// system("pause");
 	return true;
 }
 
@@ -103,7 +112,8 @@ const std::vector<int> Constraints::getVariablesIndexOrderedByMostOrLeastConstra
             if (_binConstraints[getIndexOf(i,j)] != BIN_CON_ALL)
                 count++;
         }
-
+        const std::vector<Sum> sums = getSumsWhereVarIsInvolved(i);
+        count += sums.size();
         temp_map[i] = count; // On compte le nombre de contrainte pour chaque variable
         count = 0;
     }
@@ -142,12 +152,14 @@ const std::vector<int> Constraints::getVariablesIndexOrderedByMostOrLeastConstra
             }
         }
     }
-
+    /*std::cout << "LE TAB : " << std::endl;
+    for (VarID vv : result)
+        std::cout << vv << std::endl;*/
     return result;
 }
 
-void Constraints::addSumConstraint(std::vector<VarCoeff> involvedVars, std::string op, std::string type, int resultNumber, Variable* resultVar) {
-    _sumConstraints.push_back(Sum(involvedVars, op, type, resultNumber, resultVar));
+void Constraints::addSumConstraint(std::vector<VarCoeff> involvedVars, std::string op, std::string type, int resultNumber, Variable* resultVar, VarID resultVarID) {
+    _sumConstraints.push_back(Sum(involvedVars, op, type, resultNumber, resultVar, resultVarID));
 }
 
 
@@ -163,22 +175,27 @@ std::vector<Sum> Constraints::getSumsWhereVarIsInvolved(const VarID& v) const {
 
 bool Constraints::testCombinationForSum(std::vector<Domain>& domains, Sum& s, std::vector<VarValue>& values_test, const std::vector<VarID>& varsID, unsigned int index) const {
 
+    //std::cout << "index : " << index << " et vars : " << varsID.size() << std::endl;
+
     if (index < varsID.size()) {
-        //std::cout << "le varid [index] : " << varsID[index] << " et sa taill : " << varsID.size() << std::endl;
+        //std::cout << "\t\tle varID [index] : " << varsID[index] << std::endl;
 
         Domain& d = domains[varsID[index]];
-
+        //std::cout << "\t la taille du dom : " << d.getSize() << " (pour " << varsID[index] << std::endl;
         for (Domain::iterator it = d.begin(); it != d.end(); ++it) {
-
+            //std::cout << "la struc : " << varsID[index] << " value  " << it.getValue() << std::endl;
             VarValue v = {varsID[index], it.getValue()};
 
             values_test.push_back(v);
            // std::cout << " et la value importante : " << it.getValue() << " et la struc : " << values_test.size() << std::endl;
             if (!testCombinationForSum(domains, s, values_test, varsID, index+1))
                 values_test.pop_back();
+
             else
                 return true;
         }
+
+        //std::cout << " c'est " << varsID[index] << " qui renvoie faux " << index << "et dom size : " << d.getSize() << std::endl;
     }
     else {
             //std::cout << "l'index : " << index << " et la struc : " << values_test[1].value << std::endl;
@@ -188,3 +205,55 @@ bool Constraints::testCombinationForSum(std::vector<Domain>& domains, Sum& s, st
 
     return false;
 }
+
+/* PARTIE NON FONCTIONNELLE, IDEE POUR OPTIMISER MAIS SANS GRAND SUCCES .... */
+/*
+bool Constraints::testCombinationForSum(std::vector<Domain>& domains, Sum& s, std::vector<VarValue>& values_test, const std::vector<VarID>& varsID, unsigned int index) const {
+
+    if (s.getOp() == ">") {
+        for (unsigned int i = 0; i < varsID.size(); i++) {
+            VarValue v = {varsID[i], domains[varsID[i]].getMax()};
+            values_test.push_back(v);
+        }
+
+        if(s.isValuesPossibleForSum(values_test)) {
+            return true;
+        }
+    }
+    else if (s.getOp() == "<") {
+        for (unsigned int i = 0; i < varsID.size(); i++) {
+            VarValue v = {varsID[i], domains[varsID[i]].getMin()};
+            values_test.push_back(v);
+        }
+        if(s.isValuesPossibleForSum(values_test))
+            return true;
+    }
+    else if (s.getOp() == "=") {
+         if (index < varsID.size()) {
+            //std::cout << "\t\tle varID [index] : " << varsID[index] << std::endl;
+
+            Domain& d = domains[varsID[index]];
+            //std::cout << "\t la taille du dom : " << d.getSize() << " (pour " << varsID[index] << std::endl;
+            for (Domain::iterator it = d.begin(); it != d.end(); ++it) {
+                //std::cout << "la struc : " << varsID[index] << " value  " << it.getValue() << std::endl;
+                VarValue v = {varsID[index], it.getValue()};
+
+                values_test.push_back(v);
+               // std::cout << " et la value importante : " << it.getValue() << " et la struc : " << values_test.size() << std::endl;
+                if (!testCombinationForSum(domains, s, values_test, varsID, index+1))
+                    values_test.pop_back();
+
+                else
+                    return true;
+            }
+
+            //std::cout << " c'est " << varsID[index] << " qui renvoie faux " << index << "et dom size : " << d.getSize() << std::endl;
+        }
+        else {
+                //std::cout << "l'index : " << index << " et la struc : " << values_test[1].value << std::endl;
+            if(s.isValuesPossibleForSum(values_test))
+                return true;
+        }
+    }
+    return false;
+}*/

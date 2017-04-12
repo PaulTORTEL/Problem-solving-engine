@@ -21,11 +21,14 @@ class Sum
     std::string _operator;
 
     std::string _type;
+
     int _resultNumber;
+
     Variable* _resultVar;
+    VarID _resultVarID;
 
     public:
-        Sum(std::vector<VarCoeff> involvedVars, std::string op, std::string type, int resultNumber, Variable* resultVar);
+        Sum(std::vector<VarCoeff> involvedVars, std::string op, std::string type, int resultNumber, Variable* resultVar, VarID resultVarID);
         ~Sum();
         bool checkInvolvedVar(const VarID& var) const;
 
@@ -33,6 +36,8 @@ class Sum
         inline std::string getType();
         inline Variable* getResultVar();
         inline int getResultNumber();
+        inline VarID getResultVarID();
+
         std::vector<VarID> getInvolvedVars() const;
         bool isValuesPossibleForSum(std::vector<VarValue> varsValues);
 
@@ -49,6 +54,10 @@ inline std::string Sum::getType() {
 
 inline Variable* Sum::getResultVar() {
     return _resultVar;
+}
+
+inline VarID Sum::getResultVarID() {
+    return _resultVarID;
 }
 
 inline int Sum::getResultNumber() {
