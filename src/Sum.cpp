@@ -1,5 +1,5 @@
 #include "Sum.h"
-
+#include <stdlib.h>
 Sum::Sum(std::vector<VarCoeff> involvedVars, std::string op, std::string type, int resultNumber, Variable* resultVar)
 {
     for (VarCoeff v : involvedVars)
@@ -13,7 +13,6 @@ Sum::Sum(std::vector<VarCoeff> involvedVars, std::string op, std::string type, i
     else if (_type == "var")
         _resultVar = resultVar;
 
-    std::cout << involvedVars.size() << " -> " << op << " / " << type << " / " << resultNumber << " / " << resultVar << std::endl;
 }
 
 Sum::~Sum()
@@ -53,8 +52,12 @@ bool Sum::isValuesPossibleForSum(std::vector<VarValue> varsValues) {
     }
 
     int result = 0;
-    for (int value : values) // x - y - z ?
+    for (int value : values) { // x - y - z ?
+            std::cout << "la value qu'on va add : " << value << " et le result : " << result << std::endl;
+            system("pause");
             result += value;
+    }
+    std::cout << "\t SORTIE : res : " << result << " l'op : " << _operator << " et le result  num : " << _resultNumber << std::endl;
 
     if (_type == "number") { // X1 + X2 = NUMBER
         if (_operator == "=") {

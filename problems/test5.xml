@@ -12,8 +12,9 @@
 	
 	<Constraints>
 
-		<Constraint type = "sum" value = "5" op = ">">
-			<Var name = "X[1;2]" />
+		<Constraint type = "sum" value = "5" op = "=">
+			<Var name = "X[1;3]" />
+			<Var name = "Y" />
 		</Constraint>
 		
 	</Constraints>
