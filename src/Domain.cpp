@@ -394,10 +394,18 @@ bool Domain::iterator::operator!=(const Domain::iterator& other) const {
 	return !((*this) == other);
 }
 
+bool Domain::iterator::operator<(const Domain::iterator& other) const {
+    return (*this) < other;
+}
+
 int Domain::iterator::operator*() {
 	return _n;
 }
 int Domain::iterator::operator->() {
 	return _n;
+}
+
+int Domain::iterator::getValue() {
+    return _n;
 }
 
