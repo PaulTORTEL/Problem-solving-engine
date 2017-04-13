@@ -86,25 +86,23 @@ void Engine::createTree(TraversingOrder order) {
     bool success = false;
     std::vector<int> chosenValues; // Stocke la solution
 
-    for (int value : d) {
+    for (Domain::iterator it = d.begin(); it != d.end(); ++it) {
         Node *new_node = new Node(index+1);
         _root->addChild(new_node);
 
-        chosenValues.push_back(value);
+        chosenValues.push_back(it.getValue());
 
-        if (new_node->createNode(value, _variables, chosenValues, &_constraints, domain_method)) {
+        if (new_node->createNode(it.getValue(), _variables, chosenValues, &_constraints, domain_method)) {
             success = true;
             break;
         }
         else {
             chosenValues.pop_back();
+            _root->removeChild(new_node);
             delete(new_node);
         }
     }
 
-
-    delete(_root);
-    refreshVarsLevels();
 
     std::cout << "Nombre de noeuds cree : " << _root->getCount() - 1 << std::endl;
 
@@ -134,10 +132,14 @@ void Engine::createTree(TraversingOrder order) {
         std::cout << "Aucune solution trouvee !" << std::endl;
     }
 
+    deleteTree(_root);
+
     _root->refreshCount();
     _root->refreshCountPruning();
     _root->refreshCountDepth();
     _root->refreshMaxPruningDepth();
+
+    refreshVarsLevels();
 }
 
 int Engine::getIndexByLevel(const std::vector<Variable>& variables, int level) {
@@ -175,3 +177,11 @@ void Engine::refreshVarsLevels() {
         v.setLevel(-1);
 }
 
+void Engine::deleteTree(Node* node) {
+    std::vector<Node*> temp = node->getChildren();
+    if (temp.size() > 0) {
+        for (Node* n : temp)
+            deleteTree(n);
+    }
+    delete(node);
+}

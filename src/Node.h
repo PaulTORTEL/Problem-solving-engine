@@ -26,6 +26,10 @@ class Node
         bool createNode(int index, std::vector<Variable> vars, std::vector<int>& chosenValues, Constraints* constraints, const bool& domain_method);
 
         void addChild(Node * new_node);
+        void removeChild(Node* child);
+        std::vector<Node*> getChildren();
+
+
         bool reduceDomains(std::vector<Variable>& vars, Constraints* constraints);
         bool edgeConsistency(std::vector<Variable> vars, Constraints* constraints, unsigned int index, int valuePossibleNextLevel);
         void sortChosenValuesByNaturalOrder(const std::vector<Variable>& vars, std::vector<int>& chosenValues);

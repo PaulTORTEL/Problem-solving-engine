@@ -162,6 +162,40 @@ void Constraints::addSumConstraint(std::vector<VarCoeff> involvedVars, std::stri
     _sumConstraints.push_back(Sum(involvedVars, op, type, resultNumber, resultVar, resultVarID));
 }
 
+const std::vector<VarID> Constraints::getRelatedVars(VarID index) {
+
+    std::vector<VarID> relatedVars;
+
+    for(int i = 0; i < _varsNum; i++) {
+		char c = _binConstraints[getIndexOf(i, index)];
+
+		if (c == (BIN_CON_GREATER | BIN_CON_LESS))
+            relatedVars.push_back(i);
+	}
+
+	std::vector<Sum> sums = getSumsWhereVarIsInvolved(index);
+
+	for (std::vector<Sum>::iterator it = sums.begin(); it != sums.end(); ++it) {
+
+        std::vector<VarID> varsInvolved = it->getInvolvedVars();
+
+        for (std::vector<VarID>::iterator it_var = varsInvolved.begin(); it_var != varsInvolved.end(); ++it_var) {
+            if (*it_var != index) {
+                bool success = false;
+                for (std::vector<VarID>::iterator it_relat_var = relatedVars.begin(); it_relat_var != relatedVars.end(); ++it_relat_var) {
+                    if (*it_relat_var == *it_var) {
+                        success = true;
+                        break;
+                    }
+                }
+
+                if (!success)
+                    relatedVars.push_back(*it_var);
+            }
+        }
+	}
+	return relatedVars;
+}
 
 std::vector<Sum> Constraints::getSumsWhereVarIsInvolved(const VarID& v) const {
 

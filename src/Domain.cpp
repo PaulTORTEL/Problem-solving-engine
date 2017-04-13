@@ -383,7 +383,6 @@ Domain::iterator Domain::iterator::operator++(int) { // post-increment
 	return old;
 }
 
-
 bool Domain::iterator::operator==(const Domain::iterator& other) const {
 	//std::cout << ";" << *_cur << ";" <<  _n << " - " << *other._cur << ";" << other._n << std::endl;
 	return other._cur == _cur && other._n == _n;

@@ -18,6 +18,21 @@ float Node::_countPruning = 0.0;
 float Node::_countDepth = 0.0;
 unsigned int Node::_maxPruningDepth = 0;
 
+std::vector<Node*> Node::getChildren() {
+    return _children;
+}
+
+void Node::removeChild(Node* child) {
+    if (!child)
+        return;
+    for (std::vector<Node*>::iterator it = _children.begin(); it != _children.end(); ++it) {
+        if (*it == child) {
+            _children.erase(it);
+            break;
+        }
+    }
+}
+
 
 bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& chosenValues, Constraints* constraints, const bool& domain_method) {
 
@@ -76,7 +91,7 @@ bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& c
     Domain& d = vars[Engine::getIndexByLevel(vars, _index+1)].getDomain(); // récupération du domaine de la valeur suivante
 
     /** COHERENCE D'ARETE **/
-    if (vars.size() < 100) {     // NOTE : A MODIFIER ? Car efficace ssi la vérification peut être faite rapidement
+    if (vars.size() < 25) {     // NOTE : A MODIFIER ? Car efficace ssi la vérification peut être faite rapidement
         bool success = false;
         for (int value : d) {
             if (edgeConsistency(vars, constraints, _index+1, value))
@@ -94,16 +109,17 @@ bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& c
 
     /** === **/
 
-    for (int value : d) {
+    for (Domain::iterator it = d.begin(); it != d.end(); ++it) {
         Node * new_node = new Node(_index+1);
         this->addChild(new_node);
-        chosenValues.push_back(value);
+        chosenValues.push_back(it.getValue());
 
-        if (new_node->createNode(value, vars, chosenValues, constraints, domain_method)) {
+        if (new_node->createNode(it.getValue(), vars, chosenValues, constraints, domain_method)) {
             return true;
         }
         else {
             chosenValues.pop_back();
+            removeChild(new_node);
             delete(new_node);
         }
     }
@@ -124,22 +140,31 @@ bool Node::reduceDomains(std::vector<Variable>& vars, Constraints* constraints) 
         all_vars_domain.push_back(dom); // On récupère tous les domaines
     }
 
-    for (unsigned int i = _index + 1; i < vars.size(); i++) {
-        int indexByLevel = Engine::getIndexByLevel(vars, i);
-        Domain& d = vars[indexByLevel].getDomain();
+    const std::vector<VarID> relatedVars = constraints->getRelatedVars(_index);
 
-        std::vector<int> toRemove;
-        for (int value : d) {
-            if (!constraints->isValuePossible(all_vars_domain, indexByLevel, value)) {
-                toRemove.push_back(value);
+    //std::cout << " on test  " << relatedVars.size() << " var concernee avec " << _index << std::endl;
+   // std::cout << " avant on teste : " << (vars.size() - (_index+1)) << std::endl;
+    //system("pause");
+
+    for (VarID v : relatedVars) {
+        int indexByLevel = Engine::getIndexByLevel(vars, v);
+        if (indexByLevel > _index) {
+
+            Domain& d = vars[indexByLevel].getDomain();
+
+            std::vector<int> toRemove;
+            for (Domain::iterator it = d.begin(); it != d.end(); ++it) {
+                if (!constraints->isValuePossible(all_vars_domain, indexByLevel, it.getValue())) {
+                    toRemove.push_back(it.getValue());
+                }
             }
+
+            for(std::vector<int>::iterator it = toRemove.begin(); it != toRemove.end(); ++it)
+                d.remove(*it);
+
+            if (d.isEmpty())  // 1 ou plusieurs domaines vides
+                return false;
         }
-
-        for(int value : toRemove)
-        	d.remove(value);
-
-        if (d.isEmpty())  // 1 ou plusieurs domaines vides
-            return false;
     }
 
     return true;

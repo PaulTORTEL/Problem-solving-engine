@@ -24,6 +24,11 @@
 		</Constraint>
 		
 		<Constraint type = "bin" var1 = "X[2]" value = "9" op = ">" />
+		
+		<Constraint type = "bin" var1 = "X[3]" value = "2" op = "=" />
+		
+		<Constraint type = "bin" var1 = "X[4]" value = "8" op = "<=" />
+		<Constraint type = "bin" var1 = "X[4]" value = "3" op = ">" />
 	
 	</Constraints>
 </PSC>

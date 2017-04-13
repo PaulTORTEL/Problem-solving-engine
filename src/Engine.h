@@ -57,4 +57,6 @@ public:
 
     Variable* getVariableByIndex(int index);
 
+    void deleteTree(Node* node);
+
 };

@@ -1,0 +1,84 @@
+<?Arrondissementml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<PSC>
+	<Vars>
+		<Var name = "Arrondissement" >
+			<Index max = "20" />
+			<Domain value = "1;3" />
+		</Var>
+	</Vars>
+	
+	<Constraints>
+		<Constraint type = "bin" var1 = "Arrondissement[1]" var2 = "Arrondissement[2]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[1]" var2 = "Arrondissement[3]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[1]" var2 = "Arrondissement[4]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[1]" var2 = "Arrondissement[6]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[1]" var2 = "Arrondissement[7]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[1]" var2 = "Arrondissement[8]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[1]" var2 = "Arrondissement[9]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[2]" var2 = "Arrondissement[9]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[2]" var2 = "Arrondissement[10]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[2]" var2 = "Arrondissement[3]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[3]" var2 = "Arrondissement[10]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[3]" var2 = "Arrondissement[11]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[3]" var2 = "Arrondissement[4]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[4]" var2 = "Arrondissement[11]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[4]" var2 = "Arrondissement[12]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[4]" var2 = "Arrondissement[5]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[5]" var2 = "Arrondissement[12]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[5]" var2 = "Arrondissement[13]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[5]" var2 = "Arrondissement[14]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[5]" var2 = "Arrondissement[6]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[6]" var2 = "Arrondissement[14]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[6]" var2 = "Arrondissement[15]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[6]" var2 = "Arrondissement[7]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[7]" var2 = "Arrondissement[15]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[7]" var2 = "Arrondissement[16]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[7]" var2 = "Arrondissement[8]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[8]" var2 = "Arrondissement[9]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[8]" var2 = "Arrondissement[16]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[8]" var2 = "Arrondissement[17]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[9]" var2 = "Arrondissement[18]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[9]" var2 = "Arrondissement[10]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[10]" var2 = "Arrondissement[18]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[10]" var2 = "Arrondissement[19]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[10]" var2 = "Arrondissement[11]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[11]" var2 = "Arrondissement[20]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[11]" var2 = "Arrondissement[12]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[12]" var2 = "Arrondissement[20]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arrondissement[12]" var2 = "Arrondissement[13]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[13]" var2 = "Arrondissement[14]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[14]" var2 = "Arrondissement[15]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[15]" var2 = "Arrondissement[16]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[16]" var2 = "Arrondissement[17]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[17]" var2 = "Arrondissement[18]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[18]" var2 = "Arrondissement[19]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[19]" var2 = "Arrondissement[20]" op = "!=" />
+		
+		
+		<Constraint type = "bin" var1 = "Arrondissement[1]" var2 = "Arrondissement[13]" op = "=" />
+		<Constraint type = "bin" var1 = "Arrondissement[1]" var2 = "Arrondissement[20]" op = "=" />
+		
+		<Constraint type = "bin" var1 = "Arrondissement[1]" value = "1" op = "=" />
+
+		
+	</Constraints>
+</PSC>
+
