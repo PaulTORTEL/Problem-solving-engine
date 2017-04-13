@@ -44,6 +44,8 @@
 		<Unit filename="src/Domain.h" />
 		<Unit filename="src/Engine.cpp" />
 		<Unit filename="src/Engine.h" />
+		<Unit filename="src/IndexRef.cpp" />
+		<Unit filename="src/IndexRef.h" />
 		<Unit filename="src/Indexer.cpp" />
 		<Unit filename="src/Indexer.h" />
 		<Unit filename="src/Node.cpp" />

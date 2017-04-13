@@ -126,8 +126,16 @@ void Engine::createTree(TraversingOrder order) {
     std::cout << "Profondeur maximum d'elagage : " << _root->getMaxPruningDepth() << std::endl;
 
     if (success) {
-            for (unsigned int j = 0; j < chosenValues.size(); j++)
-                std::cout << "Pour var " << j+1 << " value => " << chosenValues[j] << std::endl;
+
+            std::vector< std::vector < int > > displayRules;
+
+            for (unsigned int j = 0; j < chosenValues.size(); j++) {
+                if (displayRules.size() == 0) {
+                    std::cout << _variables[j].getName() << " => " << chosenValues[j] << std::endl;
+                }
+
+            }
+
     }
 
     else {

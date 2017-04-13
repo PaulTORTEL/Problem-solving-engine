@@ -76,7 +76,7 @@ bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& c
     Domain& d = vars[Engine::getIndexByLevel(vars, _index+1)].getDomain(); // récupération du domaine de la valeur suivante
 
     /** COHERENCE D'ARETE **/
-    if (vars.size() < 100) {     // NOTE : A MODIFIER ? Car efficace ssi la vérification peut être faite rapidement
+    if (vars.size() < 20) {     // NOTE : A MODIFIER ? Car efficace ssi la vérification peut être faite rapidement
         bool success = false;
         for (int value : d) {
             if (edgeConsistency(vars, constraints, _index+1, value))
