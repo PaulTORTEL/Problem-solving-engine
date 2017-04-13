@@ -225,7 +225,7 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
 
         if (!typeAttr)
         {
-            throw EngineCreationException("Une contrainte doit avoir un type! Utilisez l'attribut type.");
+            throw EngineCreationException("Une contrainte doit avoir un type ! Utilisez l'attribut type.");
         }
 
         if (!strcmp(typeAttr->Value(),"bin"))
@@ -234,7 +234,7 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
 
             if (!var1Attr)
             {
-                throw EngineCreationException("Une contrainte binnaire doit avoir une premiere variable. utilisez l'attribut var1.");
+                throw EngineCreationException("Une contrainte binaire doit avoir une premiere variable. Utilisez l'attribut var1.");
             }
 
             std::string var1 = var1Attr->Value();
@@ -253,14 +253,14 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
 
                 if (!valueAttr)
                 {
-                    throw EngineCreationException("Une contrainte binnaire doit avoir une deuxieme variable ou une valeur fixe. utilisez l'attribut var2 ou value.");
+                    throw EngineCreationException("Une contrainte binaire doit avoir une deuxieme variable ou une valeur fixe. utilisez l'attribut var2 ou value.");
                 }
 
                 isValue = true;
 
                 if (!parseNumber(valueAttr->Value(),&value))
                 {
-                    throw EngineCreationException("L'attribut value d'une contrainte binnaire doit etre un nombre entier");
+                    throw EngineCreationException("L'attribut value d'une contrainte binaire doit etre un nombre entier");
                 }
             }
 
@@ -272,7 +272,7 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
 
             if (!opAttr)
             {
-                throw EngineCreationException("Une contrainte binnaire doit avoir un operateur. Utilisez l'attribut op");
+                throw EngineCreationException("Une contrainte binaire doit avoir un operateur. Utilisez l'attribut op");
             }
 
             std::string opStr = opAttr->Value();
@@ -281,7 +281,7 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
 
             if (opChar == -1)
             {
-                throw EngineCreationException("Les operateurs binnaires sont : =  !=  <  >  <=  >=");
+                throw EngineCreationException("Les operateurs binaires sont : =  !=  <  >  <=  >=");
             }
 
             std::regex validPattern { "[[:alnum:]]+(\\[[[:digit:]]+([;][[:digit:]]+)?\\])*" };
@@ -503,7 +503,7 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
             {
                 if (!parseNumber(valueAttr->Value(),&value))
                 {
-                    throw EngineCreationException("L'attribut value d'une contrainte binnaire doit etre un nombre entier");
+                    throw EngineCreationException("L'attribut value d'une contrainte binaire doit etre un nombre entier");
                 }
             }
             else
@@ -511,10 +511,7 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
                 variableStr = refAttr->Value();
 
                 dex = engine.getIndex(variableStr);
-<<<<<<< HEAD
 
-=======
->>>>>>> bdfe6412eeeb09e588d94ca1f8e8ac9a3cf6bc3c
                 if (dex == -1)
                 {
                     err << "L'attribut ref doit faire reference a une variable existante" << std::endl;
