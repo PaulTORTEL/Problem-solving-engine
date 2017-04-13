@@ -498,7 +498,7 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
 
             std::string variableStr = "";
             Variable* variable = nullptr;
-
+            int dex = -2;
             if (isValue)
             {
                 if (!parseNumber(valueAttr->Value(),&value))
@@ -510,7 +510,8 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
             {
                 variableStr = refAttr->Value();
 
-                int dex = engine.getIndex(variableStr);
+                dex = engine.getIndex(variableStr);
+
                 if (dex == -1)
                 {
                     err << "L'attribut ref doit faire reference a une variable existante" << std::endl;

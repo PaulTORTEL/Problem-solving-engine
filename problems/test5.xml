@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <PSC>
 	<Vars>
-		<Var name = "X" >
+		<Var name = "1" >
 			<Index max = "4" />
 			<Domain value = "1;10" />
 		</Var>
@@ -12,10 +12,8 @@
 	
 	<Constraints>
 
-		<Constraint type = "sum" value = "5" op = "=">
-			<Var name = "X[1;3]" />
-			<Var name = "Y" />
-		</Constraint>
+		
+		<Constraint type = "bin" var1 = "1[1]" value = "5" op = "=" />
 		
 	</Constraints>
 </PSC>
