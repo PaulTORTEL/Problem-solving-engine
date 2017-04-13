@@ -22,6 +22,8 @@
 			<Var name = "Y[2]" />
 			<Var name = "X[5]" />
 		</Constraint>
+		
+		<Constraint type = "bin" var1 = "X[2]" value = "9" op = ">" />
 	
 	</Constraints>
 </PSC>
