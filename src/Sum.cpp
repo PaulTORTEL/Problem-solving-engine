@@ -1,7 +1,7 @@
 #include "Sum.h"
 #include <stdlib.h>
 
-Sum::Sum(std::vector<VarCoeff> involvedVars, std::string op, std::string type, int resultNumber, Variable* resultVar)
+Sum::Sum(std::vector<VarCoeff> involvedVars, std::string op, std::string type, int resultNumber, Variable* resultVar, VarID resultVarID)
 {
     for (VarCoeff v : involvedVars)
         _involvedVars.push_back(v);
@@ -14,7 +14,10 @@ Sum::Sum(std::vector<VarCoeff> involvedVars, std::string op, std::string type, i
     else if (_type == "var")
         _resultVar = resultVar;
 
-    std::cout << involvedVars.size() << " -> " << op << " / " << type << " / " << resultNumber << " / " << resultVar << std::endl;
+    _resultVarID = resultVarID;
+
+std::cout << involvedVars.size() << " -> " << op << " / " << type << " / " << resultNumber << " / " << resultVar << " / " << resultVarID << std::endl;
+
 }
 
 Sum::~Sum()
@@ -28,6 +31,12 @@ bool Sum::checkInvolvedVar(const VarID& variableID) const {
         if (varCoeff.var == variableID)
             return true;
     }
+
+    if (_type == "var") {
+        if (_resultVarID == variableID)
+            return true;
+    }
+
     return false;
 }
 
@@ -37,30 +46,36 @@ std::vector<VarID> Sum::getInvolvedVars() const {
     for (VarCoeff v : _involvedVars)
         involvedVarIDs.push_back(v.var);
 
+    if (_type == "var")
+        involvedVarIDs.push_back(_resultVarID);
+
     return involvedVarIDs;
 }
 
 bool Sum::isValuesPossibleForSum(std::vector<VarValue> varsValues) {
 
-    std::vector<int> values;
+    int result = 0;
 
     for (VarValue v : varsValues) {
         for (VarCoeff vc : _involvedVars) {
-            if (v.var == vc.var) {
-                int partial_result = v.value * vc.coeff;
-                values.push_back(partial_result);
+            if (_type == "var") {
+                if ((v.var != _resultVarID) && (v.var == vc.var)) {
+                    int partial_result = v.value * vc.coeff;
+                    result += partial_result;
+                }
+            }
+            else if (_type == "number") {
+                if (v.var == vc.var) {
+                   // std::cout << v.var << " => " << v.value << std::endl;
+                    int partial_result = v.value * vc.coeff;
+                    result += partial_result;
+                }
             }
         }
     }
 
-    int result = 0;
-    for (int value : values) { // x - y - z ?
-       //     std::cout << "la value qu'on va add : " << value << " et le result : " << result << std::endl;
-       //     system("pause");
-            result += value;
-    }
-  //  std::cout << "\t SORTIE : res : " << result << " l'op : " << _operator << " et le result  num : " << _resultNumber << std::endl;
-
+    //std::cout << "le resu :  " << result << " et le type : " << _type << " et l'op : " << _operator << std::endl;
+   // system("pause");
     if (_type == "number") { // X1 + X2 = NUMBER
         if (_operator == "=") {
             if (result == _resultNumber)
@@ -71,8 +86,10 @@ bool Sum::isValuesPossibleForSum(std::vector<VarValue> varsValues) {
                 return true;
         }
         else if (_operator == ">") {
-            if (result > _resultNumber)
+            if (result > _resultNumber) {
+                //std::cout << "true! " << std::endl;
                 return true;
+            }
         }
         else if (_operator == "<=") {
             if (result <= _resultNumber)
@@ -90,30 +107,43 @@ bool Sum::isValuesPossibleForSum(std::vector<VarValue> varsValues) {
 
 
     else if (_type == "var") {  // X1 + X2 = X3
-        Domain& d = _resultVar->getDomain();
+       // Domain& d = _resultVar->getDomain();
+        int temp_test = -1;
+
+        for (VarValue v : varsValues) {
+            if (v.var == _resultVarID)
+                temp_test = v.value;
+        }
+        //std::cout << _resultVarID << " est egal a " << temp_test << std::endl;
 
         if (_operator == "=") {
-            if (d.contains(result))
+            //if (d.contains(result))
+            if (result == temp_test)
                 return true;
         }
         else if (_operator == "<") {
-            if (result < d.getMin())
+            //if (result < d.getMin())
+            if (result < temp_test)
                 return true;
         }
         else if (_operator == ">") {
-            if (result > d.getMax())
+            //if (result > d.getMax())
+            if (result > temp_test)
                 return true;
         }
         else if (_operator == "<=") {
-            if (result <= d.getMax())
+            //if (result <= d.getMax())
+            if (result <= temp_test)
                 return true;
         }
         else if (_operator == ">=") {
-            if (result >= d.getMin())
+            //if (result >= d.getMin())
+            if (result >= temp_test)
                 return true;
         }
         else if (_operator == "!=") {
-            if (!d.contains(result))
+            //if (!d.contains(result))
+            if (result != temp_test)
                 return true;
         }
     }
