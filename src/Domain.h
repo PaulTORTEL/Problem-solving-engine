@@ -130,6 +130,8 @@ public:
 	//renvoie true si le domaine a été modifié
 	bool restrictTo(Domain& dom);
 
+	int operator[] (int x);
+
 	friend std::ostream& operator<<(std::ostream& o, const Domain& r);
 
 private:

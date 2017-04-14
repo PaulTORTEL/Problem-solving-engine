@@ -404,3 +404,17 @@ int Domain::iterator::getValue() {
     return _n;
 }
 
+int Domain::operator[] (int x) {
+    int cpt = 0;
+
+    for (unsigned int i = 0; i < _ranges.size(); i++) {
+
+        for (unsigned int j = 0; j < _ranges[i].size(); j++) {
+            if (cpt == x) {
+                return _ranges[i].min + j;
+            }
+            cpt++;
+        }
+    }
+    return -1;
+}

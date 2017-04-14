@@ -43,8 +43,8 @@ bool Constraints::isValuePossible(std::vector<Domain>& domains, VarID var, int v
 	if(!d1.contains(value))
 		return false;
 //std::cout << "\t\t\t\t TEST SUR " << var << " ==> " << value << std::endl;
-    //for (Domain dodo : domains)
-       // std::cout << dodo << std::endl;
+    //for (Domain d : domains)
+       // std::cout << d << std::endl;
 
 	for(int i = 0; i < _varsNum; i++) {
 		char c = _binConstraints[getIndexOf(var, i)];

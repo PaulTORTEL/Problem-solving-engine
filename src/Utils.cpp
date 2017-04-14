@@ -13,6 +13,36 @@ std::string concatString(const std::string& str1, const std::string& str2) {
     return temp;
 }
 
+std::string operator+(std::string str1, int n)
+{
+    std::stringstream ss;
+    ss << str1;
+    ss << n;
+    return ss.str();
+}
+
+std::string operator+(std::string str1, std::string str2)
+{
+    std::stringstream ss;
+    ss << str1;
+    ss << str2;
+    return ss.str();
+}
+
+
+
+std::string operator+(std::string str1, const char* str2)
+{
+
+    std::stringstream ss;
+    ss << str1;
+    ss << str2;
+    return ss.str();
+}
+std::string operator"" _s(const char* text, std::size_t len) {
+    return  std::string(text, len);
+}
+
 bool parseNumber(const char* s, int* i) {
 
     char* p;

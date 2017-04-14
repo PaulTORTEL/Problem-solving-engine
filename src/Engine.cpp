@@ -2,8 +2,8 @@
 #include "Node.h"
 
 Engine::Engine(std::vector<Variable>&& variables):
-	_variables(variables),
-	_constraints(variables.size()) {
+    _variables(variables),
+    _constraints(variables.size()) {
 }
 
 void Engine::setIndexes(std::map<std::string, int>& indexes) {
@@ -20,19 +20,19 @@ Variable* Engine::getVariableByIndex(int index) {
 }
 
 Constraints& Engine::getConstraints() {
-	return _constraints;
+    return _constraints;
 }
 
 const Constraints& Engine::getConstraints() const {
-	return _constraints;
+    return _constraints;
 }
 
 
 std::vector<Variable>::iterator Engine::beginVars() {
-	return _variables.begin();
+    return _variables.begin();
 }
 std::vector<Variable>::iterator Engine::endVars() {
-	return _variables.end();
+    return _variables.end();
 }
 
 void Engine::createTree(TraversingOrder order) {
@@ -81,28 +81,28 @@ void Engine::createTree(TraversingOrder order) {
     Domain& d = _variables[indexByLevel].getDomain();
 
 
-
-
     bool success = false;
     std::vector<int> chosenValues; // Stocke la solution
 
-    for (Domain::iterator it = d.begin(); it != d.end(); ++it) {
+    for (unsigned int cpt = 0; cpt < d.getSize(); cpt++) {
         Node *new_node = new Node(index+1);
         _root->addChild(new_node);
 
-        chosenValues.push_back(it.getValue());
+        chosenValues.push_back(d[cpt]);
 
-        if (new_node->createNode(it.getValue(), _variables, chosenValues, &_constraints, domain_method)) {
+        if (new_node->createNode(d[cpt], _variables, chosenValues, &_constraints, domain_method)) {
             success = true;
             break;
         }
         else {
             chosenValues.pop_back();
-            _root->removeChild(new_node);
             delete(new_node);
         }
     }
 
+
+    delete(_root);
+    refreshVarsLevels();
 
     std::cout << "Nombre de noeuds cree : " << _root->getCount() - 1 << std::endl;
 
@@ -124,22 +124,25 @@ void Engine::createTree(TraversingOrder order) {
     std::cout << "Profondeur maximum d'elagage : " << _root->getMaxPruningDepth() << std::endl;
 
     if (success) {
-            for (unsigned int j = 0; j < chosenValues.size(); j++)
-                std::cout << "Pour var " << j+1 << " value => " << chosenValues[j] << std::endl;
+
+        std::vector< std::vector < int > > displayRules;
+
+        for (unsigned int j = 0; j < chosenValues.size(); j++) {
+            if (displayRules.size() == 0) {
+                std::cout << _variables[j].getName() << " => " << chosenValues[j] << std::endl;
+            }
+
+        }
     }
 
     else {
         std::cout << "Aucune solution trouvee !" << std::endl;
     }
 
-    deleteTree(_root);
-
     _root->refreshCount();
     _root->refreshCountPruning();
     _root->refreshCountDepth();
     _root->refreshMaxPruningDepth();
-
-    refreshVarsLevels();
 }
 
 int Engine::getIndexByLevel(const std::vector<Variable>& variables, int level) {
@@ -175,13 +178,4 @@ int Engine::getIndexBySmallestDomain(std::vector<Variable>& variables) {
 void Engine::refreshVarsLevels() {
     for (Variable& v : _variables)
         v.setLevel(-1);
-}
-
-void Engine::deleteTree(Node* node) {
-    std::vector<Node*> temp = node->getChildren();
-    if (temp.size() > 0) {
-        for (Node* n : temp)
-            deleteTree(n);
-    }
-    delete(node);
 }
