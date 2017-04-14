@@ -94,12 +94,18 @@ bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& c
 
     /** === **/
 
-    for (int value : d) {
+
+    int value2 = 0;
+
+    for (unsigned int cpt = 0; cpt < d.getSize(); cpt++) {
+        value2 = d[cpt];
+
+
         Node * new_node = new Node(_index+1);
         this->addChild(new_node);
-        chosenValues.push_back(value);
+        chosenValues.push_back(value2);
 
-        if (new_node->createNode(value, vars, chosenValues, constraints, domain_method)) {
+        if (new_node->createNode(value2, vars, chosenValues, constraints, domain_method)) {
             return true;
         }
         else {
@@ -107,6 +113,22 @@ bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& c
             delete(new_node);
         }
     }
+
+    /*for (int value2 : d) {
+        std::cout << value2 << std::endl;
+        Node * new_node = new Node(_index+1);
+        this->addChild(new_node);
+        chosenValues.push_back(value2);
+
+        if (new_node->createNode(value2, vars, chosenValues, constraints, domain_method)) {
+            return true;
+        }
+        else {
+            chosenValues.pop_back();
+            delete(new_node);
+        }
+    }
+*/
 
 
     return false;
@@ -129,7 +151,9 @@ bool Node::reduceDomains(std::vector<Variable>& vars, Constraints* constraints) 
         Domain& d = vars[indexByLevel].getDomain();
 
         std::vector<int> toRemove;
-        for (int value : d) {
+
+        for (unsigned int cpt = 0; cpt < d.getSize(); cpt++) {
+            int value = d[cpt];
             if (!constraints->isValuePossible(all_vars_domain, indexByLevel, value)) {
                 toRemove.push_back(value);
             }

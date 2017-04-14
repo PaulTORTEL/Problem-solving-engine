@@ -67,9 +67,7 @@ public:
     	int operator*();
     	int operator->();
 
-
-
-    	int getValue(); // A vérifier par Arthur
+        int getValue(); // A vérifier par Arthur
     };
 
 
@@ -131,6 +129,8 @@ public:
 	bool restrictTo(Domain& dom);
 
 	friend std::ostream& operator<<(std::ostream& o, const Domain& r);
+
+    int operator[] (int x);
 
 private:
 	//Une position dans la liste d'intervalle

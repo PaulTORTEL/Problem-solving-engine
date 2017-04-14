@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <PSC>
-	<Vars>
-		<Var name = "X" >
-			<Index max = "5" />
-			<Domain value = "1;10" />
-		</Var>
-	</Vars>
-	
-	<Constraints>
-			
-		<Constraint type = "bin" var1 = "X[1]" var2 = "X[2]" op = "!=" />
-	
-	</Constraints>
+    <Vars>
+        <Var name = "X" >
+            <Index max = "3" />
+            <Index max = "9" />
+            <Domain value = "1;9" />
+        </Var>
+    </Vars>
+   
+    <Constraints>
+       
+        <Constraint type = "bin" var1 = "X[1][1;9]" var2 = "X[1][1;9]" op = "!=" />
+        <Constraint type = "bin" var1 = "X[2][1;9]" var2 = "X[2][1;9]" op = "!=" />
+        <Constraint type = "bin" var1 = "X[3][1;9]" var2 = "X[3][1;9]" op = "!=" />
+       
+       
+        <Constraint type = "bin" var1 = "X[1;3][1]" var2 = "X[1;3][1]" op = "!=" />
+        <Constraint type = "bin" var1 = "X[1;3][2]" var2 = "X[1;3][2]" op = "!=" />
+        <Constraint type = "bin" var1 = "X[1;3][3]" var2 = "X[1;3][3]" op = "!=" />
+        <Constraint type = "bin" var1 = "X[1;3][4]" var2 = "X[1;3][4]" op = "!=" />
+        <Constraint type = "bin" var1 = "X[1;3][5]" var2 = "X[1;3][5]" op = "!=" />
+        <Constraint type = "bin" var1 = "X[1;3][6]" var2 = "X[1;3][6]" op = "!=" />
+        <Constraint type = "bin" var1 = "X[1;3][7]" var2 = "X[1;3][7]" op = "!=" />
+        <Constraint type = "bin" var1 = "X[1;3][8]" var2 = "X[1;3][8]" op = "!=" />
+        <Constraint type = "bin" var1 = "X[1;3][9]" var2 = "X[1;3][9]" op = "!=" />
+       
+    </Constraints>
 </PSC>
-

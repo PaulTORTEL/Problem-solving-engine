@@ -86,13 +86,14 @@ void Engine::createTree(TraversingOrder order) {
     bool success = false;
     std::vector<int> chosenValues; // Stocke la solution
 
-    for (int value : d) {
+    for (int cpt = 0; cpt < d.getSize(); cpt++) {
+        int value2 = d[cpt];
         Node *new_node = new Node(index+1);
         _root->addChild(new_node);
 
-        chosenValues.push_back(value);
+        chosenValues.push_back(value2);
 
-        if (new_node->createNode(value, _variables, chosenValues, &_constraints, domain_method)) {
+        if (new_node->createNode(value2, _variables, chosenValues, &_constraints, domain_method)) {
             success = true;
             break;
         }
@@ -130,10 +131,14 @@ void Engine::createTree(TraversingOrder order) {
             std::vector< std::vector < int > > displayRules;
 
             for (unsigned int j = 0; j < chosenValues.size(); j++) {
-                if (displayRules.size() == 0) {
+               /* if (displayRules.size() == 0) {
                     std::cout << _variables[j].getName() << " => " << chosenValues[j] << std::endl;
-                }
+                }*/
 
+                std::cout << chosenValues[j] << "  ";
+                if ( (j + 1) % 9 == 0) {
+                    std::cout << std::endl;
+                }
             }
 
     }
