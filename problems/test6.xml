@@ -2,28 +2,135 @@
 <PSC>
 	<Vars>
 		<Var name = "X" >
-			<Index max = "3" />
+			<Index max = "9" />
 			<Index max = "9" />
 			<Domain value = "1;9" />
 		</Var>
 	</Vars>
 	
 	<Constraints>
+
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[1][1;9]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[2][1;9]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[3][1;9]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[4][1;9]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[5][1;9]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[6][1;9]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[7][1;9]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[8][1;9]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[9][1;9]" />
+		</Constraint>
 		
-		<Constraint type = "bin" var1 = "X[1][1;9]" var2 = "X[1][1;9]" op = "!=" />
-		<Constraint type = "bin" var1 = "X[2][1;9]" var2 = "X[2][1;9]" op = "!=" />
-		<Constraint type = "bin" var1 = "X[3][1;9]" var2 = "X[3][1;9]" op = "!=" />
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[1;9][1]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[1;9][2]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[1;9][3]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[1;9][4]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[1;9][5]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[1;9][6]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[1;9][7]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[1;9][8]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[1;9][9]" />
+		</Constraint>
+		
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[1;3][1;3]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[1;3][4;6]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[1;3][7;9]" />
+		</Constraint>
+		
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[4;6][1;3]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[4;6][4;6]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[4;6][7;9]" />
+		</Constraint>
+		
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[7;9][1;3]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[7;9][4;6]" />
+		</Constraint>
+		<Constraint type = "sum" value = "45" op = "=">
+			<Var name = "X[7;9][7;9]" />
+		</Constraint>
 		
 		
-		<Constraint type = "bin" var1 = "X[1;3][1]" var2 = "X[1;3][1]" op = "!=" />
-		<Constraint type = "bin" var1 = "X[1;3][2]" var2 = "X[1;3][2]" op = "!=" />
-		<Constraint type = "bin" var1 = "X[1;3][3]" var2 = "X[1;3][3]" op = "!=" />
-		<Constraint type = "bin" var1 = "X[1;3][4]" var2 = "X[1;3][4]" op = "!=" />
-		<Constraint type = "bin" var1 = "X[1;3][5]" var2 = "X[1;3][5]" op = "!=" />
-		<Constraint type = "bin" var1 = "X[1;3][6]" var2 = "X[1;3][6]" op = "!=" />
-		<Constraint type = "bin" var1 = "X[1;3][7]" var2 = "X[1;3][7]" op = "!=" />
-		<Constraint type = "bin" var1 = "X[1;3][8]" var2 = "X[1;3][8]" op = "!=" />
-		<Constraint type = "bin" var1 = "X[1;3][9]" var2 = "X[1;3][9]" op = "!=" />
+		<Constraint type = "bin" var1 = "X[8][1]" value = "3" op = "=" />
+		
+		<Constraint type = "bin" var1 = "X[3][2]" value = "2" op = "=" />
+		<Constraint type = "bin" var1 = "X[4][2]" value = "9" op = "=" />
+		<Constraint type = "bin" var1 = "X[5][2]" value = "5" op = "=" />
+		<Constraint type = "bin" var1 = "X[8][2]" value = "1" op = "=" />
+		<Constraint type = "bin" var1 = "X[9][2]" value = "8" op = "=" />
+		
+		<Constraint type = "bin" var1 = "X[1][3]" value = "6" op = "=" />
+		<Constraint type = "bin" var1 = "X[3][3]" value = "1" op = "=" />
+		
+		<Constraint type = "bin" var1 = "X[2][4]" value = "2" op = "=" />
+		<Constraint type = "bin" var1 = "X[6][4]" value = "1" op = "=" />
+		<Constraint type = "bin" var1 = "X[7][4]" value = "4" op = "=" />
+		
+		<Constraint type = "bin" var1 = "X[3][5]" value = "9" op = "=" />
+		<Constraint type = "bin" var1 = "X[8][5]" value = "8" op = "=" />
+		<Constraint type = "bin" var1 = "X[9][5]" value = "6" op = "=" />
+		
+		<Constraint type = "bin" var1 = "X[1][6]" value = "8" op = "=" />
+		<Constraint type = "bin" var1 = "X[3][6]" value = "6" op = "=" />
+		<Constraint type = "bin" var1 = "X[6][6]" value = "9" op = "=" />
+		<Constraint type = "bin" var1 = "X[8][6]" value = "2" op = "=" />
+		
+		<Constraint type = "bin" var1 = "X[5][7]" value = "4" op = "=" />
+		
+		<Constraint type = "bin" var1 = "X[1][8]" value = "4" op = "=" />
+		<Constraint type = "bin" var1 = "X[2][8]" value = "6" op = "=" />
+		<Constraint type = "bin" var1 = "X[6][8]" value = "7" op = "=" />
+		<Constraint type = "bin" var1 = "X[7][8]" value = "5" op = "=" />
+		
+		<Constraint type = "bin" var1 = "X[1][9]" value = "1" op = "=" />
+		<Constraint type = "bin" var1 = "X[9][9]" value = "3" op = "=" />
+		
 		
 	</Constraints>
 </PSC>

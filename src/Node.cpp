@@ -91,7 +91,7 @@ bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& c
     Domain& d = vars[Engine::getIndexByLevel(vars, _index+1)].getDomain(); // récupération du domaine de la valeur suivante
 
     /** COHERENCE D'ARETE **/
-    if (vars.size() < 25) {
+    if (vars.size() < 20) {
         bool success = false;
         for (unsigned int cpt = 0; cpt < d.getSize(); cpt++) {
             if (edgeConsistency(vars, constraints, _index+1, d[cpt]))
@@ -182,8 +182,8 @@ bool Node::edgeConsistency(std::vector<Variable> vars, Constraints* constraints,
 
         Domain& dNextLevel = vars[Engine::getIndexByLevel(vars, level+1)].getDomain(); // récupération du domaine de la valeur suivante
         bool success = false;
-        for (int value : dNextLevel) {
-            if (edgeConsistency(vars, constraints, level+1, value))
+       for (unsigned int cpt = 0; cpt < dNextLevel.getSize(); cpt++) {
+            if (edgeConsistency(vars, constraints, level+1, dNextLevel[cpt]))
                 success = true;
         }
         if (!success)

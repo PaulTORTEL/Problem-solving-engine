@@ -76,10 +76,6 @@
 		<Constraint type = "bin" var1 = "X[4;6][7;9]" var2 = "X[4;6][7;9]" op = "!=" />
 		<Constraint type = "bin" var1 = "X[7;9][7;9]" var2 = "X[8;9][7;9]" op = "!=" />
 		
-		<Constraint type = "bin" var1 = "X[1;3][4;6]" var2 = "X[1;3][4;6]" op = "!=" />
-		<Constraint type = "bin" var1 = "X[4;6][4;6]" var2 = "X[4;6][4;6]" op = "!=" />
-		<Constraint type = "bin" var1 = "X[7;9][4;6]" var2 = "X[8;9][4;6]" op = "!=" />
-		
 	</Constraints>
 </PSC>
 

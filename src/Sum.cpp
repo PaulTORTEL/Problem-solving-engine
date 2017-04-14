@@ -16,7 +16,7 @@ Sum::Sum(std::vector<VarCoeff> involvedVars, std::string op, std::string type, i
 
     _resultVarID = resultVarID;
 
-std::cout << involvedVars.size() << " -> " << op << " / " << type << " / " << resultNumber << " / " << resultVar << " / " << resultVarID << std::endl;
+//std::cout << involvedVars.size() << " -> " << op << " / " << type << " / " << resultNumber << " / " << resultVar << " / " << resultVarID << std::endl;
 
 }
 
@@ -74,8 +74,6 @@ bool Sum::isValuesPossibleForSum(std::vector<VarValue> varsValues) {
         }
     }
 
-    //std::cout << "le resu :  " << result << " et le type : " << _type << " et l'op : " << _operator << std::endl;
-   // system("pause");
     if (_type == "number") { // X1 + X2 = NUMBER
         if (_operator == "=") {
             if (result == _resultNumber)
@@ -107,14 +105,13 @@ bool Sum::isValuesPossibleForSum(std::vector<VarValue> varsValues) {
 
 
     else if (_type == "var") {  // X1 + X2 = X3
-       // Domain& d = _resultVar->getDomain();
+
         int temp_test = -1;
 
         for (VarValue v : varsValues) {
             if (v.var == _resultVarID)
                 temp_test = v.value;
         }
-        //std::cout << _resultVarID << " est egal a " << temp_test << std::endl;
 
         if (_operator == "=") {
             //if (d.contains(result))
