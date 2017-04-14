@@ -368,7 +368,7 @@ Domain::iterator::iterator(std::vector<Range>::const_iterator it, int n):
 
 Domain::iterator& Domain::iterator::operator++() { // pre-increment
 
-	if(_n < _cur->max) {
+	if(_n != _cur->max) {
 		_n++;
 		return *this;
 	}
@@ -381,6 +381,21 @@ Domain::iterator Domain::iterator::operator++(int) { // post-increment
 	Domain::iterator old = *this;
 	++(*this);
 	return old;
+}
+
+int Domain::operator[] (int x) {
+    int cpt = 0;
+
+    for (unsigned int i = 0; i < _ranges.size(); i++) {
+
+        for (unsigned int j = 0; j < _ranges[i].size(); j++) {
+            if (cpt == x) {
+                return _ranges[i].min + j;
+            }
+            cpt++;
+        }
+    }
+    return -1;
 }
 
 bool Domain::iterator::operator==(const Domain::iterator& other) const {
@@ -402,19 +417,4 @@ int Domain::iterator::operator->() {
 
 int Domain::iterator::getValue() {
     return _n;
-}
-
-int Domain::operator[] (int x) {
-    int cpt = 0;
-
-    for (unsigned int i = 0; i < _ranges.size(); i++) {
-
-        for (unsigned int j = 0; j < _ranges[i].size(); j++) {
-            if (cpt == x) {
-                return _ranges[i].min + j;
-            }
-            cpt++;
-        }
-    }
-    return -1;
 }

@@ -84,6 +84,7 @@ void Engine::createTree(TraversingOrder order) {
     bool success = false;
     std::vector<int> chosenValues; // Stocke la solution
 
+
     for (unsigned int cpt = 0; cpt < d.getSize(); cpt++) {
         Node *new_node = new Node(index+1);
         _root->addChild(new_node);
@@ -96,13 +97,10 @@ void Engine::createTree(TraversingOrder order) {
         }
         else {
             chosenValues.pop_back();
+            _root->removeChild(new_node);
             delete(new_node);
         }
     }
-
-
-    delete(_root);
-    refreshVarsLevels();
 
     std::cout << "Nombre de noeuds cree : " << _root->getCount() - 1 << std::endl;
 
@@ -124,14 +122,17 @@ void Engine::createTree(TraversingOrder order) {
     std::cout << "Profondeur maximum d'elagage : " << _root->getMaxPruningDepth() << std::endl;
 
     if (success) {
-
-        std::vector< std::vector < int > > displayRules;
+        //std::vector< std::vector < int > > displayRules;
 
         for (unsigned int j = 0; j < chosenValues.size(); j++) {
-            if (displayRules.size() == 0) {
+           /* if (displayRules.size() == 0) {
                 std::cout << _variables[j].getName() << " => " << chosenValues[j] << std::endl;
-            }
+            }*/
 
+            std::cout << chosenValues[j] << "  ";
+            if ( (j + 1) % 9 == 0) {
+                std::cout << std::endl;
+            }
         }
     }
 
@@ -139,10 +140,14 @@ void Engine::createTree(TraversingOrder order) {
         std::cout << "Aucune solution trouvee !" << std::endl;
     }
 
+    deleteTree(_root);
+
     _root->refreshCount();
     _root->refreshCountPruning();
     _root->refreshCountDepth();
     _root->refreshMaxPruningDepth();
+
+    refreshVarsLevels();
 }
 
 int Engine::getIndexByLevel(const std::vector<Variable>& variables, int level) {
@@ -178,4 +183,13 @@ int Engine::getIndexBySmallestDomain(std::vector<Variable>& variables) {
 void Engine::refreshVarsLevels() {
     for (Variable& v : _variables)
         v.setLevel(-1);
+}
+
+void Engine::deleteTree(Node* node) {
+    std::vector<Node*> temp = node->getChildren();
+    if (temp.size() > 0) {
+        for (Node* n : temp)
+            deleteTree(n);
+    }
+    delete(node);
 }

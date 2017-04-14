@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<PSC>
+    <Vars>
+        <Var name = "X" >
+            <Index min = "1" max = "10" />
+            <Index min = "1" max = "1" />
+            <Domain value = "1;30" />
+        </Var>
+        <Var name = "X" >
+            <Index min = "2" max = "10" />
+            <Index min = "2" max = "2" />
+            <Domain value = "1;30" />
+        </Var>
+        <Var name = "X" >
+            <Index min = "3" max = "10" />
+            <Index min = "3" max = "3" />
+            <Domain value = "1;30" />
+        </Var>
+        <Var name = "X" >
+            <Index min = "4" max = "10" />
+            <Index min = "4" max = "4" />
+            <Domain value = "1;30" />
+        </Var>
+        <Var name = "X" >
+            <Index min = "5" max = "10" />
+            <Index min = "5" max = "5" />
+            <Domain value = "1;30" />
+        </Var>
+        <Var name = "X" >
+            <Index min = "6" max = "10" />
+            <Index min = "6" max = "6" />
+            <Domain value = "1;30" />
+        </Var>
+        <Var name = "X" >
+            <Index min = "7" max = "10" />
+            <Index min = "7" max = "7" />
+            <Domain value = "1;30" />
+        </Var>
+        <Var name = "X" >
+            <Index min = "8" max = "10" />
+            <Index min = "8" max = "8" />
+            <Domain value = "1;30" />
+        </Var>
+        <Var name = "X" >
+            <Index min = "9" max = "10" />
+            <Index min = "9" max = "9" />
+            <Domain value = "1;30" />
+        </Var>
+        <Var name = "X[10][10]" >
+            <Domain value = "1;30" />
+        </Var>
+       
+    </Vars>
+   
+    <Constraints>
+       
+        <Constraint type = "bin" var1 = "X[5][1]" value = "10" op = "=" />
+        <Constraint type = "bin" var1 = "X[6][1]" value = "11" op = "=" />
+        <Constraint type = "bin" var1 = "X[9][6]" value = "20" op = "=" />
+       
+        <Constraint type = "bin" var1 = "X[1;10][1;10]" ref = "[i-1][i]" op = ">" exists = "false" />
+        <Constraint type = "bin" var1 = "X[1;10][1;10]" ref = "[i][i-1]" op = "<" exists = "false" />
+       
+        <Constraint type = "sum" value = "100" op = "<">
+            <Var name = "X[2][1;2]" />
+        </Constraint>
+       
+        <Constraint type = "sum" value = "100" op = "<">
+            <Var name = "X[3][1;3]" />
+        </Constraint>
+       
+        <Constraint type = "sum" value = "100" op = "<">
+            <Var name = "X[4][1;4]" />
+        </Constraint>
+       
+        <Constraint type = "sum" value = "100" op = "<">
+            <Var name = "X[5][1;5]" />
+        </Constraint>
+       
+        <Constraint type = "sum" value = "100" op = "<">
+            <Var name = "X[6][1;6]" />
+        </Constraint>
+       
+        <Constraint type = "sum" value = "100" op = "<">
+            <Var name = "X[7][1;7]" />
+        </Constraint>
+       
+        <Constraint type = "sum" value = "100" op = "<">
+            <Var name = "X[8][1;8]" />
+        </Constraint>
+       
+        <Constraint type = "sum" value = "100" op = "<">
+            <Var name = "X[9][1;9]" />
+        </Constraint>
+       
+        <Constraint type = "sum" value = "100" op = "<">
+            <Var name = "X[10][1;10]" />
+        </Constraint>
+   
+    </Constraints>
+</PSC>

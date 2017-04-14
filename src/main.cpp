@@ -17,8 +17,12 @@ Engine createEngine(const std::string& file) {
 
 int main(int argc, char** argv)
 {
-	std::string file = "problems/Probleme1 - Sudoku.xml";
+
+	std::string file = "problems/Probleme1.xml";
     //std::string file = "problems/probleme_4.xml";
+
+	//std::string file = "problems/Probleme7.xml";
+
 	//std::string file = "problems/test6.xml";
 
 	if(argc > 1)
@@ -29,9 +33,9 @@ int main(int argc, char** argv)
 
 	Constraints& constraints = engine.getConstraints();
 
-	for(auto it = engine.beginVars(); it != engine.endVars(); it++) {
+	/*for(auto it = engine.beginVars(); it != engine.endVars(); it++) {
 		std::cout << *it << std::endl;
-	}
+	}*/
 
 
     std::cout << "\tMethode + contrainte d'abord : " << std::endl;

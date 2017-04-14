@@ -72,11 +72,7 @@
 		
 		<Constraint type = "bin" var1 = "Arr[19]" var2 = "Arr[20]" op = "!=" />
 		
-		
-		<Constraint type = "bin" var1 = "Arr[1]" var2 = "Arr[13]" op = "=" />
 
-		
-		<Constraint type = "bin" var1 = "Arr[1]" value = "1" op = "=" />
 
 		
 	</Constraints>

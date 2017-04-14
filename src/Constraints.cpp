@@ -10,6 +10,8 @@ Constraints::Constraints(int n):
 
 void Constraints::addBinConstraint(int v1, int v2, char constraint) {
 
+    //  std::cout << v1 << " - " << v2 << " / " << ((int)constraint) << std::endl;
+
 	_binConstraints[getIndexOf(v1, v2)] &= constraint;
 
 	char inv = BIN_CON_NONE;
@@ -162,6 +164,7 @@ void Constraints::addSumConstraint(std::vector<VarCoeff> involvedVars, std::stri
     _sumConstraints.push_back(Sum(involvedVars, op, type, resultNumber, resultVar, resultVarID));
 }
 
+/// PEUT ETRE INUTILE !!!
 const std::vector<VarID> Constraints::getRelatedVars(VarID index) {
 
     std::vector<VarID> relatedVars;

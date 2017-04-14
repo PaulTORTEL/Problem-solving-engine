@@ -13,6 +13,21 @@ Node::~Node()
 
 }
 
+std::vector<Node*> Node::getChildren() {
+    return _children;
+}
+
+void Node::removeChild(Node* child) {
+    if (!child)
+        return;
+    for (std::vector<Node*>::iterator it = _children.begin(); it != _children.end(); ++it) {
+        if (*it == child) {
+            _children.erase(it);
+            break;
+        }
+    }
+}
+
 unsigned int Node::_count = 0;
 float Node::_countPruning = 0.0;
 float Node::_countDepth = 0.0;
@@ -76,7 +91,7 @@ bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& c
     Domain& d = vars[Engine::getIndexByLevel(vars, _index+1)].getDomain(); // récupération du domaine de la valeur suivante
 
     /** COHERENCE D'ARETE **/
-    if (vars.size() < 25) {     // NOTE : A MODIFIER ? Car efficace ssi la vérification peut être faite rapidement
+    if (vars.size() < 25) {
         bool success = false;
         for (unsigned int cpt = 0; cpt < d.getSize(); cpt++) {
             if (edgeConsistency(vars, constraints, _index+1, d[cpt]))
@@ -105,6 +120,7 @@ bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& c
         }
         else {
             chosenValues.pop_back();
+            removeChild(new_node);
             delete(new_node);
         }
     }
@@ -129,9 +145,10 @@ bool Node::reduceDomains(std::vector<Variable>& vars, Constraints* constraints) 
         Domain& d = vars[indexByLevel].getDomain();
 
         std::vector<int> toRemove;
+
         for (unsigned int cpt = 0; cpt < d.getSize(); cpt++) {
             if (!constraints->isValuePossible(all_vars_domain, indexByLevel, d[cpt])) {
-                toRemove.push_back( d[cpt]);
+                toRemove.push_back(d[cpt]);
             }
         }
 

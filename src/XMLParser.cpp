@@ -404,7 +404,7 @@ static void readConstraints(Engine& engine, const TiXmlHandle& hdl)
             {
                 if (var2Type == 0 || var2Type == 2)
                 {
-                    if (var2Type == 2 && indexerVar1.numIndices() != indexRefs.size())
+                    if (var2Type == 2 && (unsigned)indexerVar1.numIndices() != indexRefs.size())
                     {
                         throw EngineCreationException("Les variables d'origine et les indices de la reference ne correspondent pas.");
                     }
