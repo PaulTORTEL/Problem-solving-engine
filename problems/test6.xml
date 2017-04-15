@@ -96,6 +96,10 @@
 			<Var name = "X[7;9][7;9]" />
 		</Constraint>
 		
+		<Constraint type = "sum" value = "405" op = "=">
+			<Var name = "X[1;9][1;9]" />
+		</Constraint>
+		
 		
 		<Constraint type = "bin" var1 = "X[8][1]" value = "3" op = "=" />
 		
@@ -133,5 +137,18 @@
 		
 		
 	</Constraints>
+	
+		
+	<Display names = "false">
+		<Line blank = "0" filled = "9" />
+		<Line blank = "0" filled = "9" />
+		<Line blank = "0" filled = "9" />
+		<Line blank = "0" filled = "9" />
+		<Line blank = "0" filled = "9" />
+		<Line blank = "0" filled = "9" />
+		<Line blank = "0" filled = "9" />
+		<Line blank = "0" filled = "9" />
+		<Line blank = "0" filled = "9" />
+	</Display>
 </PSC>
 

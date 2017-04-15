@@ -61,7 +61,22 @@
 		
 		<Constraint type = "bin" var1 = "X[1;10][1;10]" ref = "[i-1][i]" op = ">" exists = "false" />
 		<Constraint type = "bin" var1 = "X[1;10][1;10]" ref = "[i][i-1]" op = "<" exists = "false" />
+
 	
 	</Constraints>
+	
+	<Display names = "false">
+		<Line blank = "0" filled = "10" />
+		<Line blank = "1" filled = "9" />
+		<Line blank = "2" filled = "8" />
+		<Line blank = "3" filled = "7" />
+		<Line blank = "4" filled = "6" />
+		<Line blank = "5" filled = "5" />
+		<Line blank = "6" filled = "4" />
+		<Line blank = "7" filled = "3" />
+		<Line blank = "8" filled = "2" />
+		<Line blank = "9" filled = "1" />
+	</Display>
+	
 </PSC>
 

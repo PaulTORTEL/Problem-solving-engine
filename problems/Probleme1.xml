@@ -77,5 +77,17 @@
 		<Constraint type = "bin" var1 = "X[7;9][7;9]" var2 = "X[8;9][7;9]" op = "!=" />
 		
 	</Constraints>
+	
+	<Display names = "false">
+		<Line blank = "0" filled = "9" />
+		<Line blank = "0" filled = "9" />
+		<Line blank = "0" filled = "9" />
+		<Line blank = "0" filled = "9" />
+		<Line blank = "0" filled = "9" />
+		<Line blank = "0" filled = "9" />
+		<Line blank = "0" filled = "9" />
+		<Line blank = "0" filled = "9" />
+		<Line blank = "0" filled = "9" />
+	</Display>
 </PSC>
 

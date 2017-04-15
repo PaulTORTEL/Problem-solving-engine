@@ -34,12 +34,19 @@ private:
 
     std::map<std::string, int> _varIndexes;
 
+    bool _displayNames;
+    std::vector< std::vector <int> > _displayRules;
+
 
 public:
 
     Engine(std::vector<Variable>&& variables);
 
     void setIndexes(std::map<std::string, int>& indexes);
+
+    void displayNames(bool display);
+
+    void addDisplayRule(int blank, int filled);
 
     int getIndex(std::string varName);
 

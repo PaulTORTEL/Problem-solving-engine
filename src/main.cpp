@@ -18,7 +18,8 @@ Engine createEngine(const std::string& file) {
 int main(int argc, char** argv)
 {
 
-	std::string file = "problems/Probleme1.xml";
+	std::string file = "problems/test6.xml";
+
     //std::string file = "problems/probleme_4.xml";
 
 	//std::string file = "problems/Probleme7.xml";
