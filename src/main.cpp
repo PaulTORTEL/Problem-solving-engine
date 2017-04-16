@@ -18,10 +18,10 @@ Engine createEngine(const std::string& file) {
 int main(int argc, char** argv)
 {
 
-	std::string file = "problems/Probleme1.xml";
+	//std::string file = "problems/Probleme1.xml";
     //std::string file = "problems/probleme_4.xml";
 
-	//std::string file = "problems/Probleme7.xml";
+	std::string file = "problems/Probleme7.xml";
 	//std::string file = "problems/test6.xml";
 	//std::string file = "problems/Probleme6.xml";
 
@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 	}*/
 
 
-    std::cout << "\tMethode + contrainte d'abord : " << std::endl;
+    /*std::cout << "\tMethode + contrainte d'abord : " << std::endl;
     engine.createTree(TraversingOrder::CONSTRAINTS_MOST);
     std::cout << std::endl;
 
@@ -48,7 +48,7 @@ int main(int argc, char** argv)
 
     std::cout << "\tMethode classique :" << std::endl;
     engine.createTree(TraversingOrder::VARIABLES);
-    std::cout << std::endl;
+    std::cout << std::endl;*/
 
     std::cout << "\tMethode domaine le + petit :" << std::endl;
     engine.createTree(TraversingOrder::DOMAINS);
