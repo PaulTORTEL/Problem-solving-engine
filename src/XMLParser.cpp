@@ -22,6 +22,8 @@ static char GetOperator(std::string op);
 
 static void ReduceVariable(Variable* var, int value, std::string op);
 
+static void readDisplay(Engine& engine, const TiXmlHandle& hdl);
+
 Engine XMLParser::fromFile(const std::string& file)
 {
     TiXmlDocument doc(file.c_str());
@@ -47,6 +49,8 @@ Engine XMLParser::from(const TiXmlHandle& hdl)
     engine.setIndexes(indexes);
 
     readConstraints(engine, hdl);
+    readDisplay(engine,hdl);
+
     return engine;
 
 }
@@ -894,4 +898,56 @@ static char GetOperator(std::string op)
     else
         return -1;
 
+}
+
+static void readDisplay(Engine& engine, const TiXmlHandle& hdl)
+{
+
+    std::stringstream err;
+
+    TiXmlElement *root = hdl.FirstChildElement().Element();
+
+    std::vector<TiXmlElement*> all_display = findNodes(root,"Display");
+
+    if (all_display.size() == 0)
+        return;
+
+    if (all_display.size() > 1)
+    {
+        throw EngineCreationException("Il doit y avoir au plus un noeud Display");
+    }
+
+    TiXmlAttribute* namesAttr = findAttribute(all_display[0],"names");
+    if (!namesAttr) {
+        throw EngineCreationException("Vous devez specifier s'il faut afficher les noms des variables avec l'attribut names dans Display");
+    }
+
+    if (!strcmp(namesAttr->Value(),"false")) {
+        engine.displayNames(false);
+    }
+    else
+        engine.displayNames(true);
+
+
+    std::vector<TiXmlElement*> lines = findNodes(all_display[0],"Line");
+
+    for (TiXmlElement* lineElem : lines)
+    {
+        TiXmlAttribute* blankAttr = findAttribute(lineElem,"blank");
+        TiXmlAttribute* filledAttr = findAttribute(lineElem,"filled");
+        if (!blankAttr || !filledAttr)
+        {
+            throw EngineCreationException("Chaque Line doit avoir les attributs blank et filled");
+        }
+
+        int blank = 0;
+        int filled = 0;
+
+        if (!parseNumber(blankAttr->Value(),&blank) || !parseNumber(filledAttr->Value(),&filled))
+        {
+            throw EngineCreationException("La valeur des attributs blank et filled doit etre entiere");
+        }
+
+        engine.addDisplayRule(blank,filled);
+    }
 }

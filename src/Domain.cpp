@@ -323,14 +323,14 @@ bool Domain::restrictTo(Domain& dom) {
 		this  =======
 		dom  ===  =====
 
-	*/
+
 	auto cur = _ranges.begin();
 	auto other = dom._ranges.begin();
 
 	while(true) {
 
 
-	}
+	}*/
 
 	recalculateSize();
 

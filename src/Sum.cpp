@@ -16,8 +16,6 @@ Sum::Sum(std::vector<VarCoeff> involvedVars, std::string op, std::string type, i
 
     _resultVarID = resultVarID;
 
-//std::cout << involvedVars.size() << " -> " << op << " / " << type << " / " << resultNumber << " / " << resultVar << " / " << resultVarID << std::endl;
-
 }
 
 Sum::~Sum()
@@ -66,7 +64,6 @@ bool Sum::isValuesPossibleForSum(std::vector<VarValue> varsValues) {
             }
             else if (_type == "number") {
                 if (v.var == vc.var) {
-                   // std::cout << v.var << " => " << v.value << std::endl;
                     int partial_result = v.value * vc.coeff;
                     result += partial_result;
                 }
@@ -84,10 +81,8 @@ bool Sum::isValuesPossibleForSum(std::vector<VarValue> varsValues) {
                 return true;
         }
         else if (_operator == ">") {
-            if (result > _resultNumber) {
-                //std::cout << "true! " << std::endl;
+            if (result > _resultNumber)
                 return true;
-            }
         }
         else if (_operator == "<=") {
             if (result <= _resultNumber)
@@ -114,32 +109,26 @@ bool Sum::isValuesPossibleForSum(std::vector<VarValue> varsValues) {
         }
 
         if (_operator == "=") {
-            //if (d.contains(result))
             if (result == temp_test)
                 return true;
         }
         else if (_operator == "<") {
-            //if (result < d.getMin())
             if (result < temp_test)
                 return true;
         }
         else if (_operator == ">") {
-            //if (result > d.getMax())
             if (result > temp_test)
                 return true;
         }
         else if (_operator == "<=") {
-            //if (result <= d.getMax())
             if (result <= temp_test)
                 return true;
         }
         else if (_operator == ">=") {
-            //if (result >= d.getMin())
             if (result >= temp_test)
                 return true;
         }
         else if (_operator == "!=") {
-            //if (!d.contains(result))
             if (result != temp_test)
                 return true;
         }

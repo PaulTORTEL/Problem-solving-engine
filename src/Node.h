@@ -23,7 +23,7 @@ class Node
         virtual ~Node();
 
         // 1er vect des variables => réduc domaine, 2e => pour récupérer
-        bool createNode(int index, std::vector<Variable> vars, std::vector<int>& chosenValues, Constraints* constraints, const bool& domain_method);
+        bool createNode(int index, std::vector<Variable> vars, std::vector<int>& chosenValues, Constraints* constraints, const bool& domain_method, const int edgeConsistencyThreshold);
 
         void addChild(Node * new_node);
         void removeChild(Node* child);

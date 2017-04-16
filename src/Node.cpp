@@ -34,7 +34,7 @@ float Node::_countDepth = 0.0;
 unsigned int Node::_maxPruningDepth = 0;
 
 
-bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& chosenValues, Constraints* constraints, const bool& domain_method) {
+bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& chosenValues, Constraints* constraints, const bool& domain_method, const int edgeConsistencyThreshold) {
 
     if (domain_method) {
         for (unsigned int i = 0; i < vars.size(); i++) {
@@ -91,7 +91,7 @@ bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& c
     Domain& d = vars[Engine::getIndexByLevel(vars, _index+1)].getDomain(); // récupération du domaine de la valeur suivante
 
     /** COHERENCE D'ARETE **/
-    if (vars.size() < 20) {
+    if (vars.size() < (unsigned)edgeConsistencyThreshold) {
         bool success = false;
         for (unsigned int cpt = 0; cpt < d.getSize(); cpt++) {
             if (edgeConsistency(vars, constraints, _index+1, d[cpt]))
@@ -115,7 +115,7 @@ bool Node::createNode(int value, std::vector<Variable> vars, std::vector<int>& c
         this->addChild(new_node);
         chosenValues.push_back(d[cpt]);
 
-        if (new_node->createNode(d[cpt], vars, chosenValues, constraints, domain_method)) {
+        if (new_node->createNode(d[cpt], vars, chosenValues, constraints, domain_method, edgeConsistencyThreshold)) {
             return true;
         }
         else {

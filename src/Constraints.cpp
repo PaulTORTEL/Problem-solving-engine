@@ -10,8 +10,6 @@ Constraints::Constraints(int n):
 
 void Constraints::addBinConstraint(int v1, int v2, char constraint) {
 
-    //  std::cout << v1 << " - " << v2 << " / " << ((int)constraint) << std::endl;
-
 	_binConstraints[getIndexOf(v1, v2)] &= constraint;
 
 	char inv = BIN_CON_NONE;
@@ -44,9 +42,6 @@ bool Constraints::isValuePossible(std::vector<Domain>& domains, VarID var, int v
 	Domain& d1 = domains[var];
 	if(!d1.contains(value))
 		return false;
-//std::cout << "\t\t\t\t TEST SUR " << var << " ==> " << value << std::endl;
-    //for (Domain d : domains)
-       // std::cout << d << std::endl;
 
 	for(int i = 0; i < _varsNum; i++) {
 		char c = _binConstraints[getIndexOf(var, i)];
@@ -71,7 +66,7 @@ bool Constraints::isValuePossible(std::vector<Domain>& domains, VarID var, int v
 
         VarValue v = {var, value};
         varsValues.push_back(v);
-        //std::cout << "on analyse " << var << " on lui donne val " << v.value << " et le dom : " << domains[involvedVars[1]] << std::endl;
+
         for (std::vector<VarID>::iterator it = involvedVars.begin(); it != involvedVars.end(); ++it) {
             if (*it == var) {
                 involvedVars.erase(it);
@@ -88,12 +83,7 @@ bool Constraints::isValuePossible(std::vector<Domain>& domains, VarID var, int v
             }
 
             if ((count / involvedVars.size()) > 0.7) {
-                    //        for (Domain d : domains)
-          //  std::cout << d << std::endl;
-        //system("pause");
-                   // std::cout << "ok on test " << (involvedVars.size() / count) << std::endl;
                 if(!testCombinationForSum(domains, s, varsValues, involvedVars, 0)) {
-                    //std::cout << "retourne faux : var " << var << " => " << value << " impossible et sera suppr du domaine" << std::endl;
                     return false;
                 }
             }
@@ -102,12 +92,9 @@ bool Constraints::isValuePossible(std::vector<Domain>& domains, VarID var, int v
             if(!s.isValuesPossibleForSum(varsValues))
                 return false;
         }
-       // for (VarValue vv : varsValues)
-          //  std::cout << vv.var << " prend " << vv.value << std::endl;
+
     }
 
- //std::cout << std::endl << "on passe avec " << var << " pour val : " << value << std::endl;
-// system("pause");
 	return true;
 }
 
@@ -167,50 +154,12 @@ const std::vector<int> Constraints::getVariablesIndexOrderedByMostOrLeastConstra
             }
         }
     }
-    /*std::cout << "LE TAB : " << std::endl;
-    for (VarID vv : result)
-        std::cout << vv << std::endl;*/
+
     return result;
 }
 
 void Constraints::addSumConstraint(std::vector<VarCoeff> involvedVars, std::string op, std::string type, int resultNumber, Variable* resultVar, VarID resultVarID) {
     _sumConstraints.push_back(Sum(involvedVars, op, type, resultNumber, resultVar, resultVarID));
-}
-
-/// PEUT ETRE INUTILE !!!
-const std::vector<VarID> Constraints::getRelatedVars(VarID index) {
-
-    std::vector<VarID> relatedVars;
-
-    for(int i = 0; i < _varsNum; i++) {
-		char c = _binConstraints[getIndexOf(i, index)];
-
-		if (c == (BIN_CON_GREATER | BIN_CON_LESS))
-            relatedVars.push_back(i);
-	}
-
-	std::vector<Sum> sums = getSumsWhereVarIsInvolved(index);
-
-	for (std::vector<Sum>::iterator it = sums.begin(); it != sums.end(); ++it) {
-
-        std::vector<VarID> varsInvolved = it->getInvolvedVars();
-
-        for (std::vector<VarID>::iterator it_var = varsInvolved.begin(); it_var != varsInvolved.end(); ++it_var) {
-            if (*it_var != index) {
-                bool success = false;
-                for (std::vector<VarID>::iterator it_relat_var = relatedVars.begin(); it_relat_var != relatedVars.end(); ++it_relat_var) {
-                    if (*it_relat_var == *it_var) {
-                        success = true;
-                        break;
-                    }
-                }
-
-                if (!success)
-                    relatedVars.push_back(*it_var);
-            }
-        }
-	}
-	return relatedVars;
 }
 
 std::vector<Sum> Constraints::getSumsWhereVarIsInvolved(const VarID& v) const {
@@ -225,17 +174,13 @@ std::vector<Sum> Constraints::getSumsWhereVarIsInvolved(const VarID& v) const {
 
 bool Constraints::testCombinationForSum(std::vector<Domain>& domains, Sum& s, std::vector<VarValue>& values_test, const std::vector<VarID>& varsID, unsigned int index) const {
 
-    //std::cout << "index : " << index << " et vars : " << varsID.size() << std::endl;
-   // system("pause");
     if (index < varsID.size()) {
-       // std::cout << "\t\tle varID [index] : " << varsID[index] << std::endl;
 
         Domain& d = domains[varsID[index]];
-       // std::cout << "\t la taille du dom : " << d.getSize() << std::endl;
-       for (unsigned int cpt = 0; cpt < d.getSize(); cpt++) {
-          //  std::cout << "la struc : " << varsID[index] << " value  " << d[cpt] << std::endl;
-            VarValue v = {varsID[index], d[cpt]};
 
+       for (unsigned int cpt = 0; cpt < d.getSize(); cpt++) {
+
+            VarValue v = {varsID[index], d[cpt]};
             values_test.push_back(v);
 
             if (!testCombinationForSum(domains, s, values_test, varsID, index+1))
@@ -244,67 +189,11 @@ bool Constraints::testCombinationForSum(std::vector<Domain>& domains, Sum& s, st
             else
                 return true;
         }
-
-        //std::cout << " c'est " << varsID[index] << " qui renvoie faux " << index << "et dom size : " << d.getSize() << std::endl;
     }
     else {
-           // std::cout << " on va tester la combi " << std::endl;
-            //std::cout << "l'index : " << index << " et la struc : " << values_test[1].value << std::endl;
         if(s.isValuesPossibleForSum(values_test))
             return true;
     }
-    //std::cout << "on return false" << std::endl;
+
     return false;
 }
-
-/* PARTIE NON FONCTIONNELLE, IDEE POUR OPTIMISER MAIS SANS GRAND SUCCES .... */
-/*
-bool Constraints::testCombinationForSum(std::vector<Domain>& domains, Sum& s, std::vector<VarValue>& values_test, const std::vector<VarID>& varsID, unsigned int index) const {
-
-    if (s.getOp() == ">") {
-        for (unsigned int i = 0; i < varsID.size(); i++) {
-            VarValue v = {varsID[i], domains[varsID[i]].getMax()};
-            values_test.push_back(v);
-        }
-
-        if(s.isValuesPossibleForSum(values_test)) {
-            return true;
-        }
-    }
-    else if (s.getOp() == "<") {
-        for (unsigned int i = 0; i < varsID.size(); i++) {
-            VarValue v = {varsID[i], domains[varsID[i]].getMin()};
-            values_test.push_back(v);
-        }
-        if(s.isValuesPossibleForSum(values_test))
-            return true;
-    }
-    else if (s.getOp() == "=") {
-         if (index < varsID.size()) {
-            //std::cout << "\t\tle varID [index] : " << varsID[index] << std::endl;
-
-            Domain& d = domains[varsID[index]];
-            //std::cout << "\t la taille du dom : " << d.getSize() << " (pour " << varsID[index] << std::endl;
-            for (Domain::iterator it = d.begin(); it != d.end(); ++it) {
-                //std::cout << "la struc : " << varsID[index] << " value  " << it.getValue() << std::endl;
-                VarValue v = {varsID[index], it.getValue()};
-
-                values_test.push_back(v);
-               // std::cout << " et la value importante : " << it.getValue() << " et la struc : " << values_test.size() << std::endl;
-                if (!testCombinationForSum(domains, s, values_test, varsID, index+1))
-                    values_test.pop_back();
-
-                else
-                    return true;
-            }
-
-            //std::cout << " c'est " << varsID[index] << " qui renvoie faux " << index << "et dom size : " << d.getSize() << std::endl;
-        }
-        else {
-                //std::cout << "l'index : " << index << " et la struc : " << values_test[1].value << std::endl;
-            if(s.isValuesPossibleForSum(values_test))
-                return true;
-        }
-    }
-    return false;
-}*/

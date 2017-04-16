@@ -1,0 +1,88 @@
+<?Arrml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<PSC>
+	<Vars>
+		<Var name = "Arr" >
+			<Index max = "20" />
+			<Domain value = "1;3" />
+		</Var>
+	</Vars>
+	
+	<Constraints>
+		<Constraint type = "bin" var1 = "Arr[1]" var2 = "Arr[2]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[1]" var2 = "Arr[3]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[1]" var2 = "Arr[4]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[1]" var2 = "Arr[6]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[1]" var2 = "Arr[7]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[1]" var2 = "Arr[8]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[1]" var2 = "Arr[9]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arr[2]" var2 = "Arr[9]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[2]" var2 = "Arr[10]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[2]" var2 = "Arr[3]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arr[3]" var2 = "Arr[10]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[3]" var2 = "Arr[11]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[3]" var2 = "Arr[4]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arr[4]" var2 = "Arr[11]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[4]" var2 = "Arr[12]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[4]" var2 = "Arr[5]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arr[5]" var2 = "Arr[12]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[5]" var2 = "Arr[13]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[5]" var2 = "Arr[14]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[5]" var2 = "Arr[6]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arr[6]" var2 = "Arr[14]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[6]" var2 = "Arr[15]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[6]" var2 = "Arr[7]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arr[7]" var2 = "Arr[15]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[7]" var2 = "Arr[16]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[7]" var2 = "Arr[8]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arr[8]" var2 = "Arr[9]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[8]" var2 = "Arr[16]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[8]" var2 = "Arr[17]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arr[9]" var2 = "Arr[18]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[9]" var2 = "Arr[10]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arr[10]" var2 = "Arr[18]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[10]" var2 = "Arr[19]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[10]" var2 = "Arr[11]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arr[11]" var2 = "Arr[20]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[11]" var2 = "Arr[12]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arr[12]" var2 = "Arr[20]" op = "!=" />
+		<Constraint type = "bin" var1 = "Arr[12]" var2 = "Arr[13]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arr[13]" var2 = "Arr[14]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arr[14]" var2 = "Arr[15]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arr[15]" var2 = "Arr[16]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arr[16]" var2 = "Arr[17]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arr[17]" var2 = "Arr[18]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arr[18]" var2 = "Arr[19]" op = "!=" />
+		
+		<Constraint type = "bin" var1 = "Arr[19]" var2 = "Arr[20]" op = "!=" />
+
+
+
+
+		
+
+
+		<Constraint type = "bin" var1 = "Arr[1]" value = "1" op = "=" />
+		<Constraint type = "bin" var1 = "Arr[13]" value = "1" op = "=" />
+		<Constraint type = "bin" var1 = "Arr[20]" value = "1" op = "=" />
+
+		
+	</Constraints>
+</PSC>
+

@@ -67,7 +67,7 @@ public:
     	int operator*();
     	int operator->();
 
-        int getValue(); // A vérifier par Arthur
+        int getValue();
     };
 
 

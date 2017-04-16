@@ -34,12 +34,19 @@ private:
 
     std::map<std::string, int> _varIndexes;
 
+    bool _displayNames;
+    std::vector< std::vector <int> > _displayRules;
+
 
 public:
 
     Engine(std::vector<Variable>&& variables);
 
     void setIndexes(std::map<std::string, int>& indexes);
+
+    void displayNames(bool display);
+
+    void addDisplayRule(int blank, int filled);
 
     int getIndex(std::string varName);
 
@@ -49,7 +56,7 @@ public:
     std::vector<Variable>::iterator beginVars();
     std::vector<Variable>::iterator endVars();
 
-    void createTree(TraversingOrder order);
+    void createTree(TraversingOrder order, const int edgeConsistencyThreshold);
     static int getIndexByLevel(const std::vector<Variable>& variables, int level);
     static int getIndexBySmallestDomain(std::vector<Variable>& variables);
 

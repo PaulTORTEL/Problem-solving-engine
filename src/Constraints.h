@@ -28,8 +28,6 @@ public:
 
 	const std::vector<int> getVariablesIndexOrderedByMostOrLeastConstrained(const std::vector<Variable>& vars, bool most);
 
-    const std::vector<VarID> getRelatedVars(VarID index);
-
 	void addSumConstraint(std::vector<VarCoeff> involvedVars, std::string op, std::string type, int resultNumber = -1, Variable* resultVar = nullptr, VarID resultVarID = -1);
 	std::vector<Sum> getSumsWhereVarIsInvolved(const VarID& v) const;
 
