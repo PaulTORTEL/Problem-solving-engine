@@ -14,17 +14,40 @@ IndexRef::~IndexRef()
 }
 
 
-int IndexRef::getIndex(int origin) {
+int IndexRef::getIndex(int origin)
+{
 
-    if (_value == -1) {
+    if (_value == -1)
+    {
         return -1;
     }
 
     if (_symb.length() == 0)
         return origin;
 
-    if (_symb == "-") {
+    if (_symb == "-")
+    {
         return origin - _value;
+    }
+
+    if (_symb == "+")
+    {
+        return origin + _value;
+    }
+
+    if (_symb == "*")
+    {
+        return origin * _value;
+    }
+
+    if (_symb == "/")
+    {
+        return origin / _value;
+    }
+
+    if (_symb == "%")
+    {
+        return origin % _value;
     }
 
 
