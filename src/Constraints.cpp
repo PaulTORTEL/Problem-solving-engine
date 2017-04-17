@@ -92,7 +92,6 @@ bool Constraints::isValuePossible(std::vector<Domain>& domains, VarID var, int v
             if(!s.isValuesPossibleForSum(varsValues))
                 return false;
         }
-
     }
 
 	return true;
@@ -178,7 +177,7 @@ bool Constraints::testCombinationForSum(std::vector<Domain>& domains, Sum& s, st
 
         Domain& d = domains[varsID[index]];
 
-       for (unsigned int cpt = 0; cpt < d.getSize(); cpt++) {
+        for (unsigned int cpt = 0; cpt < d.getSize(); cpt++) {
 
             VarValue v = {varsID[index], d[cpt]};
             values_test.push_back(v);
