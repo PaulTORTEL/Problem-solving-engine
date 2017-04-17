@@ -117,7 +117,7 @@ void Engine::createTree(TraversingOrder order, const int edgeConsistencyThreshol
             delete(new_node);
         }
     }
-
+    std::cout << "\tStatistiques : " << std::endl;
     std::cout << "Nombre de noeuds cree : " << _root->getCount() - 1 << std::endl;
 
     /** Calcul et affichage du nombre de noeuds élagués : **/
@@ -136,16 +136,9 @@ void Engine::createTree(TraversingOrder order, const int edgeConsistencyThreshol
         std::cout << "Profondeur moyenne des elagages : " << (_root->getCountDepth()/_root->getCountPruning()) << std::endl;
 
     std::cout << "Profondeur maximum d'elagage : " << _root->getMaxPruningDepth() << std::endl;
-
+    std::cout << std::endl << "Les solutions sont : " << std::endl << std::endl;
     if (success)
     {
-
-
-
-
-
-
-
         if (_displayRules.size() != 0)
         {
             unsigned int c = 0;

@@ -79,8 +79,6 @@ int main(int argc, char** argv)
             file = argv[1];
 
         Engine engine = createEngine(file);
-        Constraints& constraints = engine.getConstraints();
-
 
         int edgeConsistencyThreshold = -1;
 
@@ -91,6 +89,11 @@ int main(int argc, char** argv)
             if(std::cin.fail()) {
                 std::cin.clear();
             }
+        }
+
+        std::cout << std::endl << std::endl;
+        for(auto it = engine.beginVars(); it != engine.endVars(); it++) {
+            std::cout << *it << std::endl;
         }
 
         std::cout << std::endl << "\tMethode \"la variable la + contrainte d'abord\" : " << std::endl<<std::endl;
@@ -111,7 +114,7 @@ int main(int argc, char** argv)
         std::cout << std::endl << "\tMethode \"la variable ayant domaine le + petit d'abord\" :" << std::endl<<std::endl;
         engine.createTree(TraversingOrder::DOMAINS, edgeConsistencyThreshold);
 
-
+        std::cout << std::endl;
         system("PAUSE");
         system("CLS");
 
