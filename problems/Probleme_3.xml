@@ -24,7 +24,7 @@
 	</Vars>
 	
 	<Constraints>		
-		<Constraint type = "bin" var1="Arr[1;8]" var2="Arr[1;9]" op="!="/>
+		<Constraint type = "bin" var1="Arr[1;10]" var2="Arr[1;10]" op="!="/>
 		<Constraint type = "bin" var1="Z" value="0" op="!="/>
 		<Constraint type = "bin" var1="T" value="0" op="!="/>
 		<Constraint type = "bin" var1="D" value="0" op="!="/>
