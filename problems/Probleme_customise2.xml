@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<PSC>
+	<Vars>
+		<Var name = "A" >
+			<Domain value = "1;20" />
+		</Var>
+		<Var name = "B" >
+			<Domain value = "5" />
+		</Var>
+		<Var name = "C" >
+			<Domain value = "1;20" />
+		</Var>
+		<Var name = "D" >
+			<Domain value = "1;20" />
+		</Var>
+		<Var name = "E" >
+			<Domain value = "8" />
+		</Var>	
+		<Var name = "F" >
+			<Domain value = "1;20" />
+		</Var>	
+		<Var name = "G" >
+			<Domain value = "3" />
+		</Var>	
+		<Var name = "X" >
+			<Domain value = "1;100" />
+		</Var>	
+		<Var name = "Y" >
+			<Domain value = "1;100" />
+		</Var>	
+		<Var name = "Z" >
+			<Domain value = "1;100" />
+		</Var>	
+	</Vars>
+	
+	<Constraints>
+		
+		<Constraint type = "sum" ref = "X" op = "=">
+			<Var name = "A" coeff = "5" />
+			<Var name = "B" coeff = "2" />
+			<Var name = "C" coeff = "4" />
+			<Var name = "D" coeff = "8" />
+		</Constraint>
+	
+		<Constraint type = "sum" ref = "X" op = "=">
+			<Var name = "A" coeff = "3" />
+			<Var name = "E" coeff = "5" />
+			<Var name = "G" coeff = "2" />
+		</Constraint>
+		
+		<Constraint type = "sum" ref = "Z" op = ">">
+			<Var name = "E" coeff = "3" />
+			<Var name = "F" coeff = "2" />
+			<Var name = "G" coeff = "2" />
+			<Var name = "A" coeff = "5" />
+			<Var name = "C" coeff = "8" />
+		</Constraint>
+		
+		<Constraint type = "sum" ref = "Y" op = "=">
+			<Var name = "E" coeff = "3" />
+			<Var name = "F" coeff = "2" />
+			<Var name = "G" coeff = "2" />
+			<Var name = "A" coeff = "5" />
+			<Var name = "C" coeff = "8" />
+		</Constraint>
+		
+		<Constraint type = "sum" ref = "X" op = "<">
+			<Var name = "B" coeff = "3" />
+			<Var name = "D" coeff = "4" />
+			<Var name = "F" coeff = "8" />
+		</Constraint>
+		
+		<Constraint type = "sum" ref = "Z" op = "=">
+			<Var name = "B" coeff = "3" />
+			<Var name = "D" coeff = "4" />
+			<Var name = "F" coeff = "8" />
+		</Constraint>
+		
+	</Constraints>
+</PSC>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
