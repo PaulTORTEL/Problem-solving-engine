@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<PSC>
+	<Vars>
+		<Var name = "X" >
+			<Index max = "4" />
+			<Index max = "4" />
+			<Domain value = "1;16" />
+		</Var>
+
+	</Vars>
+	
+	<Constraints>
+		<Constraint type = "bin" var1 = "X[1;4][1;4]" var2 = "X[1;4][1;4]" op = "!=" />
+
+		<Constraint type = "sum" value="34" op ="=">
+			<Var name="X[1][1;4]"/>
+		</Constraint>
+
+		<Constraint type = "sum" value="34" op ="=">
+			<Var name="X[2][1;4]"/>
+		</Constraint>
+
+		<Constraint type = "sum" value="34" op ="=">
+			<Var name="X[3][1;4]"/>
+		</Constraint>
+
+		<Constraint type = "sum" value="34" op ="=">
+			<Var name="X[4][1;4]"/>
+		</Constraint>
+
+
+
+		<Constraint type = "sum" value="34" op ="=">
+			<Var name="X[1;4][1]"/>
+		</Constraint>
+
+		<Constraint type = "sum" value="34" op ="=">
+			<Var name="X[1;4][2]"/>
+		</Constraint>
+
+		<Constraint type = "sum" value="34" op ="=">
+			<Var name="X[1;4][3]"/>
+		</Constraint>
+
+		<Constraint type = "sum" value="34" op ="=">
+			<Var name="X[1;4][4]"/>
+		</Constraint>
+
+		<Constraint type = "sum" value="34" op ="=">
+			<Var name="X[1;4][4]"/>
+		</Constraint>
+
+		<Constraint type = "sum" value="34" op ="=">
+			<Var name="X[1][1]"/>
+			<Var name="X[2][2]"/>
+			<Var name="X[3][3]"/>
+			<Var name="X[4][4]"/>
+		</Constraint>
+		
+		<Constraint type = "sum" value="34" op ="=">
+			<Var name="X[4][1]"/>
+			<Var name="X[3][2]"/>
+			<Var name="X[2][3]"/>
+			<Var name="X[1][4]"/>
+
+		</Constraint>
+
+	</Constraints>
+	
+	<Display names = "false">
+		<Line blank = "0" filled = "4" />
+		<Line blank = "0" filled = "4" />
+		<Line blank = "0" filled = "4" />
+		<Line blank = "0" filled = "4" />
+		<Line blank = "0" filled = "4" />
+	</Display>
+</PSC>
+

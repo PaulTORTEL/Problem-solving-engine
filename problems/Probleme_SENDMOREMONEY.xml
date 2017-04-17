@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<PSC>
+	<Vars>
+		<Var name = "Ret" >
+			<Index max = "4" />
+			<Domain value = "0;1" />
+		</Var>
+
+		<Var name = "Arr" >
+			<Index max = "8"/>
+			<Domain value="0;9"/>
+		</Var>
+
+		<Var name = "S">
+			<Domain value = "0;9"/>
+		</Var>
+
+		<Var name = "E">
+			<Domain value = "0;9"/>
+		</Var>
+
+		<Var name = "N">
+			<Domain value = "0;9"/>
+		</Var>
+
+		<Var name = "D">
+			<Domain value = "0;9"/>
+		</Var>
+
+		<Var name = "M">
+			<Domain value = "0;9"/>
+		</Var>
+
+		<Var name = "O">
+			<Domain value = "0;9"/>
+		</Var>
+
+		<Var name = "R">
+			<Domain value = "0;9"/>
+		</Var>
+
+		<Var name = "Y">
+			<Domain value = "0;9"/>
+		</Var>
+		
+	</Vars>
+	
+	<Constraints>
+		<Constraint type = "bin" var1="M" var2="Ret[1]" op="="/>
+		
+		<Constraint type = "bin" var1="Arr[1;8]" var2="Arr[1;8]" op="!="/>
+		<Constraint type = "bin" var1="S" value="0" op="!="/>
+		<Constraint type = "bin" var1="M" value="0" op="!="/>
+
+		<Constraint type = "bin" var1="Arr[1]" var2="S" op="="/>
+		<Constraint type = "bin" var1="Arr[2]" var2="E" op="="/>
+		<Constraint type = "bin" var1="Arr[3]" var2="N" op="="/>
+		<Constraint type = "bin" var1="Arr[4]" var2="D" op="="/>
+		<Constraint type = "bin" var1="Arr[5]" var2="M" op="="/>
+		<Constraint type = "bin" var1="Arr[6]" var2="O" op="="/>
+		<Constraint type = "bin" var1="Arr[7]" var2="R" op="="/>
+		<Constraint type = "bin" var1="Arr[8]" var2="Y" op="="/>
+
+
+		<Constraint type = "sum" ref="O" op = "=">
+			<Var name = "S"/> <Var name = "M"/>
+			<Var name = "Ret[2]"/> <Var name = "Ret[1]" coeff = "-10"/>
+		</Constraint>
+
+		<Constraint type = "sum" ref="N" op = "=">
+			<Var name = "E"/> <Var name = "O"/>
+			<Var name = "Ret[3]"/> <Var name = "Ret[2]" coeff = "-10"/>
+		</Constraint>
+
+		<Constraint type = "sum" ref="E" op = "=">
+			<Var name = "N"/> <Var name = "R"/>
+			<Var name = "Ret[4]"/> <Var name = "Ret[3]" coeff = "-10"/>
+		</Constraint>
+
+		<Constraint type = "sum" ref="Y" op = "=">
+			<Var name = "D"/> <Var name = "E"/>
+			<Var name = "Ret[4]" coeff = "-10"/>
+		</Constraint>
+	</Constraints>
+</PSC>
+

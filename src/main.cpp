@@ -16,12 +16,12 @@ Engine createEngine(const std::string& file) {
 	exit(1);
 }
 
-std::vector<std::string> GetProblems(const char *path) {
+std::vector<std::string> GetProblems(const std::string& path) {
     std::vector<std::string> files;
     struct dirent *entry;
     DIR *dp;
 
-    dp = opendir(path);
+    dp = opendir(path.c_str());
     if (dp == NULL) {
         return files;
     }
@@ -61,7 +61,10 @@ const std::string* ChooseProblems(const std::vector<std::string>& problems) {
 
 int main(int argc, char** argv)
 {
-    const char* folder = "problems/";
+    std::string folder = "problems";
+    if(argc > 1) 
+        folder = std::string(argv[1]);
+    
     std::vector<std::string> problems = GetProblems(folder);
 
     while(true){
@@ -73,10 +76,7 @@ int main(int argc, char** argv)
         const std::string* choice = ChooseProblems(problems);
         if(choice==NULL)
             return 0;
-        std::string file = (std::string)folder + "/" + *choice;
-
-        if(argc > 1)
-            file = argv[1];
+        std::string file = folder + "/" + *choice;
 
         Engine engine = createEngine(file);
 
