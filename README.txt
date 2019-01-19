@@ -1,10 +1,13 @@
+Project developed by 4 engineering students.
+
+
 ============= Moteur PSC =============
 
 Attention : notre code compile en C++11.
 
-Fichiers d'entrée en XML.
-Nous avons utilisé la bibliothèque "tinyxml" pour
-avoir directement les fonctions adéquates pour lire
+Fichiers d'entrÃ©e en XML.
+Nous avons utilisÃ© la bibliothÃ¨que "tinyxml" pour
+avoir directement les fonctions adÃ©quates pour lire
 le contenu des balises XML efficacement. Nous n'avons donc
-pas codé les fichiers : "tinystr.cpp/.h", "tinyxml.cpp/.h",
+pas codÃ© les fichiers : "tinystr.cpp/.h", "tinyxml.cpp/.h",
 "tinyxmlerror.cpp" et "tinyxmlparser.cpp".
